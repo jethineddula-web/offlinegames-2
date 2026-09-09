@@ -1,0 +1,1944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#2E2016">
+
+<title>Bee Escape — Free Online Dog vs Bees Game with 100 Levels</title>
+
+<!-- ============ SEO ============
+     REPLACE https://example.com/bee-escape/ below with your real page URL,
+     and og-image.png with a 1200x630 screenshot of the game.
+     ============================= -->
+<meta name="description" content="Guide Rex the dog past swarms of bees, grab every bone and reach the doghouse. 100 hand-tuned levels, free to play in your browser on phone or PC. No download.">
+<meta name="keywords" content="bee escape, dog game, bee game, save the dog, free online game, browser game, arcade maze game, mobile game, html5 game, 100 levels">
+<meta name="author" content="Bee Escape">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="rating" content="General">
+<link rel="canonical" href="https://example.com/bee-escape/">
+
+<!-- Open Graph (Facebook, WhatsApp, LinkedIn) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Bee Escape">
+<meta property="og:title" content="Bee Escape — Get the Dog Home">
+<meta property="og:description" content="Rex wandered into the wrong garden. Dodge the swarm, fetch every bone and get him home across 100 free levels.">
+<meta property="og:url" content="https://example.com/bee-escape/">
+<meta property="og:image" content="https://example.com/bee-escape/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A cartoon dog running through a green garden chased by bees">
+<meta property="og:locale" content="en_US">
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Bee Escape — Get the Dog Home">
+<meta name="twitter:description" content="Dodge the swarm, fetch every bone and get Rex home. 100 free levels, phone and PC.">
+<meta name="twitter:image" content="https://example.com/bee-escape/og-image.png">
+
+<!-- Installable / mobile app feel -->
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Bee Escape">
+<meta name="application-name" content="Bee Escape">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%232E2016'/%3E%3Cellipse cx='32' cy='34' rx='19' ry='14' fill='%23FFC72C'/%3E%3Crect x='28' y='21' width='7' height='26' fill='%232E2016'/%3E%3Crect x='16' y='24' width='6' height='20' fill='%232E2016'/%3E%3Cellipse cx='26' cy='16' rx='11' ry='5' fill='%23E9F8FF' opacity='.85'/%3E%3C/svg%3E">
+
+<!-- Structured data: helps Google show this as a playable game -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "Bee Escape",
+  "alternateName": "Save the Dog from Bees",
+  "description": "An arcade maze game where you guide Rex the dog through a garden full of bees, collecting bones and reaching the doghouse across 100 levels.",
+  "url": "https://example.com/bee-escape/",
+  "image": "https://example.com/bee-escape/og-image.png",
+  "genre": ["Arcade", "Maze", "Casual"],
+  "gamePlatform": ["Web browser", "Android", "iOS", "PC"],
+  "applicationCategory": "Game",
+  "operatingSystem": "Any browser",
+  "playMode": "SinglePlayer",
+  "inLanguage": "en",
+  "isFamilyFriendly": true,
+  "numberOfPlayers": { "@type": "QuantitativeValue", "value": 1 },
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
+
+<!-- ============ AD PLATFORM DETECTION ============
+     Browser  -> Google AdSense loads below.
+     App view -> nothing Google-web loads at all; the app shows AdMob instead.
+     AdSense is not permitted inside an app WebView, so the script must not
+     even be fetched there.
+     AdMob units live in the native app, not in this file:
+       Banner        ca-app-pub-4203857211510947/8086182570   ("Vault Banner")
+       Interstitial  ca-app-pub-4203857211510947/3025427580   ("Game Interstitial")
+       Rewarded      NOT CREATED YET - see mobile-ads-setup.md
+     Your app must announce itself in ONE of these ways:
+       1. Android: addJavascriptInterface(..., "BeeEscapeApp")
+       2. iOS:     a WKScriptMessageHandler named "beeEscapeAds"
+       3. Either:  append "BeeEscapeApp/1.0" to the WebView user agent
+     =============================================== -->
+<script>
+(function(){
+  var ua = navigator.userAgent || '';
+  var hasBridge = !!(window.BeeEscapeApp && window.BeeEscapeApp.showRewarded) ||
+                  !!(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.beeEscapeAds);
+  var hasToken  = /BeeEscapeApp/i.test(ua);
+  // conservative guess for an unlabelled WebView
+  var looksEmbedded = /;\s*wv\)/i.test(ua) ||
+                      /\bFB_IAB\b|\bFBAN\b|\bInstagram\b|\bLine\/|\bMicroMessenger\b/i.test(ua) ||
+                      (/(iPhone|iPod|iPad)/i.test(ua) && !/Safari/i.test(ua) && !/CriOS|FxiOS|EdgiOS/i.test(ua));
+
+  var mode = (hasBridge || hasToken) ? 'app' : (looksEmbedded ? 'embedded' : 'web');
+  window.__ADMODE = mode;
+
+  if(mode === 'web'){
+    window.adsbygoogle = window.adsbygoogle || [];
+    // H5 Games Ad Placement API (rewarded + interstitial)
+    window.adBreak = window.adConfig = function(o){ window.adsbygoogle.push(o); };
+    var s = document.createElement('script');
+    s.async = true;
+    s.crossOrigin = 'anonymous';
+    s.setAttribute('data-ad-frequency-hint','60s');
+    s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4203857211510947';
+    document.head.appendChild(s);
+  } else {
+    window.adBreak = window.adConfig = function(){};   // keep web call sites harmless
+    if(mode === 'embedded'){
+      console.warn('[Bee Escape] Running inside an embedded browser with no app bridge, '+
+        'so no ads will be shown. Add the BeeEscapeApp bridge or user-agent token in your app.');
+    }
+  }
+})();
+</script>
+
+<style>
+  :root{
+    --bark:#2E2016;
+    --bark-2:#3E2C1E;
+    --honey:#F5A623;
+    --honey-lt:#FFD34E;
+    --meadow:#5FA83C;
+    --meadow-dk:#3C7226;
+    --sky:#BDE7F5;
+    --cream:#FFF3D6;
+    --alarm:#E24A3B;
+    --ui: "Trebuchet MS", "Segoe UI", system-ui, -apple-system, sans-serif;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{
+    margin:0; padding:0; height:100%; overflow:hidden;
+    background:var(--bark); color:var(--cream);
+    font-family:var(--ui);
+    overscroll-behavior:none; touch-action:none;
+    user-select:none; -webkit-user-select:none;
+  }
+  #stage{position:fixed; inset:0; overflow:hidden;}
+  canvas{position:absolute; inset:0; width:100%; height:100%; display:block;}
+
+  .screen{
+    position:absolute; inset:0; display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    padding:max(14px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) max(14px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
+    text-align:center;
+  }
+  .screen.hide{display:none;}
+  .hide{display:none !important;}
+  .veil{background:rgba(28,18,10,.86);}
+  .panel{
+    max-width:min(560px, 94vw); width:100%;
+  }
+
+  /* ---- title ---- */
+  .brand{line-height:.86; margin:0 0 4px;}
+  .brand .b1{
+    display:block; font-size:clamp(38px,10vh,74px); font-weight:900; letter-spacing:-.02em;
+    color:var(--honey-lt); text-shadow:0 4px 0 #8A5A12, 0 8px 18px rgba(0,0,0,.5);
+    transform:rotate(-2.5deg);
+  }
+  .brand .b2{
+    display:block; font-size:clamp(30px,8vh,60px); font-weight:900;
+    color:var(--cream); text-shadow:0 4px 0 #6A4520, 0 8px 18px rgba(0,0,0,.5);
+    transform:rotate(1.5deg);
+  }
+  .tag{margin:10px 0 20px; font-size:clamp(13px,2.4vh,17px); color:#E8D6AE; opacity:.9;}
+
+  /* ---- buttons: honeycomb-flavoured ---- */
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    font-family:inherit; font-weight:800; font-size:clamp(15px,2.6vh,20px);
+    color:#3A2510; background:linear-gradient(#FFD65C,#F2A01C);
+    border:0; border-bottom:5px solid #A96A0C; border-radius:14px;
+    padding:12px 26px; margin:6px; cursor:pointer; min-width:150px;
+    box-shadow:0 6px 16px rgba(0,0,0,.35);
+    transition:transform .06s ease, filter .12s ease;
+  }
+  .btn:active{transform:translateY(3px); border-bottom-width:2px;}
+  .btn:focus-visible{outline:3px solid var(--sky); outline-offset:3px;}
+  .btn.ghost{
+    background:linear-gradient(#5A4128,#3E2C1E); color:var(--cream);
+    border-bottom-color:#241709;
+  }
+  .btn.go{font-size:clamp(19px,3.4vh,27px); padding:16px 44px; min-width:210px;}
+  .btn.sm{font-size:14px; padding:9px 16px; min-width:0; border-bottom-width:4px;}
+  .row{display:flex; flex-wrap:wrap; justify-content:center; align-items:center;}
+
+  /* ---- HUD ---- */
+  #hud{
+    position:absolute; inset:0; pointer-events:none;
+    padding:max(8px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) 8px max(10px, env(safe-area-inset-left));
+    font-weight:800;
+  }
+  .hudbar{display:flex; justify-content:space-between; align-items:flex-start; gap:8px;}
+  .chip{
+    background:rgba(30,20,12,.62); border:2px solid rgba(255,211,78,.35);
+    border-radius:11px; padding:5px 11px; font-size:clamp(12px,2.1vh,16px);
+    color:var(--cream); backdrop-filter:blur(3px); white-space:nowrap;
+  }
+  .chip b{color:var(--honey-lt);}
+  #hearts{letter-spacing:2px; font-size:clamp(14px,2.4vh,19px);}
+  #pauseBtn{pointer-events:auto; cursor:pointer;}
+  #toast{
+    position:absolute; left:50%; top:16%; transform:translateX(-50%);
+    background:rgba(30,20,12,.8); border:2px solid rgba(255,211,78,.4);
+    border-radius:12px; padding:8px 16px; font-size:clamp(13px,2.2vh,17px);
+    opacity:0; transition:opacity .25s ease; color:var(--honey-lt);
+  }
+  #toast.on{opacity:1;}
+
+  /* ---- level select: honeycomb grid ---- */
+  #lvGrid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(56px,1fr));
+    gap:7px; width:min(680px,94vw); max-height:56vh; overflow-y:auto;
+    padding:10px 6px; margin:10px 0;
+    -webkit-overflow-scrolling:touch; touch-action:pan-y;
+  }
+  .cell{
+    aspect-ratio:1/1.12; border:0; cursor:pointer; font-family:inherit;
+    font-weight:900; font-size:15px; color:#3A2510;
+    background:linear-gradient(#FFD65C,#EFA224);
+    clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px;
+  }
+  .cell.locked{background:linear-gradient(#6B573F,#4A3826); color:#9C8768; cursor:not-allowed;}
+  .cell .st{font-size:9px; line-height:1; color:#7A4E08;}
+  .cell.locked .st{color:#7A6A52;}
+  .cell.done{background:linear-gradient(#B6E88A,#63AF3C); color:#20400F;}
+  .cell.done .st{color:#2C5A14;}
+
+  /* ---- stars / results ---- */
+  .stars{font-size:clamp(30px,7vh,52px); letter-spacing:8px; color:#4A3826; margin:6px 0;}
+  .stars .lit{color:var(--honey-lt); text-shadow:0 0 18px rgba(255,211,78,.55);}
+  h2.head{margin:0 0 4px; font-size:clamp(22px,4.6vh,36px); color:var(--honey-lt); font-weight:900;}
+  .sub{margin:0 0 12px; font-size:clamp(13px,2.3vh,17px); color:#E8D6AE;}
+  .stat{font-size:clamp(13px,2.2vh,16px); color:#E8D6AE; margin:2px 0 10px;}
+
+  /* ---- how to play ---- */
+  .how{
+    text-align:left; background:rgba(0,0,0,.22); border-radius:14px; padding:12px 16px;
+    font-size:clamp(12px,2.1vh,15px); line-height:1.65; color:#EFE0BE;
+    max-width:520px; margin:0 auto 12px;
+  }
+  .how span{color:var(--honey-lt); font-weight:800;}
+
+  /* ---- ads ---- */
+  .adbox{width:min(468px,94vw); min-height:52px; margin:12px auto 0; overflow:hidden;}
+  #fsBtn{position:absolute; right:calc(10px + env(safe-area-inset-right)); bottom:calc(10px + env(safe-area-inset-bottom)); pointer-events:auto;}
+</style>
+</head>
+<body>
+<noscript>
+  <div style="padding:28px;max-width:640px;margin:0 auto;line-height:1.7">
+    <h1>Bee Escape</h1>
+    <p>Bee Escape is a free browser game about getting Rex the dog safely home
+    through a garden full of bees. Collect every bone to unlock the doghouse,
+    dodge patrolling and chasing bees, hide in flower beds, and use bee spray to
+    scare the swarm away. There are 100 levels, and it plays on phones and on PC.</p>
+    <p><strong>This game needs JavaScript.</strong> Please turn JavaScript on in your
+    browser settings and reload the page.</p>
+  </div>
+</noscript>
+<div id="stage">
+  <canvas id="c"></canvas>
+
+  <!-- ===== HUD ===== -->
+  <div id="hud" class="hide">
+    <div class="hudbar">
+      <div class="row" style="gap:6px; justify-content:flex-start;">
+        <div class="chip" id="lvChip">Level 1</div>
+        <div class="chip" id="boneChip">🦴 <b>0/1</b></div>
+      </div>
+      <div class="row" style="gap:6px; justify-content:flex-end;">
+        <div class="chip" id="timeChip">0.0s</div>
+        <div class="chip" id="hearts">❤❤❤</div>
+        <div class="chip" id="pauseBtn">❚❚</div>
+      </div>
+    </div>
+    <div id="toast"></div>
+  </div>
+
+  <!-- ===== MENU ===== -->
+  <div class="screen" id="scMenu">
+    <div class="panel">
+      <h1 class="brand"><span class="b1">Bee</span><span class="b2">Escape</span></h1>
+      <p class="tag">Rex wandered into the wrong garden. Fetch his bones and get him home.</p>
+      <button class="btn go" id="playBtn">Play</button>
+      <div class="row">
+        <button class="btn ghost" id="levelsBtn">Choose level</button>
+        <button class="btn ghost" id="howBtn">How to play</button>
+        <button class="btn ghost sm" id="soundBtn">Sound on</button>
+      </div>
+      <div class="adbox" id="adMenu"></div>
+    </div>
+  </div>
+
+  <!-- ===== HOW TO PLAY ===== -->
+  <div class="screen veil hide" id="scHow">
+    <div class="panel">
+      <h2 class="head">How to play</h2>
+      <div class="how">
+        <span>Move</span> — drag anywhere on screen, or use arrow keys / WASD.<br>
+        <span>Collect</span> every bone. The doghouse only opens once Rex has them all.<br>
+        <span>Bees sting</span> anything that strays too close — you don't have to touch one. The red ring is its reach, and an angry bee will dart at you.<br>
+        <span>Flower beds</span> are safe — bees refuse to fly over them.<br>
+        <span>Honey</span> is sticky and slows Rex down. <span>Wind</span> pushes him sideways.<br>
+        <span>Spray cans</span> scare every bee away for six seconds.
+      </div>
+      <button class="btn" id="howBack">Back</button>
+    </div>
+  </div>
+
+  <!-- ===== LEVEL SELECT ===== -->
+  <div class="screen veil hide" id="scLevels">
+    <div class="panel">
+      <h2 class="head">Choose a level</h2>
+      <p class="sub" id="progressLine">0 of 100 cleared</p>
+      <div id="lvGrid"></div>
+      <button class="btn ghost" id="lvBack">Back</button>
+    </div>
+  </div>
+
+  <!-- ===== PAUSE ===== -->
+  <div class="screen veil hide" id="scPause">
+    <div class="panel">
+      <h2 class="head">Paused</h2>
+      <p class="sub" id="pauseSub">Level 1</p>
+      <div class="row">
+        <button class="btn" id="resumeBtn">Resume</button>
+        <button class="btn ghost" id="pRetry">Restart level</button>
+        <button class="btn ghost" id="pMenu">Main menu</button>
+        <button class="btn ghost sm" id="pSound">Sound on</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== LEVEL COMPLETE ===== -->
+  <div class="screen veil hide" id="scWin">
+    <div class="panel">
+      <h2 class="head" id="winHead">Home safe!</h2>
+      <p class="sub" id="winName">Sunny Meadow</p>
+      <div class="stars" id="winStars">★★★</div>
+      <p class="stat" id="winStat"></p>
+      <div class="row">
+        <button class="btn" id="nextBtn">Next level</button>
+        <button class="btn ghost" id="wRetry">Replay</button>
+        <button class="btn ghost" id="wMenu">Levels</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== GAME OVER ===== -->
+  <div class="screen veil hide" id="scOver">
+    <div class="panel">
+      <h2 class="head">Rex got stung</h2>
+      <p class="sub" id="overSub">No hearts left. Watch a short ad to keep going from here.</p>
+      <div class="row">
+        <button class="btn" id="reviveBtn">Watch ad for a heart</button>
+        <button class="btn ghost" id="oRetry">Start level over</button>
+        <button class="btn ghost" id="oMenu">Main menu</button>
+      </div>
+      <div class="adbox" id="adOver"></div>
+    </div>
+  </div>
+
+  <!-- ===== FINISHED ALL 100 ===== -->
+  <div class="screen veil hide" id="scEnd">
+    <div class="panel">
+      <h1 class="brand"><span class="b1">All 100</span><span class="b2">cleared</span></h1>
+      <p class="tag">Rex is asleep in his doghouse and the garden is finally quiet.</p>
+      <p class="stat" id="endStat"></p>
+      <button class="btn" id="endMenu">Main menu</button>
+    </div>
+  </div>
+
+  <button class="btn ghost sm hide" id="fsBtn">⛶</button>
+</div>
+
+<script>
+"use strict";
+/* =====================================================================
+   BEE ESCAPE — save the dog from the bees
+   Single file. No external assets. Audio is synthesised with WebAudio.
+   ===================================================================== */
+
+/* ------------------------- small utilities ------------------------- */
+const clamp=(v,a,b)=>v<a?a:(v>b?b:v);
+const lerp=(a,b,t)=>a+(b-a)*t;
+const TAU=Math.PI*2;
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+const $=id=>document.getElementById(id);
+function show(el,on){el.classList.toggle('hide',!on);}
+/* older Safari has no roundRect */
+if(!CanvasRenderingContext2D.prototype.roundRect){
+  CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){
+    const rad=Math.min(typeof r==='number'?r:0, Math.abs(w)/2, Math.abs(h)/2);
+    this.moveTo(x+rad,y);
+    this.arcTo(x+w,y,x+w,y+h,rad);
+    this.arcTo(x+w,y+h,x,y+h,rad);
+    this.arcTo(x,y+h,x,y,rad);
+    this.arcTo(x,y,x+w,y,rad);
+    this.closePath();
+    return this;
+  };
+}
+
+/* --------------------------- persistence --------------------------- */
+/* Tries the sandbox storage API, then localStorage, then memory.       */
+const Save=(()=>{
+  let mem={best:{},unlocked:1};
+  let mode='mem';
+  if(typeof window!=='undefined' && window.storage && window.storage.get) mode='api';
+  else { try{ if(window.localStorage){ window.localStorage.setItem('__t','1'); window.localStorage.removeItem('__t'); mode='ls'; } }catch(e){ mode='mem'; } }
+  async function load(){
+    try{
+      if(mode==='api'){ const r=await window.storage.get('beeescape:save'); if(r&&r.value) mem=JSON.parse(r.value); }
+      else if(mode==='ls'){ const s=window.localStorage.getItem('beeescape:save'); if(s) mem=JSON.parse(s); }
+    }catch(e){/* first run, or storage unavailable */}
+    if(!mem||typeof mem!=='object') mem={best:{},unlocked:1};
+    if(!mem.best) mem.best={};
+    if(!mem.unlocked) mem.unlocked=1;
+    return mem;
+  }
+  function flush(){
+    const s=JSON.stringify(mem);
+    try{
+      if(mode==='api') window.storage.set('beeescape:save',s).catch(()=>{});
+      else if(mode==='ls') window.localStorage.setItem('beeescape:save',s);
+    }catch(e){}
+  }
+  return {
+    load, data:()=>mem,
+    record(level,stars,time){
+      const b=mem.best[level];
+      if(!b||stars>b.s||(stars===b.s&&time<b.t)) mem.best[level]={s:stars,t:+time.toFixed(2)};
+      if(level+1>mem.unlocked) mem.unlocked=Math.min(100,level+1);
+      flush();
+    }
+  };
+})();
+
+/* ------------------------------ audio ------------------------------ */
+const Audio_={
+  ctx:null, master:null, music:null, sfx:null, on:true, ready:false,
+  buzzOsc:null, buzzGain:null, buzzFilt:null, lfo:null,
+  timer:null, step:0, nextTime:0, track:null,
+  init(){
+    if(this.ctx) return;
+    const AC=window.AudioContext||window.webkitAudioContext;
+    if(!AC) return;
+    try{ this.ctx=new AC(); }catch(e){ return; }
+    this.master=this.ctx.createGain(); this.master.gain.value=this.on?0.9:0; this.master.connect(this.ctx.destination);
+    this.music=this.ctx.createGain(); this.music.gain.value=0.34; this.music.connect(this.master);
+    this.sfx=this.ctx.createGain();   this.sfx.gain.value=0.8;   this.sfx.connect(this.master);
+    this.ready=true;
+    this.timer=setInterval(()=>this.tick(),30);
+  },
+  resume(){ if(this.ctx&&this.ctx.state==='suspended') this.ctx.resume().catch(()=>{}); },
+  setOn(v){ this.on=v; if(this.master) this.master.gain.setTargetAtTime(v?0.9:0,this.ctx.currentTime,0.02); },
+  note(freq,at,dur,type,vol,glide){
+    if(!this.ready) return;
+    const o=this.ctx.createOscillator(), g=this.ctx.createGain();
+    o.type=type||'triangle'; o.frequency.setValueAtTime(freq,at);
+    if(glide) o.frequency.exponentialRampToValueAtTime(Math.max(30,glide),at+dur);
+    g.gain.setValueAtTime(0.0001,at);
+    g.gain.exponentialRampToValueAtTime(Math.max(0.0002,vol||0.2),at+0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001,at+dur);
+    o.connect(g); g.connect(arguments[6]||this.sfx); o.start(at); o.stop(at+dur+0.03);
+  },
+  noise(at,dur,vol,freq){
+    if(!this.ready) return;
+    const n=Math.floor(this.ctx.sampleRate*dur);
+    const buf=this.ctx.createBuffer(1,n,this.ctx.sampleRate), d=buf.getChannelData(0);
+    for(let i=0;i<n;i++) d[i]=(Math.random()*2-1)*(1-i/n);
+    const s=this.ctx.createBufferSource(); s.buffer=buf;
+    const f=this.ctx.createBiquadFilter(); f.type='bandpass'; f.frequency.value=freq||1400; f.Q.value=1.1;
+    const g=this.ctx.createGain(); g.gain.value=vol||0.25;
+    s.connect(f); f.connect(g); g.connect(this.sfx); s.start(at);
+  },
+  /* --- music --- */
+  TRACKS:{
+    menu:{tempo:104, root:196,
+      bass:[0,0,-5,-5,-3,-3,-5,-5, 0,0,-5,-5,-7,-7,-5,-5],
+      mel :[12,null,16,19,null,16,12,14, 16,null,19,21,null,19,16,12,
+            17,null,21,24,null,21,17,19, 16,null,12,14,null,12,7,null]},
+    game:{tempo:132, root:196,
+      bass:[0,7,0,7, -3,4,-3,4, -5,2,-5,2, -7,0,-7,0],
+      mel :[12,14,15,14, 12,null,15,17, 19,17,15,14, 12,null,10,12,
+            15,17,19,17, 15,null,12,10, 12,14,15,19, 17,15,14,12]},
+    danger:{tempo:158, root:185,
+      bass:[0,0,3,0, -2,-2,1,-2, 0,0,3,0, -4,-4,-1,-4],
+      mel :[12,15,12,15, 11,14,11,14, 12,15,18,15, 14,11,10,7,
+            12,15,12,18, 11,14,11,17, 12,15,12,15, 10,7,10,12]}
+  },
+  play(name){
+    this.init(); this.resume();
+    if(!this.ready) return;
+    if(this.track===name) return;
+    this.track=name; this.step=0; this.nextTime=this.ctx.currentTime+0.06;
+  },
+  stopMusic(){ this.track=null; },
+  tick(){
+    if(!this.ready||!this.track) return;
+    const T=this.TRACKS[this.track]; if(!T) return;
+    const spb=60/T.tempo/2;
+    while(this.nextTime < this.ctx.currentTime+0.18){
+      const s=this.step, t=this.nextTime;
+      const bass=T.bass[s%T.bass.length];
+      if(bass!==null&&bass!==undefined)
+        this.note(T.root/2*Math.pow(2,bass/12),t,spb*0.9,'sine',0.30,null,this.music);
+      const m=T.mel[s%T.mel.length];
+      if(m!==null&&m!==undefined)
+        this.note(T.root*Math.pow(2,m/12),t,spb*0.78,'triangle',0.17,null,this.music);
+      if(s%4===0){ // soft kick
+        this.note(64,t,0.12,'sine',0.30,38,this.music);
+      }
+      if(s%4===2){ // hat
+        const n=Math.floor(this.ctx.sampleRate*0.035);
+        const buf=this.ctx.createBuffer(1,n,this.ctx.sampleRate), d=buf.getChannelData(0);
+        for(let i=0;i<n;i++) d[i]=(Math.random()*2-1)*(1-i/n);
+        const src=this.ctx.createBufferSource(); src.buffer=buf;
+        const f=this.ctx.createBiquadFilter(); f.type='highpass'; f.frequency.value=6500;
+        const g=this.ctx.createGain(); g.gain.value=0.10;
+        src.connect(f); f.connect(g); g.connect(this.music); src.start(t);
+      }
+      this.nextTime+=spb; this.step++;
+    }
+  },
+  /* --- the swarm drone --- */
+  startBuzz(){
+    this.init(); if(!this.ready||this.buzzOsc) return;
+    const c=this.ctx;
+    this.buzzOsc=c.createOscillator(); this.buzzOsc.type='sawtooth'; this.buzzOsc.frequency.value=105;
+    this.buzzFilt=c.createBiquadFilter(); this.buzzFilt.type='lowpass'; this.buzzFilt.frequency.value=900; this.buzzFilt.Q.value=3;
+    this.buzzGain=c.createGain(); this.buzzGain.gain.value=0;
+    this.lfo=c.createOscillator(); this.lfo.type='sine'; this.lfo.frequency.value=7.2;
+    const lg=c.createGain(); lg.gain.value=22;
+    this.lfo.connect(lg); lg.connect(this.buzzOsc.frequency);
+    this.buzzOsc.connect(this.buzzFilt); this.buzzFilt.connect(this.buzzGain); this.buzzGain.connect(this.master);
+    this.buzzOsc.start(); this.lfo.start();
+  },
+  setBuzz(intensity){
+    if(!this.buzzGain) return;
+    const t=this.ctx.currentTime;
+    this.buzzGain.gain.setTargetAtTime(clamp(intensity,0,1)*0.09,t,0.10);
+    this.buzzOsc.frequency.setTargetAtTime(95+intensity*95,t,0.14);
+    this.buzzFilt.frequency.setTargetAtTime(600+intensity*1500,t,0.14);
+  },
+  stopBuzz(){
+    if(!this.buzzOsc) return;
+    try{ this.buzzGain.gain.setTargetAtTime(0,this.ctx.currentTime,0.05);
+         const o=this.buzzOsc,l=this.lfo; setTimeout(()=>{try{o.stop();l.stop();}catch(e){}},260);
+    }catch(e){}
+    this.buzzOsc=null; this.lfo=null; this.buzzGain=null; this.buzzFilt=null;
+  },
+  /* --- one-shots --- */
+  s_click(){ this.init(); if(!this.ready)return; const t=this.ctx.currentTime; this.note(660,t,0.07,'square',0.13); },
+  s_bone(){ if(!this.ready)return; const t=this.ctx.currentTime; this.note(880,t,0.09,'square',0.16); this.note(1320,t+0.07,0.12,'square',0.14); },
+  s_spray(){ if(!this.ready)return; const t=this.ctx.currentTime; this.noise(t,0.45,0.22,3200); this.note(300,t,0.4,'sawtooth',0.10,900); },
+  s_sting(){ if(!this.ready)return; const t=this.ctx.currentTime;
+    this.note(420,t,0.35,'sawtooth',0.30,90); this.noise(t,0.3,0.30,900); this.note(200,t+0.05,0.4,'square',0.16,60); },
+  s_win(){ if(!this.ready)return; const t=this.ctx.currentTime; [0,4,7,12,16].forEach((n,i)=>this.note(392*Math.pow(2,n/12),t+i*0.09,0.3,'triangle',0.24)); },
+  s_over(){ if(!this.ready)return; const t=this.ctx.currentTime; [0,-3,-7,-12].forEach((n,i)=>this.note(330*Math.pow(2,n/12),t+i*0.16,0.45,'sawtooth',0.20)); },
+  s_open(){ if(!this.ready)return; const t=this.ctx.currentTime; this.note(523,t,0.14,'triangle',0.2); this.note(784,t+0.11,0.22,'triangle',0.2); },
+  s_heart(){ if(!this.ready)return; const t=this.ctx.currentTime; [0,7,12].forEach((n,i)=>this.note(523*Math.pow(2,n/12),t+i*0.1,0.3,'triangle',0.22)); }
+};
+
+/* ------------------------------- ads ------------------------------- */
+const Ads=(()=>{
+  const MODE = window.__ADMODE || 'web';
+
+  /* --- native bridge, only present inside your app --- */
+  const bridge = (function(){
+    const A = window.BeeEscapeApp;
+    if(A && typeof A.showRewarded === 'function'){
+      return {
+        banner: on => { try{ A.showBanner(!!on); }catch(e){} },
+        rewarded: () => { try{ A.showRewarded(); }catch(e){} },
+        interstitial: () => { try{ A.showInterstitial(); }catch(e){} }
+      };
+    }
+    const h = window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.beeEscapeAds;
+    if(h){
+      return {
+        banner: on => { try{ h.postMessage({type:'banner', show:!!on}); }catch(e){} },
+        rewarded: () => { try{ h.postMessage({type:'rewarded'}); }catch(e){} },
+        interstitial: () => { try{ h.postMessage({type:'interstitial'}); }catch(e){} }
+      };
+    }
+    return null;
+  })();
+
+  /* --- AdSense readiness, browsers only --- */
+  let webReady=false, bannerDone={};
+  if(MODE === 'web'){
+    try{ window.adConfig({ preloadAdBreaks:'on', sound:'on', onReady:()=>{ webReady=true; } }); }catch(e){}
+  }
+
+  /* The app tells us which formats it can actually serve. Until a rewarded
+     unit exists in AdMob there is nothing to offer for the extra heart, so
+     the button is hidden rather than dangling. */
+  let caps = { banner:true, interstitial:true, rewarded:true };
+  function applyCaps(){
+    const btn=$('reviveBtn'); if(!btn) return;
+    const usable = (MODE!=='app') || caps.rewarded!==false;
+    btn.style.display = usable ? '' : 'none';
+    const sub=$('overSub');
+    if(sub) sub.textContent = usable
+      ? 'No hearts left. Watch a short ad to keep going from here.'
+      : 'No hearts left.';
+  }
+
+  const muteForAd = ()=>{ if(Audio_.master) Audio_.master.gain.value=0; };
+  const unmute    = ()=>{ Audio_.setOn(Audio_.on); };
+
+  /* --- callbacks the app calls back into --- */
+  let rewardCb=null, interCb=null, rewardTimer=null, interTimer=null;
+  window.BeeEscapeAds = {
+    // call with true only if the player actually finished the rewarded ad
+    onRewardResult(granted){
+      const cb=rewardCb; rewardCb=null; clearTimeout(rewardTimer); unmute();
+      if(cb) cb(!!granted, 'app');
+    },
+    onInterstitialDone(){
+      const cb=interCb; interCb=null; clearTimeout(interTimer); unmute();
+      if(cb) cb();
+    },
+    // call once at startup, e.g. setCapabilities({rewarded:false})
+    setCapabilities(c){ if(c) Object.assign(caps,c); applyCaps(); }
+  };
+
+  function banner(containerId){
+    if(MODE === 'app'){ if(bridge) bridge.banner(true); return; }
+    if(MODE !== 'web') return;
+    if(bannerDone[containerId]) return;
+    const box=$(containerId); if(!box) return;
+    bannerDone[containerId]=true;
+    try{
+      const ins=document.createElement('ins');
+      ins.className='adsbygoogle';
+      ins.style.display='block';
+      ins.setAttribute('data-ad-client','ca-pub-4203857211510947');
+      ins.setAttribute('data-ad-slot','7417753724');
+      ins.setAttribute('data-ad-format','auto');
+      ins.setAttribute('data-full-width-responsive','true');
+      box.appendChild(ins);
+      (window.adsbygoogle=window.adsbygoogle||[]).push({});
+    }catch(e){ bannerDone[containerId]=false; }
+  }
+
+  // the app banner is an overlay, so it has to be taken down during play
+  function hideBanner(){ if(MODE === 'app' && bridge) bridge.banner(false); }
+
+  function rewarded(onDone){
+    if(MODE === 'app'){
+      if(!bridge){ onDone(true,'no-bridge'); return; }
+      rewardCb=onDone; muteForAd(); bridge.rewarded();
+      rewardTimer=setTimeout(()=>{
+        const cb=rewardCb; rewardCb=null; unmute();
+        if(cb) cb(false,'timeout');
+      },45000);
+      return;
+    }
+    // browser: AdSense rewarded. If the library never loaded (blocker, offline
+    // preview) don't trap the player behind an ad that can't run.
+    if(!webReady){ onDone(true,'unavailable'); return; }
+    let granted=false, finished=false;
+    const finish=(g,why)=>{ if(finished) return; finished=true; unmute(); onDone(g,why); };
+    try{
+      window.adBreak({
+        type:'reward', name:'extra-heart',
+        beforeReward(showAd){ muteForAd(); showAd(); },
+        adViewed(){ granted=true; },
+        adDismissed(){ granted=false; },
+        adBreakDone(info){ finish(granted, info&&info.breakStatus); }
+      });
+    }catch(e){ finish(true,'error'); }
+    setTimeout(()=>finish(granted||false,'timeout'), 30000);
+  }
+
+  function interstitial(after){
+    if(MODE === 'app'){
+      if(!bridge){ after&&after(); return; }
+      interCb=after; muteForAd(); bridge.interstitial();
+      interTimer=setTimeout(()=>{
+        const cb=interCb; interCb=null; unmute(); if(cb) cb();
+      },15000);
+      return;
+    }
+    let done=false; const go=()=>{ if(done)return; done=true; after&&after(); };
+    if(!webReady){ go(); return; }
+    try{
+      window.adBreak({
+        type:'next', name:'between-levels',
+        beforeAd(){ muteForAd(); },
+        afterAd(){ unmute(); },
+        adBreakDone(){ go(); }
+      });
+      setTimeout(go,12000);
+    }catch(e){ go(); }
+  }
+
+  return { banner, hideBanner, rewarded, interstitial, mode:MODE, applyCaps,
+           hasRewarded:()=> MODE!=='app' || caps.rewarded!==false,
+           isReady:()=> MODE==='app' ? !!bridge : webReady };
+})();
+
+/* =====================================================================
+   LEVEL DESIGN
+   Every level is built from a seed unique to its number, so no two maps
+   are identical. 15 layout families cycle in a stride that never repeats
+   back-to-back, and the mechanic mix widens as you climb.
+   ===================================================================== */
+const GW=21, GH=12;                        // tiles, 21:12 ≈ landscape
+const T={EMPTY:0, WALL:1, HONEY:2, FLOWER:3, WIND:4};
+
+/* How close Rex can get before he's stung, and how close before a bee darts
+   at him. Sting reach is a bit wider than the two bodies touching, so simply
+   brushing past a bee costs a heart. */
+const STING_REACH = 0.78;
+const ALERT_RANGE = 1.45;
+
+const ADJ=['Sunny','Buzzing','Thorny','Golden','Misty','Wild','Sticky','Hidden','Windy','Furious'];
+const NOUN=['Meadow','Hedgerow','Orchard','Garden','Hollow','Grove','Pasture','Thicket','Bramble','Hive'];
+const levelName=n=>ADJ[(n-1)%10]+' '+NOUN[Math.floor((n-1)/10)%10];
+
+function blankGrid(){
+  const g=[];
+  for(let y=0;y<GH;y++){ const row=new Array(GW).fill(T.EMPTY); g.push(row); }
+  for(let x=0;x<GW;x++){ g[0][x]=T.WALL; g[GH-1][x]=T.WALL; }
+  for(let y=0;y<GH;y++){ g[y][0]=T.WALL; g[y][GW-1]=T.WALL; }
+  return g;
+}
+const inInterior=(x,y)=>x>0&&y>0&&x<GW-1&&y<GH-1;
+function put(g,x,y,v){ if(inInterior(x,y)) g[y][x]=v; }
+
+/* ---- 15 layout families ---- */
+const LAYOUTS=[
+  function open(g,r){ // scattered tufts
+    const n=3+Math.floor(r()*4);
+    for(let i=0;i<n;i++){ const cx=2+Math.floor(r()*(GW-4)), cy=2+Math.floor(r()*(GH-4));
+      put(g,cx,cy,T.WALL); if(r()<.6) put(g,cx+1,cy,T.WALL); if(r()<.5) put(g,cx,cy+1,T.WALL); }
+  },
+  function pillars(g,r){
+    const sx=2+Math.floor(r()*2), sy=2+Math.floor(r()*2), gap=3;
+    for(let y=sy;y<GH-1;y+=gap) for(let x=sx;x<GW-1;x+=gap){ if(r()<.88) put(g,x,y,T.WALL); }
+  },
+  function hbars(g,r){
+    for(let y=2;y<GH-2;y+=3){
+      const hole=1+Math.floor(r()*(GW-4)), hole2=1+Math.floor(r()*(GW-4));
+      for(let x=1;x<GW-1;x++){ if(Math.abs(x-hole)>1&&Math.abs(x-hole2)>1) put(g,x,y,T.WALL); }
+    }
+  },
+  function vbars(g,r){
+    for(let x=3;x<GW-2;x+=4){
+      const hole=1+Math.floor(r()*(GH-3)), hole2=1+Math.floor(r()*(GH-3));
+      for(let y=1;y<GH-1;y++){ if(Math.abs(y-hole)>0&&Math.abs(y-hole2)>0) put(g,x,y,T.WALL); }
+    }
+  },
+  function maze(g,r){
+    for(let y=1;y<GH-1;y++) for(let x=1;x<GW-1;x++) g[y][x]=T.WALL;
+    const cw=Math.floor((GW-1)/2), ch=Math.floor((GH-1)/2);
+    const seen=Array.from({length:ch},()=>new Array(cw).fill(false));
+    const stack=[[0,0]]; seen[0][0]=true; g[1][1]=T.EMPTY;
+    while(stack.length){
+      const [cx,cy]=stack[stack.length-1];
+      const opts=[];
+      if(cy>0&&!seen[cy-1][cx]) opts.push([0,-1]);
+      if(cy<ch-1&&!seen[cy+1][cx]) opts.push([0,1]);
+      if(cx>0&&!seen[cy][cx-1]) opts.push([-1,0]);
+      if(cx<cw-1&&!seen[cy][cx+1]) opts.push([1,0]);
+      if(!opts.length){ stack.pop(); continue; }
+      const [dx,dy]=opts[Math.floor(r()*opts.length)];
+      const nx=cx+dx, ny=cy+dy;
+      seen[ny][nx]=true;
+      g[1+cy*2+dy][1+cx*2+dx]=T.EMPTY;
+      g[1+ny*2][1+nx*2]=T.EMPTY;
+      stack.push([nx,ny]);
+    }
+    // braid: knock out extra walls so it plays as a garden, not a hedge maze
+    for(let y=1;y<GH-1;y++) for(let x=1;x<GW-1;x++) if(g[y][x]===T.WALL&&r()<0.34) g[y][x]=T.EMPTY;
+  },
+  function rooms(g,r){
+    const cuts=2+Math.floor(r()*2);
+    for(let i=0;i<cuts;i++){
+      const x=4+Math.floor(r()*(GW-8));
+      const hole=2+Math.floor(r()*(GH-4));
+      for(let y=1;y<GH-1;y++) if(Math.abs(y-hole)>0) put(g,x,y,T.WALL);
+    }
+    const y=2+Math.floor(r()*(GH-5));
+    const hole=3+Math.floor(r()*(GW-6));
+    for(let x=1;x<GW-1;x++) if(Math.abs(x-hole)>1) put(g,x,y,T.WALL);
+  },
+  function diagonals(g,r){
+    const n=2+Math.floor(r()*3), dir=r()<.5?1:-1;
+    for(let i=0;i<n;i++){
+      let x=1+Math.floor(r()*(GW-6)), y=1+Math.floor(r()*3);
+      const len=4+Math.floor(r()*6);
+      for(let k=0;k<len;k++){ put(g,x,y,T.WALL); x+=dir; y+=1; if(y>=GH-1) break; }
+    }
+  },
+  function spiral(g,r){
+    let x0=2,y0=2,x1=GW-3,y1=GH-3, turn=0;
+    while(x1-x0>2&&y1-y0>2){
+      const skip=1+Math.floor(r()*Math.max(1,(x1-x0)));
+      for(let x=x0;x<=x1;x++) if(x!==x0+skip) put(g,x,y0,T.WALL);
+      for(let y=y0;y<=y1;y++) if(y!==y1-1) put(g,x1,y,T.WALL);
+      x0+=2; y0+=2; x1-=2; y1-=2; turn++;
+      if(turn>3) break;
+    }
+  },
+  function blobs(g,r){
+    const n=4+Math.floor(r()*4);
+    for(let i=0;i<n;i++){
+      const cx=2+Math.floor(r()*(GW-4)), cy=2+Math.floor(r()*(GH-4)), rad=1+Math.floor(r()*2);
+      for(let y=cy-rad;y<=cy+rad;y++) for(let x=cx-rad;x<=cx+rad;x++)
+        if((x-cx)**2+(y-cy)**2<=rad*rad+0.3) put(g,x,y,T.WALL);
+    }
+  },
+  function cross(g,r){
+    const cx=Math.floor(GW/2)+Math.floor(r()*3)-1, cy=Math.floor(GH/2);
+    for(let x=2;x<GW-2;x++) if(Math.abs(x-cx)>1) put(g,x,cy,T.WALL);
+    for(let y=2;y<GH-2;y++) if(Math.abs(y-cy)>1) put(g,cx,y,T.WALL);
+    for(let i=0;i<3;i++) put(g,2+Math.floor(r()*(GW-4)),2+Math.floor(r()*(GH-4)),T.WALL);
+  },
+  function checker(g,r){
+    const off=r()<.5?0:1;
+    for(let y=2;y<GH-2;y+=3) for(let x=2;x<GW-2;x+=3){
+      if(((x+y)/3|0)%2===off||r()<.3){ put(g,x,y,T.WALL); put(g,x+1,y,T.WALL); put(g,x,y+1,T.WALL); }
+    }
+  },
+  function rings(g,r){
+    for(let k=0;k<2;k++){
+      const pad=2+k*2;
+      const gapSide=Math.floor(r()*4);
+      for(let x=pad;x<GW-pad;x++){ if(!(gapSide===0&&Math.abs(x-GW/2)<2)) put(g,x,pad,T.WALL);
+        if(!(gapSide===1&&Math.abs(x-GW/2)<2)) put(g,x,GH-1-pad,T.WALL); }
+      for(let y=pad;y<GH-pad;y++){ if(!(gapSide===2&&Math.abs(y-GH/2)<2)) put(g,pad,y,T.WALL);
+        if(!(gapSide===3&&Math.abs(y-GH/2)<2)) put(g,GW-1-pad,y,T.WALL); }
+    }
+  },
+  function zigzag(g,r){
+    let y=2;
+    for(let x=3;x<GW-2;x+=3){
+      const h=2+Math.floor(r()*3);
+      for(let k=0;k<h;k++) put(g,x,clamp(y+k,1,GH-2),T.WALL);
+      y = y<GH/2 ? GH-2-h : 2;
+    }
+  },
+  function honeycomb(g,r){
+    for(let y=2;y<GH-1;y+=2){
+      const off=((y/2)|0)%2?2:0;
+      for(let x=2+off;x<GW-1;x+=4){ if(r()<.9){ put(g,x,y,T.WALL); put(g,x+1,y,T.WALL); } }
+    }
+  },
+  function tunnels(g,r){
+    for(let y=1;y<GH-1;y++) for(let x=1;x<GW-1;x++) g[y][x]=T.WALL;
+    const walkers=3+Math.floor(r()*3);
+    for(let w=0;w<walkers;w++){
+      let x=1+Math.floor(r()*(GW-2)), y=1+Math.floor(r()*(GH-2));
+      const steps=40+Math.floor(r()*50);
+      for(let s=0;s<steps;s++){
+        g[y][x]=T.EMPTY;
+        if(r()<.35) g[clamp(y+1,1,GH-2)][x]=T.EMPTY;
+        const d=Math.floor(r()*4);
+        if(d===0) x++; else if(d===1) x--; else if(d===2) y++; else y--;
+        x=clamp(x,1,GW-2); y=clamp(y,1,GH-2);
+      }
+    }
+  }
+];
+
+/* ---- keep only the biggest connected area so nothing is ever unreachable ---- */
+function largestRegion(g){
+  const seen=Array.from({length:GH},()=>new Array(GW).fill(-1));
+  let best=[], id=0;
+  for(let y=1;y<GH-1;y++) for(let x=1;x<GW-1;x++){
+    if(g[y][x]===T.WALL||seen[y][x]>=0) continue;
+    const q=[[x,y]]; seen[y][x]=id; const cur=[];
+    while(q.length){
+      const [cx,cy]=q.pop(); cur.push([cx,cy]);
+      const nb=[[cx+1,cy],[cx-1,cy],[cx,cy+1],[cx,cy-1]];
+      for(const [nx,ny] of nb){
+        if(!inInterior(nx,ny)||g[ny][nx]===T.WALL||seen[ny][nx]>=0) continue;
+        seen[ny][nx]=id; q.push([nx,ny]);
+      }
+    }
+    if(cur.length>best.length) best=cur;
+    id++;
+  }
+  for(let y=1;y<GH-1;y++) for(let x=1;x<GW-1;x++) g[y][x]=T.WALL;
+  for(const [x,y] of best) g[y][x]=T.EMPTY;
+  return best;
+}
+
+/* ---- map shape for one level ---- */
+function generateWalls(n,variant){
+  const layoutIdx=((n-1)*7 + Math.floor((n-1)/15)*3)%LAYOUTS.length;
+  let grid,cells,attempt=0;
+  do{
+    const seed=(n*7919 + (variant*31+attempt)*104729 + 1013904223)>>>0;
+    const r=mulberry32(seed);
+    grid=blankGrid();
+    LAYOUTS[layoutIdx](grid,r);
+    // a handful of extra tufts, so even the tidy layouts never repeat themselves
+    const extra=1+Math.floor(r()*4);
+    for(let i=0;i<extra;i++) put(grid,1+Math.floor(r()*(GW-2)),1+Math.floor(r()*(GH-2)),T.WALL);
+    cells=largestRegion(grid);
+    attempt++;
+  } while(cells.length<70 && attempt<25);
+
+  if(cells.length<70){ // guaranteed fallback: open field with a few scattered tufts
+    const r=mulberry32((n*40503+variant*7919+11)>>>0);
+    grid=blankGrid();
+    for(let i=0;i<5;i++) put(grid,2+Math.floor(r()*(GW-4)),2+Math.floor(r()*(GH-4)),T.WALL);
+    cells=largestRegion(grid);
+  }
+  return {grid,cells,layoutIdx};
+}
+
+/* Every level gets a variant number chosen so its map shape is unique across
+   all 100. Computed once, the same way every session, so level 26 is level 26
+   whether you reach it in order or jump straight to it. */
+const VARIANT=(function(){
+  const v=new Array(101).fill(0), seen=new Set();
+  for(let n=1;n<=100;n++){
+    let k=0, sig='';
+    for(;k<50;k++){
+      sig=generateWalls(n,k).grid.map(row=>row.join('')).join('|');
+      if(!seen.has(sig)) break;
+    }
+    seen.add(sig); v[n]=k;
+  }
+  return v;
+})();
+
+/* ---- the level builder ---- */
+function buildLevel(n){
+  const built=generateWalls(n,VARIANT[n]||0);
+  const grid=built.grid, cells=built.cells, layoutIdx=built.layoutIdx;
+  const r=mulberry32((n*2654435761 + 97)>>>0);
+  const key=(x,y)=>y*GW+x;
+  const free=new Set(cells.map(([x,y])=>key(x,y)));
+  const isFree=(x,y)=>free.has(key(x,y));
+  const taken=new Set();
+  function pick(filter,tries){
+    tries=tries||220;
+    for(let i=0;i<tries;i++){
+      const c=cells[Math.floor(r()*cells.length)];
+      if(taken.has(key(c[0],c[1]))) continue;
+      if(filter&&!filter(c[0],c[1])) continue;
+      taken.add(key(c[0],c[1]));
+      return {x:c[0]+0.5,y:c[1]+0.5,tx:c[0],ty:c[1]};
+    }
+    for(const c of cells){ if(!taken.has(key(c[0],c[1]))){ taken.add(key(c[0],c[1])); return {x:c[0]+0.5,y:c[1]+0.5,tx:c[0],ty:c[1]}; } }
+    return {x:1.5,y:1.5,tx:1,ty:1};
+  }
+
+  const startLeft = (n%2===1);
+  const start = pick((x)=> startLeft ? x<GW*0.32 : x>GW*0.68);
+  // relax the "far away" rule until a goal tile is found, so cramped maps still work
+  let goal=null;
+  for(const minD of [GW*0.45, GW*0.34, GW*0.24, GW*0.15, 3, 0]){
+    goal = pick((x,y)=> Math.hypot(x-start.tx,y-start.ty) > minD, 200);
+    if(Math.hypot(goal.tx-start.tx,goal.ty-start.ty) > Math.min(minD,3)) break;
+  }
+
+  /* ---- difficulty schedule ---- */
+  const tier = Math.ceil(n/10);                 // 1..10
+  const speedMul = 1 + (n/100)*0.42;
+  const beeCount = clamp(2 + Math.floor(n/5.5), 2, 11);
+  const boneCount = clamp(1 + Math.floor(n/9), 1, 7);
+
+  const allowed=['patrol'];
+  if(n>=4)  allowed.push('wander');
+  if(n>=9)  allowed.push('chaser');
+  if(n>=14) allowed.push('circler');
+  if(n>=19) allowed.push('zigzag');
+  if(n>=24) allowed.push('sleeper');
+  if(n>=44) allowed.push('chaser','wander');   // weight the aggressive ones later
+  if(n>=64) allowed.push('sleeper','zigzag');
+
+  /* ---- bones ---- */
+  const bones=[];
+  for(let i=0;i<boneCount;i++){
+    const b=pick((x,y)=> Math.hypot(x-start.tx,y-start.ty)>2.5 &&
+                          bones.every(o=>Math.hypot(x-o.tx,y-o.ty)>2.4));
+    bones.push({x:b.x,y:b.y,tx:b.tx,ty:b.ty,got:false});
+  }
+
+  /* ---- terrain features (before bees, so nothing spawns inside a flower bed) ---- */
+  const feat=(x,y)=> !(Math.abs(x-start.tx)<2&&Math.abs(y-start.ty)<2) &&
+                     !(x===goal.tx&&y===goal.ty) &&
+                     bones.every(b=>!(b.tx===x&&b.ty===y));
+  if(n>=34){ // honey — sticky, slows Rex
+    const patches=1+Math.floor(r()*2);
+    for(let i=0;i<patches;i++){ const p=pick(feat,60);
+      for(let dy=0;dy<2;dy++) for(let dx=0;dx<2;dx++){
+        const x=p.tx+dx,y=p.ty+dy; if(isFree(x,y)&&feat(x,y)&&grid[y][x]===T.EMPTY) grid[y][x]=T.HONEY; } }
+  }
+  if(n>=39){ // flower beds — bees will not fly over these
+    const patches=1+(n>=60?1:0);
+    for(let i=0;i<patches;i++){ const p=pick(feat,60);
+      for(let dy=0;dy<2;dy++) for(let dx=0;dx<2;dx++){
+        const x=p.tx+dx,y=p.ty+dy; if(isFree(x,y)&&feat(x,y)&&grid[y][x]===T.EMPTY) grid[y][x]=T.FLOWER; } }
+  }
+  let wind=null;
+  if(n>=49){
+    const dirs=[[1,0],[-1,0],[0,1],[0,-1]];
+    const d=dirs[Math.floor(r()*4)];
+    const p=pick(feat,60);
+    wind={dx:d[0],dy:d[1],force:1.0+(n/100)*0.65};
+    const w=3+Math.floor(r()*3), h=2+Math.floor(r()*2);
+    for(let y=p.ty;y<p.ty+h;y++) for(let x=p.tx;x<p.tx+w;x++)
+      if(isFree(x,y)&&feat(x,y)&&grid[y][x]===T.EMPTY) grid[y][x]=T.WIND;
+  }
+
+  /* ---- bees ---- */
+  const bees=[];
+  // tiles a bee may occupy: walkable AND not a flower bed
+  const isOpen=(x,y)=>isFree(x,y)&&grid[y][x]!==T.WALL&&grid[y][x]!==T.FLOWER;
+  // nothing may camp the doghouse or sit on a bone — those spots have to stay winnable
+  const isGoalTile=(x,y)=>x===goal.tx&&y===goal.ty;
+  const isBoneTile=(x,y)=>bones.some(b=>b.tx===x&&b.ty===y);
+  /* Bee spawns relax step by step on cramped maps, but never past the hard
+     floor: well clear of Rex, never on a bone or the doghouse. If even the
+     loosest rule finds nowhere, that bee is simply left out. */
+  function pickBee(){
+    const ladder=[
+      (x,y)=>Math.hypot(x-start.tx,y-start.ty)>4.2&&Math.hypot(x-goal.tx,y-goal.ty)>3.0&&bones.every(b=>Math.hypot(x-b.tx,y-b.ty)>2.3),
+      (x,y)=>Math.hypot(x-start.tx,y-start.ty)>4.0&&Math.hypot(x-goal.tx,y-goal.ty)>2.4&&bones.every(b=>Math.hypot(x-b.tx,y-b.ty)>1.8),
+      (x,y)=>Math.hypot(x-start.tx,y-start.ty)>3.6&&Math.hypot(x-goal.tx,y-goal.ty)>2.0&&!isBoneTile(x,y)&&!isGoalTile(x,y)
+    ];
+    for(const rule of ladder){
+      const opts=cells.filter(([x,y])=>!taken.has(key(x,y))&&isOpen(x,y)&&rule(x,y));
+      if(opts.length){
+        const c=opts[Math.floor(r()*opts.length)];
+        taken.add(key(c[0],c[1]));
+        return {x:c[0]+0.5,y:c[1]+0.5,tx:c[0],ty:c[1]};
+      }
+    }
+    return null;
+  }
+  // the full back-and-forth line a patroller will sweep
+  const lineTiles=(x,y,ax,ay)=>{
+    const out=[[x,y]]; let cx=x,cy=y,k=0;
+    while(isOpen(cx+ax,cy+ay)&&k<GW){ cx+=ax; cy+=ay; out.push([cx,cy]); k++; }
+    cx=x; cy=y; k=0;
+    while(isOpen(cx-ax,cy-ay)&&k<GW){ cx-=ax; cy-=ay; out.push([cx,cy]); k++; }
+    return out;
+  };
+  const tilesClear=ts=>ts.every(([x,y])=>!isGoalTile(x,y)&&!isBoneTile(x,y));
+
+  for(let i=0;i<beeCount;i++){
+    const p=pickBee();
+    if(!p) continue;
+    let type=allowed[Math.floor(r()*allowed.length)];
+    const b={x:p.x,y:p.y,r:0.30,type,vx:0,vy:0,t:r()*10,speed:0,home:{x:p.x,y:p.y},state:'idle',flee:0};
+
+    if(type==='patrol'){
+      const axes = r()<0.5 ? [[1,0],[0,1]] : [[0,1],[1,0]];
+      let chosen=null;
+      for(const [ax,ay] of axes){
+        const ts=lineTiles(p.tx,p.ty,ax,ay);
+        if(ts.length>=4 && tilesClear(ts)){ const s=(r()<.5?1:-1); chosen=[ax*s,ay*s]; break; }
+      }
+      if(!chosen) type=b.type='wander';
+      else { b.speed=(2.05+r()*0.5)*speedMul; b.vx=chosen[0]*b.speed; b.vy=chosen[1]*b.speed; }
+    }
+    if(type==='circler'){
+      let rad=1.1+r()*1.5, ok=false;
+      for(let tryR=0;tryR<4&&!ok;tryR++){
+        ok=true;
+        for(let a=0;a<16;a++){
+          const sx=Math.floor(p.x+Math.cos(a/16*TAU)*rad), sy=Math.floor(p.y+Math.sin(a/16*TAU)*rad);
+          if(!isOpen(sx,sy)||isGoalTile(sx,sy)||isBoneTile(sx,sy)){ ok=false; break; }
+        }
+        if(!ok) rad-=0.35;
+        if(rad<0.7) break;
+      }
+      if(!ok||rad<0.7) type=b.type='wander';
+      else { b.rad=rad; b.ang=r()*TAU; b.w=(1.15+r()*0.7)*speedMul*(r()<.5?1:-1); }
+    }
+    if(type==='wander'){ const a=r()*TAU; b.speed=(1.85+r()*0.55)*speedMul; b.vx=Math.cos(a)*b.speed; b.vy=Math.sin(a)*b.speed; }
+    if(type==='chaser'){ b.speed=(1.55+r()*0.45)*speedMul; b.aggro=4.5+r()*3.5; }
+    if(type==='zigzag'){
+      const axes = r()<0.5 ? [[1,0],[0,1]] : [[0,1],[1,0]];
+      let chosen=null;
+      for(const [ax,ay] of axes){
+        const ts=lineTiles(p.tx,p.ty,ax,ay);
+        if(ts.length>=4 && tilesClear(ts)){ const s=(r()<.5?1:-1); chosen=[ax*s,ay*s]; break; }
+      }
+      if(!chosen) { type=b.type='wander'; const a=r()*TAU; b.speed=(1.85+r()*0.55)*speedMul; b.vx=Math.cos(a)*b.speed; b.vy=Math.sin(a)*b.speed; }
+      else { b.dir=chosen; b.speed=(2.1+r()*0.5)*speedMul; b.amp=0.55+r()*0.5; b.freq=3+r()*2.5; }
+    }
+    if(type==='sleeper'){ b.speed=(2.5+r()*0.6)*speedMul; b.wake=0; b.aggro=3.1+r()*1.4; }
+    bees.push(b);
+  }
+
+  /* ---- hives (spawners) from level 29 ---- */
+  const hives=[];
+  const hiveCount = n>=29 ? clamp(Math.floor((n-19)/22),1,3) : 0;
+  /* A hive never moves, and its sting reach is wide enough to seal a narrow
+     gap, so each one is only kept if every bone and the doghouse are still
+     reachable around it. */
+  function routeSurvives(list){
+    const blocked=(x,y)=>{
+      if(grid[y][x]===T.WALL) return true;
+      const cx=x+0.5, cy=y+0.5;
+      return list.some(h=>Math.hypot(cx-h.x,cy-h.y)<1.15);
+    };
+    if(blocked(start.tx,start.ty)) return false;
+    const seenT=Array.from({length:GH},()=>new Array(GW).fill(false));
+    const q=[[start.tx,start.ty]]; seenT[start.ty][start.tx]=true;
+    while(q.length){
+      const [x,y]=q.pop();
+      for(const [nx,ny] of [[x+1,y],[x-1,y],[x,y+1],[x,y-1]]){
+        if(!inInterior(nx,ny)||seenT[ny][nx]||blocked(nx,ny)) continue;
+        seenT[ny][nx]=true; q.push([nx,ny]);
+      }
+    }
+    return seenT[goal.ty][goal.tx] && bones.every(b=>seenT[b.ty][b.tx]);
+  }
+
+  for(let i=0;i<hiveCount;i++){
+    const opts=cells.filter(([x,y])=>!taken.has(key(x,y))&&isOpen(x,y)
+      &&Math.hypot(x-start.tx,y-start.ty)>5&&Math.hypot(x-goal.tx,y-goal.ty)>3.5
+      &&bones.every(b=>Math.hypot(x-b.tx,y-b.ty)>2.5));
+    if(!opts.length) break;
+    let placed=false;
+    for(let tries=0;tries<opts.length&&!placed;tries++){
+      const c=opts[Math.floor(r()*opts.length)];
+      if(taken.has(key(c[0],c[1]))) continue;
+      const cand={x:c[0]+0.5,y:c[1]+0.5,r:0.42,cd:1.6+r()*1.4,
+                  interval:clamp(4.6-n*0.018,2.2,4.6),cap:n>=70?3:2,spawned:0};
+      if(!routeSurvives(hives.concat([cand]))) continue;
+      taken.add(key(c[0],c[1])); hives.push(cand); placed=true;
+    }
+    if(!placed) break;
+  }
+
+  /* ---- spray pickups ---- */
+  const sprays=[];
+  const sprayCount = n>=22 ? (n>=55 ? (r()<0.75?2:1) : (r()<0.6?1:0)) : 0;
+  for(let i=0;i<sprayCount;i++){
+    const p=pick((x,y)=>Math.hypot(x-start.tx,y-start.ty)>3);
+    sprays.push({x:p.x,y:p.y,got:false});
+  }
+
+  const par = 12 + boneCount*5.5 + beeCount*1.3 + hiveCount*4 + (Math.hypot(goal.tx-start.tx,goal.ty-start.ty))*0.7;
+
+  return {
+    n, name:levelName(n), grid, cells, bees, hives, bones, sprays, wind,
+    start:{x:start.x,y:start.y}, goal:{x:goal.x,y:goal.y},
+    par:+par.toFixed(1), layout:LAYOUTS[layoutIdx].name, tier, speedMul
+  };
+}
+
+/* =====================================================================
+   GAME
+   ===================================================================== */
+const cvs=$('c'), ctx=cvs.getContext('2d');
+let view={scale:40, ox:0, oy:0, w:0, h:0, dpr:1};
+
+const G={
+  state:'menu',        // menu | how | levels | play | pause | win | over | end
+  level:null, n:1,
+  dog:{x:2,y:2,r:0.33,vx:0,vy:0,face:1,step:0,hurt:0},
+  bees:[], hives:[], bones:[], sprays:[],
+  lives:3, time:0, spray:0, opened:false,
+  particles:[], shake:0, last:0, started:false
+};
+
+/* ------------------------------ input ------------------------------ */
+const keys={};
+const stick={active:false, id:null, ox:0, oy:0, x:0, y:0, dx:0, dy:0};
+addEventListener('keydown',e=>{
+  keys[e.key.toLowerCase()]=true;
+  if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(e.key.toLowerCase())) e.preventDefault();
+  if(G.state==='play'&&(e.key==='Escape'||e.key.toLowerCase()==='p')) pauseGame();
+  else if(G.state==='pause'&&(e.key==='Escape'||e.key.toLowerCase()==='p')) resumeGame();
+  if(G.state==='play'&&e.key.toLowerCase()==='r') startLevel(G.n,false);
+});
+addEventListener('keyup',e=>{ keys[e.key.toLowerCase()]=false; });
+
+function pointerPos(e){
+  // a rotated stage has a useless bounding box, so map the point by hand:
+  // stage (sx,sy) -> viewport (W - sy, sx), inverted here
+  if(rotated) return { x:e.clientY, y:window.innerWidth-e.clientX };
+  const rect=cvs.getBoundingClientRect();
+  return {x:e.clientX-rect.left, y:e.clientY-rect.top};
+}
+cvs.addEventListener('pointerdown',e=>{
+  if(G.state!=='play') return;
+  if(stick.active) return;
+  const p=pointerPos(e);
+  stick.active=true; stick.id=e.pointerId; stick.ox=p.x; stick.oy=p.y; stick.x=p.x; stick.y=p.y; stick.dx=0; stick.dy=0;
+  cvs.setPointerCapture&&cvs.setPointerCapture(e.pointerId);
+});
+cvs.addEventListener('pointermove',e=>{
+  if(!stick.active||e.pointerId!==stick.id) return;
+  const p=pointerPos(e); stick.x=p.x; stick.y=p.y;
+  let dx=p.x-stick.ox, dy=p.y-stick.oy;
+  const len=Math.hypot(dx,dy), max=Math.max(38, view.scale*1.1);
+  if(len>max){ // let the stick follow a long drag
+    stick.ox += dx*(1-max/len); stick.oy += dy*(1-max/len);
+    dx*=max/len; dy*=max/len;
+  }
+  stick.dx=dx/max; stick.dy=dy/max;
+});
+function endStick(e){ if(e.pointerId===stick.id||e.type==='pointercancel'){ stick.active=false; stick.id=null; stick.dx=0; stick.dy=0; } }
+cvs.addEventListener('pointerup',endStick);
+cvs.addEventListener('pointercancel',endStick);
+cvs.addEventListener('contextmenu',e=>e.preventDefault());
+
+/* ---------------------------- geometry ---------------------------- */
+function tileAt(x,y){ if(x<0||y<0||x>=GW||y>=GH) return T.WALL; return G.level.grid[y][x]; }
+function tileUnder(fx,fy){ return tileAt(Math.floor(fx),Math.floor(fy)); }
+function solidFor(t,forBee){ return t===T.WALL || (forBee && t===T.FLOWER); }
+function hitsSolid(x,y,rad,forBee){
+  const x0=Math.floor(x-rad), x1=Math.floor(x+rad), y0=Math.floor(y-rad), y1=Math.floor(y+rad);
+  for(let ty=y0;ty<=y1;ty++) for(let tx=x0;tx<=x1;tx++){
+    if(!solidFor(tileAt(tx,ty),forBee)) continue;
+    const nx=clamp(x,tx,tx+1), ny=clamp(y,ty,ty+1);
+    if((nx-x)*(nx-x)+(ny-y)*(ny-y) < rad*rad) return true;
+  }
+  return false;
+}
+function moveEnt(e,dx,dy,forBee){
+  let mx=true,my=true;
+  if(dx!==0){ if(!hitsSolid(e.x+dx,e.y,e.r,forBee)) e.x+=dx; else mx=false; }
+  if(dy!==0){ if(!hitsSolid(e.x,e.y+dy,e.r,forBee)) e.y+=dy; else my=false; }
+  return {mx,my};
+}
+
+/* -------------------------- level lifecycle ------------------------- */
+function startLevel(n,fresh){
+  G.n=n;
+  G.level=buildLevel(n);
+  resetLevel();
+  if(fresh) G.lives=3;
+  G.state='play';
+  showScreens();
+  Audio_.play(n>=60?'danger':'game');
+  Audio_.startBuzz();
+  $('lvChip').textContent='Level '+n;
+  updateHUD();
+}
+function resetLevel(){
+  const L=G.level;
+  G.dog.x=L.start.x; G.dog.y=L.start.y; G.dog.vx=0; G.dog.vy=0; G.dog.face=1; G.dog.step=0; G.dog.hurt=0;
+  G.bones=L.bones.map(b=>({x:b.x,y:b.y,got:false,bob:Math.random()*TAU}));
+  G.sprays=L.sprays.map(s=>({x:s.x,y:s.y,got:false}));
+  G.hives=L.hives.map(h=>Object.assign({},h,{cd:h.cd,alive:0}));
+  G.bees=L.bees.map(b=>Object.assign({},b,{home:{x:b.home.x,y:b.home.y},flee:0,state:'idle',wake:0,fromHive:null,lunge:0,cool:0,returning:false}));
+  G.time=0; G.spray=0; G.opened=false; G.particles=[]; G.shake=0;
+  stick.active=false; stick.dx=0; stick.dy=0;
+}
+
+function loseLife(){
+  Audio_.s_sting();
+  G.lives--; G.shake=0.55; G.dog.hurt=1;
+  burst(G.dog.x,G.dog.y,'#FFE07A',22);
+  updateHUD();
+  if(G.lives<=0){ gameOver(); }
+  else { toast('Ouch! '+G.lives+(G.lives===1?' heart left':' hearts left')); setTimeout(()=>{ if(G.state==='play') resetLevel(); },420); }
+}
+function gameOver(){
+  G.state='over'; Audio_.stopBuzz(); Audio_.play('menu'); Audio_.s_over();
+  showScreens();
+}
+function levelWon(){
+  G.state='win'; Audio_.stopBuzz(); Audio_.s_win(); Audio_.play('menu');
+  const par=G.level.par;
+  const stars = G.time<=par ? 3 : (G.time<=par*1.7 ? 2 : 1);
+  Save.record(G.n,stars,G.time);
+  $('winName').textContent='Level '+G.n+' — '+G.level.name;
+  $('winStars').innerHTML=[0,1,2].map(i=>'<span class="'+(i<stars?'lit':'')+'">★</span>').join('');
+  const b=Save.data().best[G.n];
+  $('winStat').textContent='Time '+G.time.toFixed(1)+'s · par '+par.toFixed(0)+'s · best '+(b?b.t.toFixed(1):G.time.toFixed(1))+'s';
+  $('nextBtn').textContent = G.n>=100 ? 'Finish' : 'Next level';
+  showScreens();
+}
+
+/* --------------------------- update loop --------------------------- */
+function update(dt){
+  const L=G.level, d=G.dog;
+
+  /* --- dog input --- */
+  let ix=0, iy=0;
+  if(keys['arrowleft']||keys['a']) ix-=1;
+  if(keys['arrowright']||keys['d']) ix+=1;
+  if(keys['arrowup']||keys['w']) iy-=1;
+  if(keys['arrowdown']||keys['s']) iy+=1;
+  if(stick.active){ ix+=stick.dx; iy+=stick.dy; }
+  const mag=Math.hypot(ix,iy);
+  if(mag>1){ ix/=mag; iy/=mag; }
+
+  let sp=3.55;
+  const under=tileUnder(d.x,d.y);
+  if(under===T.HONEY) sp*=0.44;
+  if(under===T.FLOWER) sp*=0.92;
+
+  d.vx=ix*sp; d.vy=iy*sp;
+  if(under===T.WIND&&L.wind){ d.vx+=L.wind.dx*L.wind.force; d.vy+=L.wind.dy*L.wind.force; }
+  moveEnt(d,d.vx*dt,d.vy*dt,false);
+  if(ix!==0) d.face=ix>0?1:-1;
+  d.step += Math.hypot(d.vx,d.vy)*dt*3.4;
+  if(d.hurt>0) d.hurt=Math.max(0,d.hurt-dt*2);
+
+  if(under===T.HONEY&&Math.random()<dt*8) puff(d.x,d.y,'#E8A62C');
+  if(under===T.WIND&&Math.random()<dt*10) puff(d.x+ (Math.random()-.5),d.y+(Math.random()-.5),'#CFEAF6');
+
+  /* --- pickups --- */
+  for(const b of G.bones){
+    if(b.got) continue; b.bob+=dt*4;
+    if(Math.hypot(b.x-d.x,b.y-d.y)<0.62){
+      b.got=true; Audio_.s_bone(); burst(b.x,b.y,'#FFF6DC',10); updateHUD();
+      if(G.bones.every(o=>o.got)){ G.opened=true; Audio_.s_open(); toast('The doghouse is open!'); }
+    }
+  }
+  for(const s of G.sprays){
+    if(s.got) continue;
+    if(Math.hypot(s.x-d.x,s.y-d.y)<0.62){ s.got=true; G.spray=6; Audio_.s_spray(); burst(s.x,s.y,'#9FE0FF',16); toast('Bee spray — six seconds!'); }
+  }
+  if(G.spray>0){ G.spray-=dt; if(G.spray<0) G.spray=0; if(Math.random()<dt*14) puff(d.x,d.y,'#9FE0FF'); }
+
+  /* --- goal --- */
+  if(G.opened && Math.hypot(L.goal.x-d.x,L.goal.y-d.y)<0.6){ levelWon(); return; }
+
+  /* --- hives --- */
+  for(const h of G.hives){
+    h.cd-=dt;
+    if(h.cd<=0){
+      h.cd=h.interval;
+      const mine=G.bees.filter(b=>b.fromHive===h).length;
+      if(mine<h.cap && G.bees.length<22){
+        const a=Math.random()*TAU, s=2.0*L.speedMul;
+        const nb={x:h.x,y:h.y,r:0.28,type:'wander',vx:Math.cos(a)*s,vy:Math.sin(a)*s,speed:s,t:0,flee:0,fromHive:h,home:{x:h.x,y:h.y},state:'idle',lunge:0,cool:0,returning:false};
+        if(!hitsSolid(nb.x,nb.y,nb.r,true)) G.bees.push(nb);
+      }
+    }
+    if(Math.hypot(h.x-d.x,h.y-d.y)<h.r+d.r+0.2 && G.spray<=0 && tileUnder(d.x,d.y)!==T.FLOWER){ loseLife(); return; }
+  }
+
+  /* --- bees --- */
+  let nearest=99;
+  for(const b of G.bees){
+    b.t+=dt;
+    const fleeing = G.spray>0;
+    const dxg=d.x-b.x, dyg=d.y-b.y, dg=Math.hypot(dxg,dyg)||1;
+
+    if(fleeing){
+      b.lunge=0;
+      const s=(b.speed||2)*1.15;
+      const res=moveEnt(b,(-dxg/dg)*s*dt,(-dyg/dg)*s*dt,true);
+      if(!res.mx||!res.my){ // slide along walls when cornered
+        moveEnt(b,(-dyg/dg)*s*dt,(dxg/dg)*s*dt,true);
+      }
+    } else if(b.lunge>0){
+      // mid-dart: everything else is on hold
+      b.lunge-=dt;
+      const s=(b.speed||2.2)*1.85;
+      moveEnt(b,(dxg/dg)*s*dt,(dyg/dg)*s*dt,true);
+      if(b.lunge<=0 && b.type==='circler') b.returning=true;
+    } else {
+      switch(b.type){
+        case 'patrol': {
+          const res=moveEnt(b,b.vx*dt,b.vy*dt,true);
+          if(!res.mx) b.vx=-b.vx;
+          if(!res.my) b.vy=-b.vy;
+          break;
+        }
+        case 'wander': {
+          const res=moveEnt(b,b.vx*dt,b.vy*dt,true);
+          if(!res.mx) b.vx=-b.vx*(0.9+Math.random()*0.2);
+          if(!res.my) b.vy=-b.vy*(0.9+Math.random()*0.2);
+          if(Math.random()<dt*0.55){
+            const a=Math.atan2(b.vy,b.vx)+(Math.random()-0.5)*1.6, s=b.speed;
+            b.vx=Math.cos(a)*s; b.vy=Math.sin(a)*s;
+          }
+          break;
+        }
+        case 'chaser': {
+          const s=b.speed*(dg<b.aggro?1.25:0.72);
+          let tx,ty;
+          if(dg<b.aggro && tileUnder(d.x,d.y)!==T.FLOWER){ tx=dxg/dg; ty=dyg/dg; }
+          else { tx=Math.cos(b.t*0.7+b.home.x); ty=Math.sin(b.t*0.55+b.home.y); }
+          const res=moveEnt(b,tx*s*dt,ty*s*dt,true);
+          if(!res.mx&&!res.my) moveEnt(b,(Math.random()-0.5)*s*dt*2,(Math.random()-0.5)*s*dt*2,true);
+          break;
+        }
+        case 'circler': {
+          b.ang+=b.w*dt;
+          const nx=b.home.x+Math.cos(b.ang)*b.rad, ny=b.home.y+Math.sin(b.ang)*b.rad;
+          if(b.returning){                       // drift back onto the ring after a dart
+            const ox=nx-b.x, oy=ny-b.y, od=Math.hypot(ox,oy);
+            if(od<0.14){ b.returning=false; b.x=nx; b.y=ny; }
+            else moveEnt(b,(ox/od)*2.4*dt,(oy/od)*2.4*dt,true);
+          }
+          else if(!hitsSolid(nx,ny,b.r,true)){ b.x=nx; b.y=ny; }
+          else { b.w=-b.w; }
+          break;
+        }
+        case 'zigzag': {
+          const [dx,dy]=b.dir;
+          const px=-dy, py=dx;
+          const wob=Math.cos(b.t*b.freq)*b.amp*b.freq*0.35;
+          const vx=dx*b.speed+px*wob, vy=dy*b.speed+py*wob;
+          const res=moveEnt(b,vx*dt,vy*dt,true);
+          if((!res.mx&&dx!==0)||(!res.my&&dy!==0)){ b.dir=[-dx,-dy]; }
+          else if(!res.mx||!res.my){ b.amp=-b.amp; }
+          break;
+        }
+        case 'sleeper': {
+          if(b.wake>0){
+            b.wake-=dt;
+            const s=b.speed;
+            if(tileUnder(d.x,d.y)===T.FLOWER) b.wake=Math.min(b.wake,0.3);
+            const res=moveEnt(b,(dxg/dg)*s*dt,(dyg/dg)*s*dt,true);
+            if(!res.mx&&!res.my) moveEnt(b,(Math.random()-0.5)*s*dt*2,(Math.random()-0.5)*s*dt*2,true);
+          } else {
+            if(dg<b.aggro && tileUnder(d.x,d.y)!==T.FLOWER){ b.wake=3.4; puff(b.x,b.y,'#FFD34E'); }
+            else {
+              const hx=b.home.x-b.x, hy=b.home.y-b.y, hd=Math.hypot(hx,hy);
+              if(hd>0.15) moveEnt(b,(hx/hd)*1.1*dt,(hy/hd)*1.1*dt,true);
+            }
+          }
+          break;
+        }
+      }
+    }
+    // keep everyone inside the fence no matter what
+    b.x=clamp(b.x,1+b.r,GW-1-b.r); b.y=clamp(b.y,1+b.r,GH-1-b.r);
+
+    const dd=Math.hypot(b.x-d.x,b.y-d.y);
+    if(dd<nearest) nearest=dd;
+
+    const safe = fleeing || tileUnder(d.x,d.y)===T.FLOWER;
+    b.cool=Math.max(0,(b.cool||0)-dt);
+
+    // Bees on a fixed route keep their route — the rest dart at Rex when he
+    // strays inside their patch of air.
+    if(!safe && b.lunge<=0 && b.cool<=0 && dd<ALERT_RANGE &&
+       (b.type==='wander'||b.type==='chaser'||b.type==='circler'||(b.type==='sleeper'&&b.wake>0))){
+      b.lunge=0.36; b.cool=1.15; puff(b.x,b.y,'#E24A3B');
+    }
+
+    if(!safe && dd < STING_REACH){ loseLife(); return; }
+  }
+
+  /* --- swarm drone loudness --- */
+  const intensity = clamp(1.15 - nearest/7, 0, 1) * (G.spray>0?0.35:1);
+  Audio_.setBuzz(intensity*0.9 + Math.min(G.bees.length,10)/10*0.1);
+
+  /* --- particles / shake / clock --- */
+  for(let i=G.particles.length-1;i>=0;i--){
+    const p=G.particles[i];
+    p.x+=p.vx*dt; p.y+=p.vy*dt; p.vy+=p.g*dt; p.life-=dt;
+    if(p.life<=0) G.particles.splice(i,1);
+  }
+  if(G.shake>0) G.shake=Math.max(0,G.shake-dt*1.6);
+  G.time+=dt;
+  $('timeChip').textContent=G.time.toFixed(1)+'s';
+}
+
+function burst(x,y,col,n){ for(let i=0;i<n;i++){ const a=Math.random()*TAU,s=1+Math.random()*3.2;
+  G.particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,g:2.2,life:0.4+Math.random()*0.4,col,r:0.05+Math.random()*0.07}); } }
+function puff(x,y,col){ G.particles.push({x,y,vx:(Math.random()-.5)*0.6,vy:-0.5-Math.random()*0.6,g:0.2,life:0.5,col,r:0.05+Math.random()*0.05}); }
+
+/* ------------------------------ render ----------------------------- */
+function resize(){
+  applyRotation();
+  // when the stage is turned, its width/height are the viewport's swapped
+  const w = rotated ? window.innerHeight : window.innerWidth;
+  const h = rotated ? window.innerWidth  : window.innerHeight;
+  const dpr=Math.min(window.devicePixelRatio||1, 2.5);
+  cvs.width=Math.floor(w*dpr); cvs.height=Math.floor(h*dpr);
+  view.dpr=dpr; view.w=w; view.h=h;
+  view.scale=Math.min(w/GW, h/GH);
+  view.ox=(w-GW*view.scale)/2; view.oy=(h-GH*view.scale)/2;
+}
+addEventListener('resize',resize);
+addEventListener('orientationchange',()=>setTimeout(resize,220));
+
+function draw(){
+  const w=view.w,h=view.h;
+  ctx.setTransform(view.dpr,0,0,view.dpr,0,0);
+  ctx.clearRect(0,0,w,h);
+  // out-of-arena backdrop
+  ctx.fillStyle='#1F1409'; ctx.fillRect(0,0,w,h);
+  if(!G.level){ return; }
+
+  ctx.save();
+  let sx=0,sy=0;
+  if(G.shake>0){ sx=(Math.random()-0.5)*G.shake*14; sy=(Math.random()-0.5)*G.shake*14; }
+  ctx.translate(view.ox+sx, view.oy+sy);
+  ctx.scale(view.scale, view.scale);
+  ctx.lineJoin='round'; ctx.lineCap='round';
+
+  ensureBackdrop();
+  ctx.drawImage(bg, 0, 0, GW, GH);
+  drawLiveTiles();
+  drawGoal();
+  drawBones();
+  drawSprays();
+  drawHives();
+  drawDog();
+  drawBees();
+  drawParticles();
+
+  ctx.restore();
+  if(stick.active&&G.state==='play') drawStick();
+}
+
+/* The meadow and hedges never change during a level, so they are painted once
+   into an offscreen canvas and blitted each frame. */
+const bg=document.createElement('canvas');
+const bgx=bg.getContext('2d');
+let bgKey='';
+function ensureBackdrop(){
+  const key=G.level.n+'|'+Math.round(view.scale*8)+'|'+view.dpr;
+  if(key===bgKey && bg.width>0) return;
+  bgKey=key;
+  const s=Math.max(4, view.scale*view.dpr);
+  bg.width=Math.ceil(GW*s); bg.height=Math.ceil(GH*s);
+  bgx.setTransform(s,0,0,s,0,0);
+  bgx.clearRect(0,0,GW,GH);
+  bgx.lineJoin='round'; bgx.lineCap='round';
+  drawGround(bgx);
+  drawStaticTiles(bgx);
+}
+
+function drawGround(c){
+  const L=G.level;
+  c.fillStyle='#69B23E'; c.fillRect(0,0,GW,GH);
+  const r=mulberry32(L.n*33331);          // same tufts every time, no shimmer
+  c.strokeStyle='rgba(46,120,32,.5)'; c.lineWidth=0.035;
+  for(let i=0;i<230;i++){
+    const x=r()*GW, y=r()*GH;
+    c.beginPath(); c.moveTo(x,y); c.lineTo(x+0.06,y-0.16); c.stroke();
+  }
+  c.fillStyle='rgba(255,255,255,.10)';
+  for(let i=0;i<26;i++){ const x=r()*GW,y=r()*GH; c.beginPath(); c.arc(x,y,0.08,0,TAU); c.fill(); }
+}
+
+function drawStaticTiles(c){
+  const L=G.level;
+  for(let y=0;y<GH;y++) for(let x=0;x<GW;x++){
+    const v=L.grid[y][x];
+    if(v===T.WALL){
+      c.fillStyle='#2F6B23'; c.fillRect(x,y,1,1);
+      c.fillStyle='#3E8A2C'; c.fillRect(x+0.04,y+0.04,0.92,0.82);
+      c.fillStyle='#4FA637';
+      const rr=mulberry32(x*73856093 ^ y*19349663);
+      for(let i=0;i<5;i++){ c.beginPath(); c.arc(x+0.16+rr()*0.68, y+0.16+rr()*0.6, 0.1+rr()*0.07,0,TAU); c.fill(); }
+      c.fillStyle='rgba(0,0,0,.18)'; c.fillRect(x,y+0.86,1,0.14);
+    } else if(v===T.HONEY){
+      c.fillStyle='#D9962A'; c.fillRect(x,y,1,1);
+      c.fillStyle='#F0B646';
+      c.beginPath(); c.ellipse(x+0.5,y+0.5,0.46,0.4,0,0,TAU); c.fill();
+      c.fillStyle='rgba(255,255,255,.35)';
+      c.beginPath(); c.ellipse(x+0.36,y+0.36,0.11,0.07,-0.5,0,TAU); c.fill();
+    }
+  }
+}
+
+/* flower beds sway and wind streaks move, so those are drawn live */
+function drawLiveTiles(){
+  const L=G.level, t=performance.now()/1000;
+  for(let y=0;y<GH;y++) for(let x=0;x<GW;x++){
+    const v=L.grid[y][x];
+    if(v===T.FLOWER){
+      ctx.fillStyle='#7CC24C'; ctx.fillRect(x,y,1,1);
+      const rr=mulberry32(x*2654435761 ^ y*40503);
+      for(let i=0;i<3;i++){
+        const cx=x+0.22+rr()*0.56, cy=y+0.22+rr()*0.56, col=['#FF8FC4','#FFF07A','#C79BFF'][Math.floor(rr()*3)];
+        ctx.fillStyle=col;
+        for(let p=0;p<5;p++){ const a=p/5*TAU+t*0.2;
+          ctx.beginPath(); ctx.arc(cx+Math.cos(a)*0.09, cy+Math.sin(a)*0.09, 0.075,0,TAU); ctx.fill(); }
+        ctx.fillStyle='#FFE24A'; ctx.beginPath(); ctx.arc(cx,cy,0.055,0,TAU); ctx.fill();
+      }
+    } else if(v===T.WIND){
+      const L2=G.level.wind;
+      ctx.fillStyle='rgba(190,230,246,.34)'; ctx.fillRect(x,y,1,1);
+      ctx.strokeStyle='rgba(255,255,255,.75)'; ctx.lineWidth=0.05;
+      for(let i=0;i<2;i++){
+        const prog=((t*0.9+i*0.5+x*0.1+y*0.13)%1);
+        const px=x+(L2.dx? (L2.dx>0?prog:1-prog) : 0.3+i*0.4);
+        const py=y+(L2.dy? (L2.dy>0?prog:1-prog) : 0.3+i*0.4);
+        ctx.beginPath(); ctx.moveTo(px-L2.dx*0.16, py-L2.dy*0.16); ctx.lineTo(px+L2.dx*0.16, py+L2.dy*0.16); ctx.stroke();
+      }
+    }
+  }
+}
+
+function drawGoal(){
+  const g=G.level.goal, t=performance.now()/1000;
+  ctx.save(); ctx.translate(g.x,g.y);
+  if(G.opened){ ctx.fillStyle='rgba(255,211,78,'+(0.18+0.09*Math.sin(t*4))+')';
+    ctx.beginPath(); ctx.arc(0,0,0.95+0.06*Math.sin(t*4),0,TAU); ctx.fill(); }
+  ctx.fillStyle='rgba(0,0,0,.2)'; ctx.beginPath(); ctx.ellipse(0,0.42,0.46,0.13,0,0,TAU); ctx.fill();
+  ctx.fillStyle='#C9A06A'; ctx.fillRect(-0.42,-0.14,0.84,0.56);           // body
+  ctx.fillStyle=G.opened?'#E24A3B':'#8E3A2E';                              // roof
+  ctx.beginPath(); ctx.moveTo(-0.52,-0.1); ctx.lineTo(0,-0.56); ctx.lineTo(0.52,-0.1); ctx.closePath(); ctx.fill();
+  ctx.fillStyle=G.opened?'#3A2510':'#5A4128';                              // doorway
+  ctx.beginPath(); ctx.moveTo(-0.19,0.42); ctx.lineTo(-0.19,0.06); ctx.arc(0,0.06,0.19,Math.PI,0); ctx.lineTo(0.19,0.42); ctx.closePath(); ctx.fill();
+  if(!G.opened){ // padlock hint
+    ctx.fillStyle='#FFD34E'; ctx.fillRect(-0.09,0.14,0.18,0.15);
+    ctx.strokeStyle='#FFD34E'; ctx.lineWidth=0.05;
+    ctx.beginPath(); ctx.arc(0,0.14,0.07,Math.PI,0); ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawBones(){
+  for(const b of G.bones){
+    if(b.got) continue;
+    const bob=Math.sin(b.bob)*0.06;
+    ctx.save(); ctx.translate(b.x,b.y+bob); ctx.rotate(-0.35);
+    ctx.fillStyle='rgba(0,0,0,.18)'; ctx.beginPath(); ctx.ellipse(0,0.24-bob,0.2,0.06,0,0,TAU); ctx.fill();
+    ctx.fillStyle='#FFF6DC'; ctx.strokeStyle='#C8B489'; ctx.lineWidth=0.035;
+    ctx.beginPath(); ctx.roundRect(-0.22,-0.05,0.44,0.1,0.05); ctx.fill(); ctx.stroke();
+    for(const s of [-1,1]) for(const u of [-1,1]){
+      ctx.beginPath(); ctx.arc(s*0.22, u*0.08, 0.085,0,TAU); ctx.fill(); ctx.stroke();
+    }
+    ctx.restore();
+  }
+}
+
+function drawSprays(){
+  const t=performance.now()/1000;
+  for(const s of G.sprays){
+    if(s.got) continue;
+    ctx.save(); ctx.translate(s.x,s.y+Math.sin(t*3+s.x)*0.05);
+    ctx.fillStyle='rgba(0,0,0,.18)'; ctx.beginPath(); ctx.ellipse(0,0.26,0.16,0.05,0,0,TAU); ctx.fill();
+    ctx.fillStyle='#2F8FD4'; ctx.beginPath(); ctx.roundRect(-0.13,-0.16,0.26,0.4,0.06); ctx.fill();
+    ctx.fillStyle='#9FE0FF'; ctx.fillRect(-0.13,-0.02,0.26,0.1);
+    ctx.fillStyle='#D9DEE3'; ctx.fillRect(-0.06,-0.26,0.12,0.1);
+    ctx.restore();
+  }
+}
+
+function drawHives(){
+  const t=performance.now()/1000;
+  for(const h of G.hives){
+    ctx.save(); ctx.translate(h.x,h.y);
+    ctx.fillStyle='rgba(0,0,0,.2)'; ctx.beginPath(); ctx.ellipse(0,0.36,0.34,0.1,0,0,TAU); ctx.fill();
+    const pulse=1+0.03*Math.sin(t*5);
+    ctx.scale(pulse,pulse);
+    for(let i=0;i<4;i++){
+      ctx.fillStyle=i%2?'#C98A21':'#E0A233';
+      ctx.beginPath(); ctx.ellipse(0,-0.2+i*0.14,0.16+i*0.055,0.09,0,0,TAU); ctx.fill();
+    }
+    ctx.fillStyle='#3A2510'; ctx.beginPath(); ctx.arc(0,0.18,0.075,0,TAU); ctx.fill();
+    ctx.restore();
+  }
+}
+
+function drawDog(){
+  const d=G.dog, t=performance.now()/1000;
+  const bounce=Math.abs(Math.sin(d.step))*0.05;
+  ctx.save(); ctx.translate(d.x,d.y-bounce); ctx.scale(d.face,1);
+  ctx.fillStyle='rgba(0,0,0,.24)'; ctx.beginPath(); ctx.ellipse(0,0.3+bounce,0.32,0.1,0,0,TAU); ctx.fill();
+  const coat = d.hurt>0 ? '#F0A79A' : '#D99A4E';
+  const coatD= d.hurt>0 ? '#C97C6D' : '#B87C36';
+  if(G.spray>0){ ctx.strokeStyle='rgba(159,224,255,'+(0.5+0.3*Math.sin(t*9))+')'; ctx.lineWidth=0.07;
+    ctx.beginPath(); ctx.arc(0,0,0.46,0,TAU); ctx.stroke(); }
+  // tail
+  ctx.strokeStyle=coatD; ctx.lineWidth=0.1;
+  ctx.beginPath(); ctx.moveTo(-0.22,-0.02); ctx.quadraticCurveTo(-0.42,-0.12+Math.sin(t*14)*0.1,-0.36,-0.26+Math.sin(t*14)*0.08); ctx.stroke();
+  // legs
+  ctx.strokeStyle=coatD; ctx.lineWidth=0.085;
+  for(const lx of [-0.14,0.13]){
+    const sw=Math.sin(d.step*2+(lx>0?0:Math.PI))*0.09;
+    ctx.beginPath(); ctx.moveTo(lx,0.12); ctx.lineTo(lx+sw,0.3); ctx.stroke();
+  }
+  // body + head
+  ctx.fillStyle=coat; ctx.beginPath(); ctx.ellipse(-0.03,0.02,0.27,0.19,0,0,TAU); ctx.fill();
+  ctx.beginPath(); ctx.arc(0.21,-0.12,0.185,0,TAU); ctx.fill();
+  // ear
+  ctx.fillStyle=coatD; ctx.beginPath(); ctx.ellipse(0.13,-0.24,0.075,0.13,-0.3,0,TAU); ctx.fill();
+  // muzzle
+  ctx.fillStyle='#F3DDB6'; ctx.beginPath(); ctx.ellipse(0.33,-0.06,0.11,0.08,0,0,TAU); ctx.fill();
+  ctx.fillStyle='#2E2016'; ctx.beginPath(); ctx.arc(0.41,-0.08,0.045,0,TAU); ctx.fill();
+  // eye
+  ctx.fillStyle='#2E2016';
+  if(d.hurt>0){ ctx.lineWidth=0.035; ctx.strokeStyle='#2E2016';
+    ctx.beginPath(); ctx.moveTo(0.2,-0.19); ctx.lineTo(0.3,-0.11); ctx.moveTo(0.3,-0.19); ctx.lineTo(0.2,-0.11); ctx.stroke(); }
+  else { ctx.beginPath(); ctx.arc(0.26,-0.15,0.038,0,TAU); ctx.fill(); }
+  // collar
+  ctx.fillStyle='#E24A3B'; ctx.fillRect(0.07,-0.12,0.06,0.16);
+  ctx.restore();
+}
+
+function drawBees(){
+  const t=performance.now()/1000;
+  for(const b of G.bees){
+    ctx.save(); ctx.translate(b.x,b.y);
+    const ang=Math.atan2(b.vy||0.001,b.vx||0.001);
+
+    // sting range, shown only when Rex is near enough to care
+    const near=Math.hypot(b.x-G.dog.x,b.y-G.dog.y);
+    if(G.spray<=0 && near<2.4 && G.state==='play'){
+      const heat=clamp((2.4-near)/1.3,0,1);
+      ctx.strokeStyle='rgba(226,74,59,'+(0.12+heat*0.5)+')';
+      ctx.lineWidth=0.035+heat*0.03;
+      ctx.setLineDash([0.12,0.1]); ctx.lineDashOffset=-t*0.7;
+      ctx.beginPath(); ctx.arc(0,0,STING_REACH,0,TAU); ctx.stroke();
+      ctx.setLineDash([]);
+      if(b.lunge>0){
+        ctx.fillStyle='rgba(226,74,59,.18)';
+        ctx.beginPath(); ctx.arc(0,0,STING_REACH,0,TAU); ctx.fill();
+      }
+    }
+
+    ctx.fillStyle='rgba(0,0,0,.16)'; ctx.beginPath(); ctx.ellipse(0,0.26,0.16,0.05,0,0,TAU); ctx.fill();
+    // wings
+    const flap=0.5+0.5*Math.abs(Math.sin(t*38+b.x*3));
+    ctx.fillStyle='rgba(233,248,255,.72)';
+    ctx.beginPath(); ctx.ellipse(-0.02,-0.16,0.13,0.06*flap+0.03,-0.5,0,TAU); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(0.02,-0.16,0.13,0.06*flap+0.03, 0.5,0,TAU); ctx.fill();
+    ctx.rotate(Math.abs(b.vx)+Math.abs(b.vy)>0.05?ang*0.12:0);
+    // body
+    const sleeping = b.type==='sleeper'&&!(b.wake>0);
+    ctx.fillStyle=sleeping?'#C9A64B':'#FFC72C';
+    ctx.beginPath(); ctx.ellipse(0,0,0.22,0.165,0,0,TAU); ctx.fill();
+    ctx.fillStyle='#2E2016';
+    ctx.beginPath(); ctx.ellipse(0.02,0,0.045,0.15,0,0,TAU); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(-0.1,0,0.04,0.13,0,0,TAU); ctx.fill();
+    ctx.beginPath(); ctx.arc(0.17,0,0.085,0,TAU); ctx.fill();           // head
+    ctx.strokeStyle='#2E2016'; ctx.lineWidth=0.022;                      // antennae
+    ctx.beginPath(); ctx.moveTo(0.2,-0.06); ctx.lineTo(0.28,-0.15); ctx.stroke();
+    if(G.spray>0){ // panic mark
+      ctx.fillStyle='#9FE0FF';
+      ctx.fillRect(-0.03,-0.42,0.06,0.14);
+      ctx.beginPath(); ctx.arc(0,-0.24,0.035,0,TAU); ctx.fill();
+    } else if(sleeping){ // little sleep bubbles
+      ctx.fillStyle='rgba(255,246,220,.85)';
+      for(let i=0;i<3;i++){ ctx.beginPath(); ctx.arc(0.1+i*0.09,-0.24-i*0.09,0.028+i*0.016,0,TAU); ctx.fill(); }
+    }
+    else if(b.type==='chaser'||(b.type==='sleeper'&&b.wake>0)){
+      ctx.fillStyle='#E24A3B'; ctx.beginPath(); ctx.arc(0.23,-0.13,0.05,0,TAU); ctx.fill();
+    }
+    ctx.restore();
+  }
+}
+
+function drawParticles(){
+  for(const p of G.particles){
+    ctx.globalAlpha=clamp(p.life*1.8,0,1);
+    ctx.fillStyle=p.col;
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,TAU); ctx.fill();
+  }
+  ctx.globalAlpha=1;
+}
+
+function drawStick(){
+  ctx.setTransform(view.dpr,0,0,view.dpr,0,0);
+  const R=Math.max(38,view.scale*1.1);
+  ctx.strokeStyle='rgba(255,243,214,.28)'; ctx.lineWidth=3;
+  ctx.beginPath(); ctx.arc(stick.ox,stick.oy,R,0,TAU); ctx.stroke();
+  ctx.fillStyle='rgba(255,211,78,.45)';
+  ctx.beginPath(); ctx.arc(stick.ox+stick.dx*R, stick.oy+stick.dy*R, R*0.42,0,TAU); ctx.fill();
+}
+
+/* ------------------------------- loop ------------------------------ */
+function frame(ts){
+  const dt=Math.min(0.033,(ts-G.last)/1000||0.016);
+  G.last=ts;
+  if(G.state==='play') update(dt);
+  draw();
+  requestAnimationFrame(frame);
+}
+
+/* ------------------------------- HUD ------------------------------- */
+let toastTimer=null;
+function toast(msg){
+  const el=$('toast'); el.textContent=msg; el.classList.add('on');
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.classList.remove('on'),1600);
+}
+function updateHUD(){
+  const got=G.bones.filter(b=>b.got).length;
+  $('boneChip').innerHTML='🦴 <b>'+got+'/'+G.bones.length+'</b>';
+  const lv=clamp(G.lives|0,0,3);
+  $('hearts').textContent='❤'.repeat(lv)+'♡'.repeat(3-lv);
+}
+
+/* ---------------------------- screen flow --------------------------- */
+function showScreens(){
+  show($('scMenu'),   G.state==='menu');
+  show($('scHow'),    G.state==='how');
+  show($('scLevels'), G.state==='levels');
+  show($('scPause'),  G.state==='pause');
+  show($('scWin'),    G.state==='win');
+  show($('scOver'),   G.state==='over');
+  show($('scEnd'),    G.state==='end');
+  show($('hud'),      G.state==='play'||G.state==='pause');
+  show($('fsBtn'),    G.state==='menu');
+  // banner belongs on the menu and the game-over screen only, never over play
+  if(G.state==='menu') Ads.banner('adMenu');
+  else if(G.state==='over') Ads.banner('adOver');
+  else Ads.hideBanner();
+}
+function goMenu(){
+  G.state='menu'; Audio_.stopBuzz(); Audio_.play('menu'); showScreens();
+}
+function pauseGame(){
+  if(G.state!=='play') return;
+  G.state='pause'; Audio_.setBuzz(0);
+  stick.active=false; stick.id=null; stick.dx=0; stick.dy=0;
+  for(const k in keys) keys[k]=false;
+  $('pauseSub').textContent='Level '+G.n+' — '+G.level.name;
+  showScreens();
+}
+function resumeGame(){ if(G.state!=='pause') return; G.state='play'; G.last=performance.now(); showScreens(); }
+
+function buildLevelGrid(){
+  const grid=$('lvGrid'); grid.innerHTML='';
+  const data=Save.data();
+  for(let i=1;i<=100;i++){
+    const b=document.createElement('button');
+    const best=data.best[i];
+    const locked=i>data.unlocked;
+    b.className='cell'+(locked?' locked':'')+(best?' done':'');
+    b.innerHTML='<span>'+i+'</span><span class="st">'+(best?'★'.repeat(best.s):(locked?'🔒':'·'))+'</span>';
+    b.disabled=locked;
+    if(!locked) b.onclick=()=>{ Audio_.s_click(); startLevel(i,true); };
+    grid.appendChild(b);
+  }
+  const cleared=Object.keys(data.best).length;
+  $('progressLine').textContent=cleared+' of 100 cleared';
+}
+
+/* --------------------------- orientation ---------------------------
+   The game is always landscape. Two ways to get there:
+     1. Real rotation — fullscreen + Screen Orientation lock. Works on
+        Android browsers and in an app WebView.
+     2. If the browser won't lock (iOS Safari has no such API), turn the
+        whole stage 90 degrees in CSS instead, so the game still fills the
+        screen sideways. The player is never asked to do anything.
+   ------------------------------------------------------------------- */
+const isTouch = matchMedia('(hover:none) and (pointer:coarse)').matches || 'ontouchstart' in window;
+let rotated=false;
+
+function applyRotation(){
+  const portrait = window.innerHeight > window.innerWidth;
+  const want = isTouch && portrait;
+  const st=$('stage');
+  rotated = want;
+  if(want){
+    // rotate about the top-left, then slide back into view
+    st.style.right='auto'; st.style.bottom='auto';
+    st.style.width  = window.innerHeight+'px';
+    st.style.height = window.innerWidth+'px';
+    st.style.transformOrigin='0 0';
+    st.style.transform='translateX('+window.innerWidth+'px) rotate(90deg)';
+  } else {
+    st.style.right=''; st.style.bottom='';
+    st.style.width=''; st.style.height='';
+    st.style.transform=''; st.style.transformOrigin='';
+  }
+}
+
+async function goFullscreenLandscape(){
+  try{
+    const el=document.documentElement;
+    if(!document.fullscreenElement){
+      if(el.requestFullscreen) await el.requestFullscreen({navigationUI:'hide'});
+      else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    }
+  }catch(e){}
+  try{
+    // 'landscape' accepts either side, so the player can hold it whichever way
+    if(screen.orientation && screen.orientation.lock) await screen.orientation.lock('landscape');
+  }catch(e){ /* no lock available — the CSS rotation above handles it */ }
+  setTimeout(resize,260);
+}
+
+/* ------------------------------ wiring ----------------------------- */
+function bind(id,fn){ const el=$(id); if(el) el.addEventListener('click',e=>{ e.preventDefault(); Audio_.s_click(); fn(); }); }
+
+bind('playBtn',()=>{ Audio_.init(); Audio_.resume(); if(isTouch) goFullscreenLandscape();
+  const u=Save.data().unlocked; startLevel(clamp(u,1,100),true); });
+bind('levelsBtn',()=>{ Audio_.init(); buildLevelGrid(); G.state='levels'; showScreens(); });
+bind('lvBack',()=>goMenu());
+bind('howBtn',()=>{ Audio_.init(); G.state='how'; showScreens(); });
+bind('howBack',()=>goMenu());
+bind('pauseBtn',()=>pauseGame());
+bind('resumeBtn',()=>resumeGame());
+bind('pRetry',()=>{ resetLevel(); G.state='play'; showScreens(); });
+bind('pMenu',()=>goMenu());
+bind('wRetry',()=>{ startLevel(G.n,true); });
+bind('wMenu',()=>{ buildLevelGrid(); G.state='levels'; showScreens(); });
+bind('nextBtn',()=>{
+  if(G.n>=100){ const d=Save.data();
+    const stars=Object.values(d.best).reduce((a,b)=>a+b.s,0);
+    $('endStat').textContent=stars+' of 300 stars collected';
+    G.state='end'; showScreens(); return; }
+  const next=G.n+1;
+  const run=()=>startLevel(next,true);
+  if(next%5===0) Ads.interstitial(run); else run();
+});
+bind('endMenu',()=>goMenu());
+bind('oRetry',()=>startLevel(G.n,true));
+bind('oMenu',()=>goMenu());
+bind('reviveBtn',()=>{
+  const btn=$('reviveBtn'); btn.disabled=true; btn.textContent='Loading ad…';
+  Ads.rewarded((granted)=>{
+    btn.disabled=false; btn.textContent='Watch ad for a heart';
+    if(granted){
+      G.lives=1; Audio_.s_heart(); resetLevel(); G.state='play'; showScreens();
+      Audio_.play(G.n>=60?'danger':'game'); Audio_.startBuzz(); updateHUD();
+      toast('One heart back — go!');
+    } else {
+      toast('Ad closed early — no heart awarded');
+    }
+  });
+});
+function soundLabel(){ const t=Audio_.on?'Sound on':'Sound off'; $('soundBtn').textContent=t; $('pSound').textContent=t; }
+bind('soundBtn',()=>{ Audio_.init(); Audio_.setOn(!Audio_.on); soundLabel(); });
+bind('pSound',()=>{ Audio_.setOn(!Audio_.on); soundLabel(); });
+bind('fsBtn',()=>goFullscreenLandscape());
+
+document.addEventListener('visibilitychange',()=>{ if(document.hidden&&G.state==='play') pauseGame(); });
+addEventListener('pointerdown',()=>{ Audio_.init(); Audio_.resume(); },{once:true});
+
+/* ------------------------------- boot ------------------------------ */
+(async function boot(){
+  await Save.load();
+  G.level=buildLevel(1);      // something to render behind the menu
+  G.bones=G.level.bones.map(b=>({x:b.x,y:b.y,got:false,bob:0}));
+  G.sprays=[]; G.hives=[]; G.bees=G.level.bees.map(b=>Object.assign({},b,{home:{x:b.home.x,y:b.home.y},lunge:0,cool:0}));
+  G.dog.x=G.level.start.x; G.dog.y=G.level.start.y;
+  if(Ads.mode!=='web'){ const b=document.querySelectorAll('.adbox');
+    for(let i=0;i<b.length;i++) b[i].style.display='none'; }
+  Ads.applyCaps();
+  resize(); soundLabel(); showScreens();
+  G.last=performance.now();
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

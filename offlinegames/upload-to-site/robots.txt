@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# Editing tools and the readable master catalog must never be indexed.
+Disallow: /admin-hash-tool.html
+Disallow: /catalog.source.js
+Disallow: /site-admin.js
+Disallow: /admin-forms.js
+Disallow: /admin-export.js
+Disallow: /build-catalog.js
+
+Sitemap: https://offlinegames.art/sitemap.xml

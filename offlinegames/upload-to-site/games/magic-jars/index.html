@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Jar Color Match.">
+<title>Magic Jars</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+:root{
+  --bg-base:#1b1f2e;
+  --bg-base-2:#20263a;
+  --glass:rgba(255,255,255,0.07);
+  --glass-edge:rgba(255,255,255,0.18);
+  --gold:#ffc93c;
+  --gold-dim:#c98f2e;
+  --cream:#fbf5ff;
+  --cream-dim:#c4b9dd;
+  --danger:#ff5d7a;
+  --amber:#ffb703;
+  --success:#3de6a8;
+  --radius-lg:22px;
+  --radius-md:14px;
+}
+
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0;
+  min-height:100vh;
+  background:linear-gradient(180deg, var(--bg-base), var(--bg-base-2));
+  color:var(--cream);
+  font-family:'Manrope',sans-serif;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow-x:hidden;
+  position:relative;
+}
+
+.app{
+  width:100%;
+  max-width:640px;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:28px 20px 40px;
+  position:relative;
+  z-index:1;
+}
+
+.screen{width:100%;display:none;flex-direction:column;align-items:center;animation:fadeIn .45s ease both;}
+.screen.active{display:flex;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+button{font-family:'Manrope',sans-serif;cursor:pointer;border:none;outline:none;background:none;}
+button:focus-visible, .tube:focus-visible, .shop-item:focus-visible{outline:2px solid var(--gold);outline-offset:3px;}
+
+.btn{font-weight:700;font-size:15px;letter-spacing:.02em;padding:14px 30px;border-radius:100px;transition:transform .15s ease, box-shadow .15s ease, background .15s ease;}
+.btn-primary{background:linear-gradient(180deg,#ffe1a8,var(--gold));color:#2a1704;box-shadow:0 10px 24px -8px rgba(255,201,60,0.55);}
+.btn-primary:hover{transform:translateY(-2px);}
+.btn-primary:disabled{opacity:.4;cursor:default;transform:none;box-shadow:none;}
+.btn-ghost{background:var(--glass);color:var(--cream);border:1px solid var(--glass-edge);backdrop-filter:blur(10px);}
+.btn-ghost:hover{background:rgba(255,255,255,0.14);}
+.btn-sm{padding:9px 18px;font-size:13px;border-radius:100px;}
+.btn-ghost:disabled{opacity:.5;cursor:default;transform:none;}
+
+/* ---------- coin chip (shared) ---------- */
+.coin-chip{display:flex;align-items:center;gap:7px;background:var(--glass);border:1px solid var(--glass-edge);border-radius:100px;padding:7px 14px 7px 8px;backdrop-filter:blur(10px);}
+.coin-icon{width:22px;height:22px;flex:none;display:inline-flex;filter:drop-shadow(0 3px 6px rgba(255,201,60,.5));}
+.coin-icon svg{width:100%;height:100%;display:block;}
+.coin-chip b{font-size:14px;font-weight:800;color:var(--gold);}
+
+/* ---------- start screen ---------- */
+.top-bar{width:100%;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.brand-mark{width:78px;height:92px;margin:6px 0 16px;filter:drop-shadow(0 12px 24px rgba(255,61,154,.3));}
+.title{font-family:'Fraunces',serif;font-weight:600;font-size:52px;letter-spacing:-0.01em;margin:0;background:linear-gradient(180deg,#fff,#cbb387 140%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.subtitle{color:var(--cream-dim);font-size:15px;margin:8px 0 34px;text-align:center;max-width:340px;line-height:1.5;}
+.menu-actions{display:flex;flex-direction:column;gap:12px;width:100%;max-width:260px;}
+.menu-actions .btn{width:100%;}
+
+.howto{margin-top:38px;width:100%;max-width:400px;border-top:1px solid var(--glass-edge);padding-top:22px;}
+.howto-title{font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--gold-dim);font-weight:700;margin-bottom:12px;}
+.howto-row{display:flex;gap:12px;align-items:flex-start;font-size:13.5px;color:var(--cream-dim);line-height:1.5;margin-bottom:10px;}
+.howto-num{flex:none;width:20px;height:20px;border-radius:50%;background:var(--glass);border:1px solid var(--glass-edge);font-size:11px;font-weight:700;color:var(--gold);display:flex;align-items:center;justify-content:center;}
+
+/* ---------- level select ---------- */
+.panel-header{width:100%;display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;}
+.panel-title{font-family:'Fraunces',serif;font-size:26px;font-weight:600;}
+.level-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;width:100%;}
+.level-tile{aspect-ratio:1;border-radius:var(--radius-md);background:var(--glass);border:1px solid var(--glass-edge);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:19px;font-weight:600;color:var(--cream);transition:transform .15s ease, border-color .15s ease;backdrop-filter:blur(8px);}
+.level-tile.locked{color:var(--cream-dim);opacity:.45;cursor:default;}
+.level-tile.done{border-color:var(--success);color:var(--success);}
+.level-tile:not(.locked):hover{transform:translateY(-3px);border-color:var(--gold);}
+.level-tile svg{width:16px;height:16px;}
+.level-tile.locked svg{width:19px;height:19px;}
+
+/* ---------- shop screen ---------- */
+.shop-balance{width:100%;display:flex;justify-content:center;margin-bottom:22px;}
+.shop-balance .coin-chip{padding:10px 22px 10px 12px;}
+.shop-balance .coin-chip b{font-size:18px;}
+.shop-balance .coin-icon{width:28px;height:28px;}
+.shop-list{width:100%;display:flex;flex-direction:column;gap:14px;}
+.shop-item{width:100%;display:flex;align-items:center;gap:16px;background:var(--glass);border:1px solid var(--glass-edge);border-radius:var(--radius-md);padding:16px;backdrop-filter:blur(10px);}
+.shop-item-icon{flex:none;width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;}
+.shop-item-icon svg{width:26px;height:26px;}
+.shop-item-body{flex:1;min-width:0;}
+.shop-item-name{font-weight:700;font-size:15px;margin-bottom:3px;}
+.shop-item-desc{font-size:12.5px;color:var(--cream-dim);line-height:1.4;}
+.shop-item-buy{flex:none;display:flex;flex-direction:column;align-items:center;gap:5px;}
+.shop-item-price{display:flex;align-items:center;gap:4px;font-size:12.5px;font-weight:800;color:var(--gold);}
+.shop-note{margin-top:18px;font-size:12px;color:var(--cream-dim);text-align:center;max-width:340px;line-height:1.5;}
+.shop-section-title{width:100%;font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--gold-dim);font-weight:700;margin:26px 0 12px;}
+.shop-item-ad{border-color:rgba(61,230,168,.35);}
+.shop-item-ad .shop-item-icon{color:var(--success);}
+.shop-item-price-ad{font-size:11.5px;font-weight:700;color:var(--success);letter-spacing:.02em;}
+
+/* ---------- game screen ---------- */
+.game-header{width:100%;display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;gap:8px;}
+.icon-btn{width:38px;height:38px;border-radius:50%;background:var(--glass);border:1px solid var(--glass-edge);display:flex;align-items:center;justify-content:center;color:var(--cream);transition:background .15s ease;backdrop-filter:blur(8px);flex:none;}
+.icon-btn:hover{background:rgba(255,255,255,0.16);}
+.icon-btn:disabled{opacity:.35;cursor:default;}
+.icon-btn svg{width:17px;height:17px;}
+
+.hud{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;}
+.hud-chip{background:var(--glass);border:1px solid var(--glass-edge);border-radius:100px;padding:8px 16px;font-size:12.5px;font-weight:700;letter-spacing:.03em;color:var(--cream-dim);backdrop-filter:blur(8px);}
+.hud-chip b{color:var(--gold);font-weight:800;}
+.hud-actions{display:flex;gap:8px;}
+
+.level-caption{font-family:'Fraunces',serif;font-size:22px;font-weight:600;margin:14px 0 4px;color:var(--cream);}
+.level-rule{color:var(--cream-dim);font-size:13px;text-align:center;max-width:340px;margin:0 0 6px;}
+
+/* tubes */
+.tubes-wrap{display:flex;flex-wrap:wrap;gap:26px 20px;justify-content:center;align-items:flex-end;width:100%;padding:30px 6px 10px;min-height:280px;}
+
+.tube{--w:60px;--h:200px;position:relative;width:var(--w);height:var(--h);cursor:pointer;transition:transform .22s cubic-bezier(.34,1.56,.64,1);}
+.tube-badge{
+  position:absolute;top:-30px;left:50%;transform:translateX(-50%);
+  width:24px;height:24px;border-radius:50%;
+  background:var(--glass);border:1px solid var(--glass-edge);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--cream-dim);
+  transition:background .15s ease, border-color .15s ease, color .15s ease;
+}
+.tube-badge svg{width:12px;height:12px;}
+.tube.solved .tube-badge{background:rgba(61,230,168,.2);border-color:var(--success);color:var(--success);}
+.tube.hinted .tube-body{border-color:var(--gold);box-shadow:0 0 0 4px rgba(255,201,60,.28), 0 14px 24px -12px rgba(0,0,0,.6);animation:hintPulse 1s ease-in-out 2;}
+@keyframes hintPulse{0%,100%{filter:brightness(1);}50%{filter:brightness(1.25);}}
+
+.tube-cap{position:absolute;top:-6px; left:-3px; right:-3px;height:9px;border-radius:6px;background:linear-gradient(180deg,#3a3268,#241c4d);border:1px solid var(--glass-edge);z-index:2;}
+.tube-body{position:absolute;inset:0;border-radius:8px 8px 30px 30px;background:linear-gradient(100deg, rgba(255,255,255,.10), rgba(255,255,255,.02) 40%, rgba(255,255,255,.07));border:2px solid var(--glass-edge);overflow:hidden;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15), 0 14px 20px -14px rgba(0,0,0,.6);}
+.tube-body::after{content:'';position:absolute;top:6px; left:9px;width:8px; height:78%;border-radius:6px;background:linear-gradient(180deg, rgba(255,255,255,.5), rgba(255,255,255,0));opacity:.45;pointer-events:none;}
+
+.segment{position:absolute;left:2px; right:2px;border-radius:0;transition:transform .18s ease;}
+.segment::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg, rgba(255,255,255,.32), rgba(255,255,255,0) 40%);border-radius:inherit;}
+@keyframes popIn{from{transform:scaleY(0);transform-origin:bottom;}to{transform:scaleY(1);}}
+.segment.new{animation:popIn .28s ease both;}
+@keyframes tubeAppear{from{opacity:0;transform:translateY(14px) scale(.9);}to{opacity:1;transform:translateY(0) scale(1);}}
+.tube.appear{animation:tubeAppear .35s cubic-bezier(.34,1.56,.64,1) both;}
+
+.tube.selected{transform:translateY(-16px);}
+.tube.selected .tube-body{border-color:var(--gold);box-shadow:0 0 0 3px rgba(255,201,60,.25), 0 14px 24px -12px rgba(0,0,0,.6);}
+.tube.shake{animation:shake .32s ease;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+
+.game-footer{display:flex;gap:12px;margin-top:20px;}
+
+/* ---------- win overlay ---------- */
+.overlay{position:fixed;inset:0;background:rgba(9,6,20,.72);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s ease;z-index:20;}
+.overlay.show{opacity:1;pointer-events:auto;}
+.win-card{background:rgba(26,16,48,.92);border:1px solid var(--glass-edge);border-radius:var(--radius-lg);padding:36px 30px;width:min(320px,86vw);text-align:center;transform:scale(.9) translateY(10px);transition:transform .3s cubic-bezier(.34,1.56,.64,1);box-shadow:0 30px 60px -20px rgba(0,0,0,.6);}
+.overlay.show .win-card{transform:scale(1) translateY(0);}
+.win-glyph{width:56px;height:56px;margin:0 auto 16px;border-radius:50%;background:radial-gradient(circle at 35% 30%, #fff2d6, var(--gold) 70%);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 26px -8px rgba(255,201,60,.6);}
+.win-title{font-family:'Fraunces',serif;font-size:26px;font-weight:600;margin:0 0 6px;}
+.win-sub{color:var(--cream-dim);font-size:13.5px;margin:0 0 14px;}
+.win-reward{display:flex;align-items:center;justify-content:center;gap:8px;margin:0 0 24px;font-weight:800;font-size:15px;color:var(--gold);}
+.win-reward .coin-icon{width:20px;height:20px;}
+.win-actions{display:flex;flex-direction:column;gap:10px;}
+
+@media (max-width:420px){
+  .title{font-size:42px;}
+  .tube{--w:48px;--h:172px;}
+  .tubes-wrap{gap:24px 12px;}
+}
+
+@media (prefers-reduced-motion: reduce){*{animation-duration:.001s !important; transition-duration:.001s !important;}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="coinFace" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#fff6d9"></stop>
+      <stop offset="45%" stop-color="#ffd25c"></stop>
+      <stop offset="100%" stop-color="#d98f1f"></stop>
+    </radialGradient>
+  </defs>
+</svg>
+<div class="app">
+
+  <!-- START SCREEN -->
+  <section class="screen active" id="screen-start">
+    <div class="top-bar">
+      <div class="coin-chip" id="startCoinChip">
+        <div class="coin-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" fill="url(#coinFace)" stroke="#a5670f" stroke-width="1.4"></circle><circle cx="12" cy="12" r="7.6" fill="none" stroke="#a5670f" stroke-width="1" opacity="0.45"></circle><path d="M12 7.3l1.28 2.6 2.86.42-2.07 2.02.49 2.85L12 13.8l-2.56 1.35.49-2.85-2.07-2.02 2.86-.42L12 7.3Z" fill="#a5670f" opacity="0.75"></path></svg></div>
+        <b id="startCoins">300</b>
+      </div>
+      <button class="icon-btn" id="soundToggle" aria-label="Toggle sound">
+        <svg id="soundIconOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 5 6 9H3v6h3l5 4z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7"></path><path d="M18.5 6a9 9 0 0 1 0 12"></path></svg>
+        <svg id="soundIconOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none"><path d="M11 5 6 9H3v6h3l5 4z"></path><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+      </button>
+    </div>
+
+    <svg class="brand-mark" viewBox="0 0 78 92" fill="none">
+      <path d="M18 8h42l-4 12v52a14 14 0 0 1-14 14H36a14 14 0 0 1-14-14V20L18 8Z" stroke="#ffd27a" stroke-width="3" fill="rgba(255,201,60,0.08)"></path>
+      <path d="M22 58c4 4 10 6 17 6s13-2 17-6v14a12 12 0 0 1-12 12H34a12 12 0 0 1-12-12V58Z" fill="#ff8fd1" opacity="0.9"></path>
+      <line x1="14" y1="8" x2="64" y2="8" stroke="#ffd27a" stroke-width="4" stroke-linecap="round"></line>
+    </svg>
+
+    <h1 class="title">Magic Jars</h1>
+    <p class="subtitle">Sort each color into its own tube. Pour onto empty space or onto a matching color — clear every tube down to one pure shade.</p>
+
+    <div class="menu-actions">
+      <button class="btn btn-primary" id="btnPlay">Start </button>
+      <button class="btn btn-ghost" id="btnLevels">Choose a Level</button>
+    </div>
+
+    <div class="howto">
+      <div class="howto-title">How it works</div>
+      <div class="howto-row"><span class="howto-num">1</span>Tap a tube to lift its top color, then tap another tube to pour it in.</div>
+      <div class="howto-row"><span class="howto-num">2</span>A pour only lands on an empty tube or on a matching color on top.</div>
+      <div class="howto-row"><span class="howto-num">3</span>Clear a level to earn 50 coins — spend them in the shop for a boost.</div>
+    </div>
+  </section>
+
+  <!-- LEVEL SELECT -->
+  <section class="screen" id="screen-levels">
+    <div class="panel-header">
+      <button class="icon-btn" id="btnLevelsBack" aria-label="Back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg>
+      </button>
+      <div class="panel-title">Levels</div>
+      <div style="width:38px"></div>
+    </div>
+    <div class="level-grid" id="levelGrid"></div>
+  </section>
+
+  <!-- SHOP SCREEN -->
+  <section class="screen" id="screen-shop">
+    <div class="panel-header">
+      <button class="icon-btn" id="btnShopBack" aria-label="Back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg>
+      </button>
+      <div class="panel-title">Shop</div>
+      <div style="width:38px"></div>
+    </div>
+    <div class="shop-balance">
+      <div class="coin-chip"><div class="coin-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" fill="url(#coinFace)" stroke="#a5670f" stroke-width="1.4"></circle><circle cx="12" cy="12" r="7.6" fill="none" stroke="#a5670f" stroke-width="1" opacity="0.45"></circle><path d="M12 7.3l1.28 2.6 2.86.42-2.07 2.02.49 2.85L12 13.8l-2.56 1.35.49-2.85-2.07-2.02 2.86-.42L12 7.3Z" fill="#a5670f" opacity="0.75"></path></svg></div><b id="shopCoins">300</b></div>
+    </div>
+    <div class="shop-list" id="shopList"></div>
+    <div class="shop-section-title">Free rewards</div>
+    <div class="shop-list" id="adRewardsList"></div>
+    <p class="shop-note">Boosts apply to the level you're currently pouring.</p>
+  </section>
+
+  <!-- GAME SCREEN -->
+  <section class="screen" id="screen-game">
+    <div class="game-header">
+      <button class="icon-btn" id="btnGameBack" aria-label="Back to menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg>
+      </button>
+      <div class="hud">
+        <div class="hud-chip">POURS <b id="hudMoves">0</b></div>
+        <div class="coin-chip"><div class="coin-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" fill="url(#coinFace)" stroke="#a5670f" stroke-width="1.4"></circle><circle cx="12" cy="12" r="7.6" fill="none" stroke="#a5670f" stroke-width="1" opacity="0.45"></circle><path d="M12 7.3l1.28 2.6 2.86.42-2.07 2.02.49 2.85L12 13.8l-2.56 1.35.49-2.85-2.07-2.02 2.86-.42L12 7.3Z" fill="#a5670f" opacity="0.75"></path></svg></div><b id="hudCoins">300</b></div>
+      </div>
+      <div class="hud-actions">
+        <button class="icon-btn" id="btnShop" aria-label="Open shop">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1.5-5h15L21 9"></path><path d="M3 9h18v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9Z"></path><path d="M9 13a3 3 0 0 0 6 0"></path></svg>
+        </button>
+        <button class="icon-btn" id="btnUndo" aria-label="Undo move">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10h10a5 5 0 0 1 0 10H8"></path><path d="M8 5 3 10l5 5"></path></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="level-caption" id="levelCaption">Level 1</div>
+    <p class="level-rule">Only same-color liquid can be poured on top of each other.</p>
+
+    <div class="tubes-wrap" id="tubesWrap"></div>
+
+    <div class="game-footer">
+      <button class="btn btn-ghost btn-sm" id="btnReset">Restart Level</button>
+    </div>
+  </section>
+
+  <!-- WIN OVERLAY -->
+  <div class="overlay" id="winOverlay">
+    <div class="win-card">
+      <div class="win-glyph">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#2a1704" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="26" height="26"><path d="M20 6 9 17l-5-5"></path></svg>
+      </div>
+      <h2 class="win-title">Level Cleared</h2>
+      <p class="win-sub" id="winSub">Solved in 0 pours</p>
+      <div class="win-reward"><div class="coin-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" fill="url(#coinFace)" stroke="#a5670f" stroke-width="1.4"></circle><circle cx="12" cy="12" r="7.6" fill="none" stroke="#a5670f" stroke-width="1" opacity="0.45"></circle><path d="M12 7.3l1.28 2.6 2.86.42-2.07 2.02.49 2.85L12 13.8l-2.56 1.35.49-2.85-2.07-2.02 2.86-.42L12 7.3Z" fill="#a5670f" opacity="0.75"></path></svg></div><span>+50 coins</span></div>
+      <div class="win-actions">
+        <button class="btn btn-primary" id="btnNextLevel">Next Level</button>
+        <button class="btn btn-ghost" id="btnWinMenu">Back to Menu</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- palette (pure colors) ---------------- */
+  const PALETTE = [
+    "#e6425a", // red
+    "#f2c40b", // yellow
+    "#3f8ff2", // blue
+    "#33c07c", // green
+    "#9b6ef2", // purple
+    "#f97b3d", // orange
+    "#3fd6c8", // teal
+    "#e879c0"  // pink
+  ];
+  const TOTAL_LEVELS_SHOWN = 20;
+  const WIN_REWARD = 50;
+  const STARTING_COINS = 300;
+  const AD_FREE_COINS = 50;
+  const SHOP_ITEMS = [
+    { id:"extraTube", name:"Extra Tube", price:300, desc:"Adds one empty tube to your current round for extra room to sort.",
+      icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3h8"/><path d="M9 3v11a5 5 0 0 0 10 0V3"/><path d="M5 3v11a4 4 0 0 0 4 4"/></svg>' },
+    { id:"hint", name:"Hint Splash", price:150, desc:"Highlights two tubes with a valid pour waiting to happen.",
+      icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.9 4.9 1.4 1.4"/><path d="m17.7 17.7 1.4 1.4"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m4.9 19.1 1.4-1.4"/><path d="m17.7 6.3 1.4-1.4"/><circle cx="12" cy="12" r="4"/></svg>' },
+    { id:"skip", name:"Skip Level", price:500, desc:"Stuck? Instantly clear this level and move on to the next one.",
+      icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 4 10 8-10 8V4Z"/><path d="M19 5v14"/></svg>' }
+  ];
+  const AD_REWARD_ITEMS = [
+    { id:"adHint", name:"Free Hint", desc:"Watch a short ad to reveal a valid pour, no coins spent.",
+      icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.9 4.9 1.4 1.4"/><path d="m17.7 17.7 1.4 1.4"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m4.9 19.1 1.4-1.4"/><path d="m17.7 6.3 1.4-1.4"/><circle cx="12" cy="12" r="4"/></svg>' },
+    { id:"adCoins", name:AD_FREE_COINS + " Free Coins", desc:"Watch a short ad for a quick coin top-up.",
+      icon:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" fill="url(#coinFace)" stroke="#a5670f" stroke-width="1.4"/><circle cx="12" cy="12" r="7.6" fill="none" stroke="#a5670f" stroke-width="1" opacity="0.45"/><path d="M12 7.3l1.28 2.6 2.86.42-2.07 2.02.49 2.85L12 13.8l-2.56 1.35.49-2.85-2.07-2.02 2.86-.42L12 7.3Z" fill="#a5670f" opacity="0.75"/></svg>' }
+  ];
+
+  /* ---------------- audio ---------------- */
+  let actx = null;
+  let soundOn = true;
+  function ensureAudio(){
+    if(!actx){ try{ actx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ actx = null; } }
+    if(actx && actx.state === "suspended"){ actx.resume(); }
+  }
+  function tone(freq, dur, type, gainVal, delay){
+    if(!soundOn || !actx) return;
+    const t0 = actx.currentTime + (delay||0);
+    const osc = actx.createOscillator();
+    const gain = actx.createGain();
+    osc.type = type || "sine";
+    osc.frequency.setValueAtTime(freq, t0);
+    gain.gain.setValueAtTime(0.0001, t0);
+    gain.gain.exponentialRampToValueAtTime(gainVal||0.18, t0+0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0+dur);
+    osc.connect(gain).connect(actx.destination);
+    osc.start(t0); osc.stop(t0+dur+0.02);
+  }
+  function sfxClick(){ tone(520, .09, "sine", .12); }
+  function sfxPour(){
+    if(!soundOn || !actx) return;
+    const t0 = actx.currentTime;
+    const osc = actx.createOscillator();
+    const gain = actx.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(680, t0);
+    osc.frequency.exponentialRampToValueAtTime(340, t0+0.16);
+    gain.gain.setValueAtTime(0.0001, t0);
+    gain.gain.exponentialRampToValueAtTime(0.14, t0+0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0+0.18);
+    osc.connect(gain).connect(actx.destination);
+    osc.start(t0); osc.stop(t0+0.2);
+  }
+  function sfxInvalid(){ tone(140, .18, "square", .1); }
+  function sfxWin(){ [523.25,659.25,783.99,1046.5].forEach((f,i)=> tone(f, .35, "triangle", .15, i*0.11)); }
+  function sfxBuy(){ tone(660, .08, "sine", .13); tone(990, .12, "sine", .12, .06); }
+
+  /* ---------------- ads (rewarded: free hint / free coins) ---------------- */
+  // Fill in AD_CLIENT once AdSense approves the site. Until then, every ad
+  // call below just runs its "no ad" fallback immediately, so the game is
+  // fully playable during review and for anyone with an ad blocker.
+  var AD_CLIENT = "ca-pub-4203857211510947";
+  let adsScriptState = "idle"; // idle | loading | ready | failed
+  let adPendingCbs = [];
+  const adsEnabled = () => !!AD_CLIENT;
+
+  function loadAdScript(cb){
+    if(!adsEnabled() || adsScriptState === "failed") return cb && cb(false);
+    if(adsScriptState === "ready") return cb && cb(true);
+    window.adsbygoogle = window.adsbygoogle || [];
+    window.adBreak = window.adBreak || (o => window.adsbygoogle.push(o));
+    window.adConfig = window.adConfig || (o => window.adsbygoogle.push(o));
+    if(adsScriptState === "loading"){ adPendingCbs.push(cb); return; }
+    adsScriptState = "loading";
+    adPendingCbs.push(cb);
+    const settle = ok => {
+      if(adsScriptState !== "loading") return; // already settled (e.g. by the timeout)
+      adsScriptState = ok ? "ready" : "failed";
+      if(ok){ try{ window.adConfig({ preloadAdBreaks:"on", sound:"off" }); }catch(e){} }
+      const cbs = adPendingCbs.splice(0);
+      cbs.forEach(fn => fn && fn(ok));
+    };
+    const s = document.createElement("script");
+    s.async = true;
+    s.crossOrigin = "anonymous";
+    s.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=" + AD_CLIENT;
+    s.onload = () => settle(true);
+    s.onerror = () => settle(false);
+    document.head.appendChild(s);
+    // Ad blockers, restrictive networks, and sandboxed webviews can swallow
+    // the request silently -- no load event, no error event, ever. Never
+    // let that leave a "Watch Ad" button stuck: if it hasn't settled
+    // quickly, treat it as failed so the player isn't left waiting forever.
+    setTimeout(() => settle(false), 1500);
+  }
+
+  // Rewarded ad. onReward fires only if the ad was actually watched;
+  // onSkipped fires if the player declined, the ad failed, ads aren't
+  // live yet, or the call stalls.
+  function showRewardedAd(name, onReward, onSkipped){
+    let done = false;
+    const reward = () => { if(done) return; done = true; clearTimeout(timer); onReward && onReward(); };
+    const skip = () => { if(done) return; done = true; clearTimeout(timer); onSkipped && onSkipped(); };
+    const timer = setTimeout(skip, 30000); // rewarded videos legitimately run up to ~30s -- don't cut a real one off mid-play
+    if(!adsEnabled()) return skip();
+    loadAdScript(ok => {
+      if(!ok || typeof window.adBreak !== "function") return skip();
+      window.adBreak({
+        type: "reward",
+        name: name || "free-reward",
+        beforeReward: showAdFn => showAdFn(),
+        adViewed: reward,
+        adDismissed: skip,
+        adBreakDone: info => { if(info && info.breakStatus && info.breakStatus !== "viewed") skip(); },
+      });
+    });
+  }
+
+  /* ---------------- color helpers ---------------- */
+  function hexToRgb(hex){
+    const n = parseInt(hex.slice(1),16);
+    return {r:(n>>16)&255, g:(n>>8)&255, b:n&255};
+  }
+  function rgbToHex(r,g,b){
+    r=Math.max(0,Math.min(255,Math.round(r)));
+    g=Math.max(0,Math.min(255,Math.round(g)));
+    b=Math.max(0,Math.min(255,Math.round(b)));
+    return "#"+((1<<24)|(r<<16)|(g<<8)|b).toString(16).slice(1);
+  }
+  function shade(hex, percent){
+    const c = hexToRgb(hex);
+    return rgbToHex(c.r+2.55*percent, c.g+2.55*percent, c.b+2.55*percent);
+  }
+
+  /* ---------------- state ---------------- */
+  let level = 1;
+  let capacity = 4;
+  let tubes = [];
+  let selected = null;
+  let moves = 0;
+  let history = [];
+  let busy = false;
+  let maxUnlocked = 1;
+  let coins = STARTING_COINS;
+  let hintTimer = null;
+  let adRewardBusy = {}; // per-item busy flag so one ad row loading doesn't block another
+
+  /* ---------------- storage (persists per-player across sessions on this device/account) ---------------- */
+  const STORAGE_KEY = "chroma-pour-sort-progress-v2";
+  let storageReady = false;
+
+  async function loadProgress(){
+    let loaded = false;
+    try{
+      // NOTE: window.storage.get() throws (rather than returning null) when
+      // the key doesn't exist yet, so a missing key must be handled in catch,
+      // not treated as a normal "empty" result.
+      const res = await window.storage.get(STORAGE_KEY, false);
+      if(res && typeof res.value === "string" && res.value.length){
+        const data = JSON.parse(res.value);
+        if(data && typeof data.maxUnlocked === "number") maxUnlocked = data.maxUnlocked;
+        if(data && typeof data.coins === "number") coins = data.coins;
+        loaded = true;
+      }
+    }catch(e){
+      // key not found (first-ever launch) or the stored value was corrupt —
+      // either way fall through to the defaults below.
+    }
+
+    storageReady = true;
+
+    if(!loaded){
+      // Brand-new player: set starting balance and persist it immediately so
+      // it's there the moment they quit, not only after their first win/buy.
+      coins = STARTING_COINS;
+      maxUnlocked = 1;
+      await saveProgress();
+    }
+
+    refreshCoinDisplays();
+  }
+
+  async function saveProgress(){
+    const payload = JSON.stringify({maxUnlocked, coins});
+    // Retry once on failure — a transient storage error shouldn't silently
+    // cost the player their coins or unlocked levels.
+    for(let attempt=0; attempt<2; attempt++){
+      try{
+        const result = await window.storage.set(STORAGE_KEY, payload, false);
+        if(result) return true;
+      }catch(e){
+        if(attempt===1) console.error("Chroma Pour: failed to save progress", e);
+      }
+    }
+    return false;
+  }
+
+  function refreshCoinDisplays(){
+    document.getElementById("startCoins").textContent = coins;
+    document.getElementById("shopCoins").textContent = coins;
+    document.getElementById("hudCoins").textContent = coins;
+  }
+
+  /* ---------------- level generation ---------------- */
+  function generateLevel(n){
+    const numColors = Math.min(3 + Math.floor((n-1)/2), PALETTE.length);
+    const cap = n <= 5 ? 4 : 5;
+    const emptyTubes = n <= 3 ? 2 : (n <= 10 ? 2 : 1);
+
+    const colors = PALETTE.slice(0, numColors);
+    let pool = [];
+    colors.forEach(c => { for(let i=0;i<cap;i++) pool.push(c); });
+
+    for(let i=pool.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [pool[i],pool[j]]=[pool[j],pool[i]]; }
+
+    const tubeList = [];
+    for(let t=0;t<numColors;t++){
+      tubeList.push(pool.slice(t*cap, t*cap+cap));
+    }
+    for(let e=0;e<emptyTubes;e++) tubeList.push([]);
+
+    let attempts = 0;
+    while(attempts < 12 && tubeList.some((tb, idx) => idx < numColors && tb.every(c => c === tb[0]))){
+      for(let i=pool.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [pool[i],pool[j]]=[pool[j],pool[i]]; }
+      for(let t=0;t<numColors;t++){ tubeList[t] = pool.slice(t*cap, t*cap+cap); }
+      attempts++;
+    }
+
+    return { tubes: tubeList, capacity: cap };
+  }
+
+  function isSolved(tube){
+    if(tube.length === 0) return true;
+    if(tube.length !== capacity) return false;
+    return tube.every(c => c === tube[0]);
+  }
+  function checkWin(){
+    return tubes.every(isSolved);
+  }
+
+  /* ---------------- rendering ---------------- */
+  const tubesWrap = document.getElementById("tubesWrap");
+  const hudMoves = document.getElementById("hudMoves");
+  const levelCaption = document.getElementById("levelCaption");
+  const btnUndo = document.getElementById("btnUndo");
+
+  function renderAll(newlyAddedMap, appearIdx){
+    tubesWrap.innerHTML = "";
+    tubes.forEach((tube, idx) => {
+      const el = document.createElement("div");
+      el.className = "tube";
+      if(appearIdx === idx) el.classList.add("appear");
+      el.tabIndex = 0;
+      el.setAttribute("role","button");
+      el.setAttribute("aria-label", "Tube " + (idx+1));
+      if(selected === idx) el.classList.add("selected");
+      if(isSolved(tube) && tube.length > 0) el.classList.add("solved");
+
+      const badge = document.createElement("div");
+      badge.className = "tube-badge";
+      if(isSolved(tube) && tube.length > 0){
+        badge.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+      } else if(tube.length > 0 && !isSolved(tube)){
+        badge.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+      }
+      el.appendChild(badge);
+
+      const cap = document.createElement("div");
+      cap.className = "tube-cap";
+      el.appendChild(cap);
+
+      const body = document.createElement("div");
+      body.className = "tube-body";
+      el.appendChild(body);
+
+      const segH = 100/capacity;
+      tube.forEach((colorHex, segIdx) => {
+        const seg = document.createElement("div");
+        seg.className = "segment";
+        seg.style.height = segH + "%";
+        seg.style.bottom = (segIdx*segH) + "%";
+        seg.style.background = "linear-gradient(160deg,"+colorHex+","+shade(colorHex,-14)+")";
+        // Only the true top of the stack gets a rounded pour-lip, and only
+        // the true bottom of the tube gets the rounded jar base — every
+        // segment in between stays flush and full-width, like image 1.
+        const isTop = segIdx === tube.length-1;
+        const isBottom = segIdx === 0;
+        seg.style.borderRadius = (isTop?"5px 5px ":"0 0 ") + (isBottom?"26px 26px":"0 0");
+        if(newlyAddedMap && newlyAddedMap[idx] !== undefined && segIdx >= newlyAddedMap[idx]) seg.classList.add("new");
+        body.appendChild(seg);
+      });
+
+      el.addEventListener("click", () => onTubeClick(idx));
+      el.addEventListener("keydown", (e)=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); onTubeClick(idx); } });
+
+      tubesWrap.appendChild(el);
+    });
+
+    hudMoves.textContent = moves;
+    btnUndo.disabled = history.length === 0;
+    refreshCoinDisplays();
+  }
+
+  /* ---------------- history (snapshot-based undo) ---------------- */
+  function snapshot(){
+    return { tubes: tubes.map(t=>t.slice()), moves };
+  }
+  function pushHistory(){ history.push(snapshot()); }
+  function undoMove(){
+    if(busy || history.length===0) return;
+    const snap = history.pop();
+    tubes = snap.tubes;
+    moves = snap.moves;
+    selected = null;
+    sfxClick();
+    renderAll();
+  }
+
+  /* ---------------- pour logic ---------------- */
+  function topColor(tube){ return tube.length ? tube[tube.length-1] : null; }
+  function topRunLength(tube){
+    if(tube.length===0) return 0;
+    const c = tube[tube.length-1];
+    let n=0;
+    for(let i=tube.length-1;i>=0;i--){ if(tube[i]===c) n++; else break; }
+    return n;
+  }
+  function canPour(fromIdx, toIdx){
+    if(fromIdx === toIdx) return false;
+    const from = tubes[fromIdx], to = tubes[toIdx];
+    if(from.length === 0) return false;
+    if(to.length >= capacity) return false;
+    if(to.length === 0) return true;
+    return topColor(to) === topColor(from);
+  }
+  function pour(fromIdx, toIdx){
+    const from = tubes[fromIdx], to = tubes[toIdx];
+    const color = topColor(from);
+    const run = topRunLength(from);
+    const space = capacity - to.length;
+    const moveCount = Math.min(run, space);
+    for(let k=0;k<moveCount;k++){ from.pop(); to.push(color); }
+    return moveCount;
+  }
+  function findHintPair(){
+    for(let i=0;i<tubes.length;i++){
+      if(tubes[i].length===0 || isSolved(tubes[i])) continue;
+      for(let j=0;j<tubes.length;j++){
+        if(canPour(i,j)) return [i,j];
+      }
+    }
+    return null;
+  }
+  function showHintPair(){
+    const pair = findHintPair();
+    showScreen("screen-game");
+    renderAll();
+    if(pair){
+      const els = tubesWrap.children;
+      pair.forEach(i => { if(els[i]) els[i].classList.add("hinted"); });
+      clearTimeout(hintTimer);
+      hintTimer = setTimeout(() => {
+        pair.forEach(i => { if(els[i]) els[i].classList.remove("hinted"); });
+      }, 2000);
+    }
+    return pair;
+  }
+
+  /* ---------------- interaction ---------------- */
+  function onTubeClick(idx){
+    if(busy) return;
+    ensureAudio();
+
+    if(selected === null){
+      if(tubes[idx].length === 0) return;
+      selected = idx;
+      sfxClick();
+      renderAll();
+      return;
+    }
+
+    if(selected === idx){
+      selected = null;
+      sfxClick();
+      renderAll();
+      return;
+    }
+
+    if(!canPour(selected, idx)){
+      sfxInvalid();
+      flashInvalid(idx);
+      return;
+    }
+
+    pushHistory();
+    const beforeLen = tubes[idx].length;
+    pour(selected, idx);
+    moves++;
+    sfxPour();
+    finishPourFeedback(idx, beforeLen);
+  }
+
+  function finishPourFeedback(idx, beforeLen){
+    busy = true;
+    setTimeout(() => {
+      selected = null;
+      busy = false;
+      const marker = {}; marker[idx] = beforeLen;
+      renderAll(marker);
+      if(checkWin()){ setTimeout(onWin, 380); }
+    }, 90);
+  }
+
+  function flashInvalid(idx){
+    const els = tubesWrap.children;
+    if(els[idx]){ els[idx].classList.add("shake"); setTimeout(()=> els[idx] && els[idx].classList.remove("shake"), 320); }
+  }
+
+  function resetLevel(){
+    if(busy) return;
+    applyGenerated(generateLevel(level));
+    sfxClick();
+    renderAll();
+  }
+
+  /* ---------------- win flow ---------------- */
+  const winOverlay = document.getElementById("winOverlay");
+  const winSub = document.getElementById("winSub");
+
+  async function onWin(){
+    sfxWin();
+    coins += WIN_REWARD;
+    winSub.textContent = "Solved in " + moves + (moves===1?" pour":" pours");
+    winOverlay.classList.add("show");
+    if(level+1 > maxUnlocked){ maxUnlocked = level+1; }
+    refreshCoinDisplays();
+    await saveProgress();
+  }
+
+  /* ---------------- level lifecycle ---------------- */
+  function applyGenerated(gen){
+    tubes = gen.tubes;
+    capacity = gen.capacity;
+    moves = 0;
+    history = [];
+    selected = null;
+  }
+  function startLevel(n){
+    level = n;
+    applyGenerated(generateLevel(n));
+    levelCaption.textContent = "Level " + n;
+    renderAll();
+    showScreen("screen-game");
+  }
+
+  /* ---------------- level select grid ---------------- */
+  const levelGrid = document.getElementById("levelGrid");
+  function buildLevelGrid(){
+    levelGrid.innerHTML = "";
+    for(let i=1;i<=TOTAL_LEVELS_SHOWN;i++){
+      const tile = document.createElement("div");
+      const locked = i > maxUnlocked;
+      const done = i < maxUnlocked;
+      tile.className = "level-tile" + (locked ? " locked" : "") + (done ? " done" : "");
+      tile.tabIndex = locked ? -1 : 0;
+      if(done){
+        tile.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+      } else if(locked){
+        tile.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+      } else {
+        tile.textContent = i;
+      }
+      if(!locked){ tile.addEventListener("click", () => { ensureAudio(); startLevel(i); }); }
+      levelGrid.appendChild(tile);
+    }
+  }
+
+  /* ---------------- shop (coins) ---------------- */
+  const shopList = document.getElementById("shopList");
+  function buildShop(){
+    shopList.innerHTML = "";
+    SHOP_ITEMS.forEach(item => {
+      const row = document.createElement("div");
+      row.className = "shop-item";
+
+      const icon = document.createElement("div");
+      icon.className = "shop-item-icon";
+      icon.style.background = "var(--glass)";
+      icon.style.border = "1px solid var(--glass-edge)";
+      icon.style.color = "var(--gold)";
+      icon.innerHTML = item.icon;
+      row.appendChild(icon);
+
+      const body = document.createElement("div");
+      body.className = "shop-item-body";
+      body.innerHTML = '<div class="shop-item-name">'+item.name+'</div><div class="shop-item-desc">'+item.desc+'</div>';
+      row.appendChild(body);
+
+      const buyWrap = document.createElement("div");
+      buyWrap.className = "shop-item-buy";
+      const priceEl = document.createElement("div");
+      priceEl.className = "shop-item-price";
+      priceEl.innerHTML = '<div class="coin-icon" style="width:14px;height:14px;"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" fill="url(#coinFace)" stroke="#a5670f" stroke-width="1.4"/><circle cx="12" cy="12" r="7.6" fill="none" stroke="#a5670f" stroke-width="1" opacity="0.45"/><path d="M12 7.3l1.28 2.6 2.86.42-2.07 2.02.49 2.85L12 13.8l-2.56 1.35.49-2.85-2.07-2.02 2.86-.42L12 7.3Z" fill="#a5670f" opacity="0.75"/></svg></div><span>'+item.price+'</span>';
+      const buyBtn = document.createElement("button");
+      buyBtn.className = "btn btn-primary btn-sm";
+      buyBtn.textContent = "Buy";
+      buyBtn.disabled = coins < item.price;
+      buyBtn.addEventListener("click", () => buyItem(item));
+      buyWrap.appendChild(priceEl);
+      buyWrap.appendChild(buyBtn);
+      row.appendChild(buyWrap);
+
+      shopList.appendChild(row);
+    });
+  }
+
+  async function buyItem(item){
+    if(coins < item.price) return;
+    coins -= item.price;
+    sfxBuy();
+    refreshCoinDisplays();
+    buildShop();
+    await saveProgress();
+
+    if(item.id === "extraTube"){
+      tubes.push([]);
+      showScreen("screen-game");
+      renderAll(null, tubes.length-1);
+    } else if(item.id === "hint"){
+      showHintPair();
+    } else if(item.id === "skip"){
+      if(level+1 > maxUnlocked){ maxUnlocked = level+1; await saveProgress(); }
+      startLevel(level+1);
+    }
+  }
+
+  /* ---------------- shop (free, ad-supported rewards) ---------------- */
+  const adRewardsList = document.getElementById("adRewardsList");
+  function buildAdRewards(){
+    adRewardsList.innerHTML = "";
+    AD_REWARD_ITEMS.forEach(item => {
+      const row = document.createElement("div");
+      row.className = "shop-item shop-item-ad";
+
+      const icon = document.createElement("div");
+      icon.className = "shop-item-icon";
+      icon.style.background = "rgba(61,230,168,0.12)";
+      icon.style.border = "1px solid rgba(61,230,168,0.35)";
+      icon.style.color = "var(--success)";
+      icon.innerHTML = item.icon;
+      row.appendChild(icon);
+
+      const body = document.createElement("div");
+      body.className = "shop-item-body";
+      body.innerHTML = '<div class="shop-item-name">'+item.name+'</div><div class="shop-item-desc">'+item.desc+'</div>';
+      row.appendChild(body);
+
+      const buyWrap = document.createElement("div");
+      buyWrap.className = "shop-item-buy";
+      const priceEl = document.createElement("div");
+      priceEl.className = "shop-item-price-ad";
+      priceEl.textContent = "Free";
+      const watchBtn = document.createElement("button");
+      watchBtn.className = "btn btn-ghost btn-sm";
+      watchBtn.textContent = "▶ Watch Ad";
+      watchBtn.disabled = !!adRewardBusy[item.id];
+      watchBtn.addEventListener("click", () => watchAdForReward(item, watchBtn));
+      buyWrap.appendChild(priceEl);
+      buyWrap.appendChild(watchBtn);
+      row.appendChild(buyWrap);
+
+      adRewardsList.appendChild(row);
+    });
+  }
+
+  function watchAdForReward(item, btnEl){
+    if(adRewardBusy[item.id]) return;
+    adRewardBusy[item.id] = true;
+    ensureAudio();
+    btnEl.disabled = true;
+    btnEl.textContent = "Loading…";
+
+    showRewardedAd(item.id, () => {
+      // Reward: the ad was actually watched.
+      adRewardBusy[item.id] = false;
+      applyAdReward(item.id);
+    }, () => {
+      // Declined, failed, or ads aren't live yet -- no reward, no cost.
+      adRewardBusy[item.id] = false;
+      btnEl.disabled = false;
+      btnEl.textContent = "▶ Watch Ad";
+    });
+  }
+
+  async function applyAdReward(id){
+    if(id === "adHint"){
+      showHintPair();
+      buildAdRewards();
+    } else if(id === "adCoins"){
+      coins += AD_FREE_COINS;
+      sfxBuy();
+      refreshCoinDisplays();
+      buildAdRewards();
+      await saveProgress();
+    }
+  }
+
+  /* ---------------- screen nav ---------------- */
+  function showScreen(id){
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+  }
+
+  /* ---------------- wiring ---------------- */
+  document.getElementById("btnPlay").addEventListener("click", () => { ensureAudio(); startLevel(maxUnlocked); });
+  document.getElementById("btnLevels").addEventListener("click", () => { ensureAudio(); buildLevelGrid(); showScreen("screen-levels"); });
+  document.getElementById("btnLevelsBack").addEventListener("click", () => showScreen("screen-start"));
+  document.getElementById("btnGameBack").addEventListener("click", () => showScreen("screen-start"));
+  document.getElementById("btnUndo").addEventListener("click", undoMove);
+  document.getElementById("btnReset").addEventListener("click", resetLevel);
+  document.getElementById("btnShop").addEventListener("click", () => { ensureAudio(); buildShop(); buildAdRewards(); showScreen("screen-shop"); });
+  document.getElementById("btnShopBack").addEventListener("click", () => showScreen("screen-game"));
+  document.getElementById("btnNextLevel").addEventListener("click", () => { winOverlay.classList.remove("show"); startLevel(level+1); });
+  document.getElementById("btnWinMenu").addEventListener("click", () => { winOverlay.classList.remove("show"); showScreen("screen-start"); });
+
+  const soundToggle = document.getElementById("soundToggle");
+  const iconOn = document.getElementById("soundIconOn");
+  const iconOff = document.getElementById("soundIconOff");
+  soundToggle.addEventListener("click", () => {
+    soundOn = !soundOn;
+    iconOn.style.display = soundOn ? "block" : "none";
+    iconOff.style.display = soundOn ? "none" : "block";
+    if(soundOn){ ensureAudio(); sfxClick(); }
+  });
+
+  /* ---------------- init ---------------- */
+  loadProgress();
+
+  // Lightweight test/demo hook -- harmless in production, lets an outside
+  // harness exercise the ad-reward flow without simulating real clicks.
+  window.__mj = {
+    get state(){
+      return {
+        coins,
+        level,
+        adHintBusy: !!adRewardBusy.adHint,
+        adCoinsBusy: !!adRewardBusy.adCoins,
+        shopActive: document.getElementById("screen-shop").classList.contains("active"),
+        gameActive: document.getElementById("screen-game").classList.contains("active"),
+      };
+    },
+    startLevel: startLevel,
+    openShop: () => { buildShop(); buildAdRewards(); showScreen("screen-shop"); },
+    watchAdHint: () => watchAdForReward(AD_REWARD_ITEMS[0], { set disabled(v){}, set textContent(v){} }),
+    watchAdCoins: () => watchAdForReward(AD_REWARD_ITEMS[1], { set disabled(v){}, set textContent(v){} }),
+    // Test-only: simulate a real, approved ad SDK that always plays
+    // through, so the "reward actually granted" path can be exercised
+    // without a live AdSense account.
+    simulateAdReady: () => {
+      adsScriptState = "ready";
+      window.adBreak = (o) => { if(o && o.type === "reward" && typeof o.adViewed === "function") o.adViewed(); };
+    },
+  };
+})();
+</script>
+
+</body></html>

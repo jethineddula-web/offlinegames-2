@@ -1,0 +1,575 @@
+/* ============================================================================
+   ui-fx.css — contact slide-over panel + site-wide motion layer
+   Additive only: nothing here overrides styles.css structure, it layers on top.
+   Load AFTER styles.css.
+   ========================================================================== */
+
+:root {
+  --fx-ease:    cubic-bezier(.22, 1, .36, 1);      /* soft settle          */
+  --fx-spring:  cubic-bezier(.34, 1.56, .64, 1);   /* slight overshoot     */
+  --fx-panel-w: 400px;
+  --fx-line:    rgba(255, 255, 255, .07);
+  --fx-ink:     #e8ecf4;
+  --fx-dim:     #8b93a7;
+  --fx-surface: #10121d;
+  --fx-raised:  #171a28;
+}
+
+/* ============================================================================
+   1. CONTACT SLIDE-OVER
+   ========================================================================== */
+
+.cx-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgba(4, 5, 12, .68);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .28s var(--fx-ease);
+}
+.cx-scrim.open { opacity: 1; pointer-events: auto; }
+
+.cx-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 91;
+  /* 100% not 100vw: vw includes the scrollbar gutter, which pushed the
+     panel 15px past the viewport and made the page scroll sideways. */
+  width: min(var(--fx-panel-w), 100%);
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--fx-surface);
+  border-left: 1px solid var(--fx-line);
+  box-shadow: -24px 0 60px rgba(0, 0, 0, .5);
+  transform: translateX(102%);
+  transition: transform .38s var(--fx-ease);
+  overscroll-behavior: contain;
+}
+.cx-panel.open { transform: translateX(0); }
+
+/* On phones the panel takes the full screen and rises from the bottom —
+   that reads as a native sheet rather than a cramped desktop drawer. */
+@media (max-width: 560px) {
+  .cx-panel {
+    /* Anchor both edges instead of setting a width. A width — in vw or in
+       percent — is resolved against the initial containing block, which on a
+       desktop browser with classic scrollbars is wider than the visible
+       viewport, so the panel hung 15px off-screen and the page scrolled
+       sideways. Pinning left and right makes that impossible. */
+    left: 0;
+    right: 0;
+    width: auto;
+    border-left: 0;
+    border-top: 1px solid var(--fx-line);
+    border-radius: 18px 18px 0 0;
+    transform: translateY(102%);
+  }
+  .cx-panel.open { transform: translateY(0); }
+}
+
+.cx-head {
+  position: relative;
+  flex: 0 0 auto;
+  padding: 20px 18px 18px;
+  text-align: center;
+  border-bottom: 1px solid var(--fx-line);
+}
+.cx-head h2 {
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: .01em;
+  color: var(--fx-ink);
+}
+.cx-head p {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: var(--fx-dim);
+}
+
+.cx-icon-btn {
+  position: absolute;
+  top: 16px;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--fx-ink);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background .18s var(--fx-ease), transform .18s var(--fx-spring);
+}
+.cx-icon-btn:hover  { background: rgba(255, 255, 255, .08); }
+.cx-icon-btn:active { transform: scale(.9); }
+.cx-back  { left: 12px; }
+.cx-close { right: 12px; }
+.cx-back[hidden] { display: none; }
+
+/* Keyboard users get a visible ring; mouse users don't. */
+.cx-panel :focus-visible {
+  outline: 2px solid var(--magenta, #ff4fa0);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+.cx-panel :focus:not(:focus-visible) { outline: none; }
+
+.cx-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 18px 18px 28px;
+}
+
+.cx-label {
+  margin: 6px 0 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--fx-dim);
+}
+.cx-label + .cx-label { margin-top: 26px; }
+
+/* --- menu rows ------------------------------------------------------------ */
+
+.cx-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 13px 12px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--fx-ink);
+  font: inherit;
+  font-size: 15px;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: background .2s var(--fx-ease), transform .2s var(--fx-ease);
+}
+.cx-row:hover     { background: rgba(255, 255, 255, .05); }
+.cx-row:active    { transform: scale(.985); }
+.cx-row .cx-ico   { flex: 0 0 26px; font-size: 20px; line-height: 1; color: var(--magenta, #ff4fa0); }
+.cx-row .cx-txt   { flex: 1 1 auto; }
+.cx-row .cx-txt em {
+  display: block;
+  margin-top: 2px;
+  font-style: normal;
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: var(--fx-dim);
+}
+.cx-send-opt { padding-block: 12px; }
+.cx-row .cx-chev  { flex: 0 0 auto; color: var(--fx-dim); font-size: 16px; transition: transform .2s var(--fx-ease); }
+.cx-row:hover .cx-chev { transform: translateX(3px); color: var(--fx-ink); }
+
+/* A magenta rail slides in from the left on hover — cheap, and it makes the
+   list feel responsive without moving anything the eye is trying to read. */
+.cx-row::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 12%;
+  width: 2px; height: 76%;
+  border-radius: 2px;
+  background: var(--magenta, #ff4fa0);
+  transform: scaleY(0);
+  transform-origin: center;
+  transition: transform .22s var(--fx-spring);
+}
+.cx-row:hover::before { transform: scaleY(1); }
+
+/* --- search + game list --------------------------------------------------- */
+
+.cx-search {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px 16px;
+  margin-bottom: 18px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: var(--fx-raised);
+  color: var(--fx-ink);
+  font: inherit;
+  font-size: 15px;
+  transition: border-color .2s var(--fx-ease), box-shadow .2s var(--fx-ease);
+}
+.cx-search::placeholder { color: var(--fx-dim); }
+.cx-search:focus {
+  outline: none;
+  border-color: var(--magenta, #ff4fa0);
+  box-shadow: 0 0 0 4px rgba(255, 79, 160, .12);
+}
+
+.cx-game {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 8px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--fx-ink);
+  font: inherit;
+  font-size: 15px;
+  text-align: left;
+  cursor: pointer;
+  transition: background .2s var(--fx-ease);
+}
+.cx-game:hover { background: rgba(255, 255, 255, .05); }
+.cx-game img {
+  flex: 0 0 auto;
+  width: 52px; height: 36px;
+  object-fit: cover;
+  border-radius: 7px;
+  background: #0b0d17;
+}
+.cx-game .cx-tile {
+  flex: 0 0 auto;
+  width: 52px; height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 7px;
+  background: #0b0d17;
+  color: var(--magenta, #ff4fa0);
+  font-style: normal;
+  font-weight: 700;
+  font-size: 15px;
+}
+.cx-game span { flex: 1 1 auto; }
+.cx-game em {
+  font-style: normal;
+  font-size: 12px;
+  color: var(--fx-dim);
+  display: block;
+}
+
+/* --- form ----------------------------------------------------------------- */
+
+.cx-field { margin-bottom: 14px; position: relative; }
+
+.cx-input,
+.cx-select,
+.cx-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px 16px;
+  border: 1px solid var(--fx-line);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--fx-ink);
+  font: inherit;
+  font-size: 15px;
+  transition: border-color .2s var(--fx-ease), box-shadow .2s var(--fx-ease);
+}
+.cx-textarea { min-height: 150px; resize: vertical; line-height: 1.55; }
+.cx-select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 42px;
+  cursor: pointer;
+  /* The dropdown list itself is drawn by the OS, not by this page. Without
+     this it inherits the system's LIGHT theme — white background — while the
+     option text stays the panel's near-white, so the choices are invisible.
+     color-scheme tells the browser to paint that native popup dark. */
+  color-scheme: dark;
+}
+/* Belt and braces for browsers that ignore color-scheme on a select:
+   state both colours explicitly so the text can never match its background. */
+.cx-select option {
+  background: #171a28;
+  color: #e8ecf4;
+}
+.cx-select option:checked,
+.cx-select option:hover { background: #2a2f45; }
+/* The placeholder row stays visibly secondary. */
+.cx-select option[disabled] { color: #8b93a7; }
+.cx-field.sel::after {
+  content: "";
+  position: absolute;
+  right: 18px; top: 50%;
+  width: 8px; height: 8px;
+  margin-top: -6px;
+  border-right: 2px solid var(--fx-ink);
+  border-bottom: 2px solid var(--fx-ink);
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+.cx-input:focus,
+.cx-select:focus,
+.cx-textarea:focus {
+  outline: none;
+  border-color: var(--magenta, #ff4fa0);
+  box-shadow: 0 0 0 4px rgba(255, 79, 160, .12);
+}
+/* Float the tiny caption above a filled field, like the screenshots do. */
+.cx-cap {
+  display: block;
+  font-size: 12px;
+  color: var(--fx-dim);
+  margin: 0 0 6px 4px;
+}
+
+.cx-foot {
+  flex: 0 0 auto;
+  padding: 14px 18px calc(14px + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--fx-line);
+  background: var(--fx-surface);
+}
+.cx-send {
+  width: 100%;
+  padding: 15px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--magenta, #ff4fa0);
+  color: #fff;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform .18s var(--fx-spring), filter .2s var(--fx-ease);
+}
+.cx-send:hover:not(:disabled)  { filter: brightness(1.1); }
+.cx-send:active:not(:disabled) { transform: scale(.97); }
+.cx-send:disabled {
+  background: rgba(255, 255, 255, .06);
+  color: var(--fx-dim);
+  cursor: default;
+}
+
+/* The one action that cannot fail gets the visual weight. */
+.cx-primary-action {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 15px 18px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--magenta, #ff4fa0);
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+  transition: filter .2s var(--fx-ease), transform .18s var(--fx-spring);
+}
+.cx-primary-action b  { display: block; font-size: 15.5px; font-weight: 700; }
+.cx-primary-action em {
+  display: block;
+  margin-top: 3px;
+  font-style: normal;
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, .82);
+}
+.cx-primary-action:hover  { filter: brightness(1.08); }
+.cx-primary-action:active { transform: scale(.98); }
+.cx-primary-action.done {
+  background: rgba(79, 227, 212, .16);
+  color: var(--cyan, #4fe3d4);
+  box-shadow: inset 0 0 0 1px rgba(79, 227, 212, .5);
+}
+.cx-primary-action.done em { color: rgba(232, 236, 244, .7); }
+
+/* Webmail links are demoted on purpose — they depend on the visitor's login
+   state, which this page cannot see. */
+
+.cx-note {
+  margin: 12px 2px 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--fx-dim);
+}
+
+/* --- screen transitions ---------------------------------------------------- */
+
+.cx-screen { animation: cx-in .3s var(--fx-ease) both; }
+.cx-screen.back { animation: cx-in-back .3s var(--fx-ease) both; }
+
+@keyframes cx-in      { from { opacity: 0; transform: translateX(18px); } }
+@keyframes cx-in-back { from { opacity: 0; transform: translateX(-18px); } }
+
+/* Rows fan in one after another. --i is set inline by contact-panel.js. */
+.cx-stagger > * {
+  animation: cx-rise .42s var(--fx-ease) both;
+  animation-delay: calc(var(--i, 0) * 32ms);
+}
+@keyframes cx-rise { from { opacity: 0; transform: translateY(10px); } }
+
+/* ============================================================================
+   2. SITE-WIDE MOTION
+   ========================================================================== */
+
+/* --- cartridge cards: lift, tilt, and a light sweep ----------------------- */
+
+.cartridge {
+  transition:
+    transform .34s var(--fx-ease),
+    box-shadow .34s var(--fx-ease),
+    border-color .34s var(--fx-ease);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.cartridge:hover {
+  box-shadow: 0 18px 40px -12px rgba(0, 0, 0, .6),
+              0 0 0 1px rgba(255, 79, 160, .3);
+}
+/* JS writes --rx / --ry from pointer position for the 3D tilt. */
+.cartridge.fx-tilt {
+  transform: perspective(900px)
+             rotateX(var(--rx, 0deg))
+             rotateY(var(--ry, 0deg))
+             translateY(-4px);
+}
+
+/* A diagonal gloss that crosses the cover once on hover. */
+.cartridge .cover::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 38%,
+    rgba(255, 255, 255, .16) 48%,
+    transparent 58%
+  );
+  transform: translateX(-120%);
+  transition: transform .7s var(--fx-ease);
+}
+.cartridge:hover .cover::before { transform: translateX(120%); }
+
+.cartridge .heart { transition: transform .22s var(--fx-spring), color .2s ease; }
+.cartridge .heart:active { transform: scale(1.35); }
+.cartridge .heart.on { animation: cx-pop .38s var(--fx-spring); }
+@keyframes cx-pop {
+  0%   { transform: scale(1); }
+  45%  { transform: scale(1.4); }
+  100% { transform: scale(1); }
+}
+
+/* --- new-badge pulse ------------------------------------------------------ */
+
+.new-ribbon { animation: cx-glow 2.6s ease-in-out infinite; }
+@keyframes cx-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 79, 160, .5); }
+  50%      { box-shadow: 0 0 14px 2px rgba(255, 79, 160, .45); }
+}
+
+/* --- category chips ------------------------------------------------------- */
+
+.cat-card {
+  transition: transform .24s var(--fx-spring), background .24s var(--fx-ease);
+}
+.cat-card:hover  { transform: translateY(-3px); }
+.cat-card:active { transform: translateY(0) scale(.97); }
+.cat-card .cat-ico {
+  display: inline-block;
+  transition: transform .34s var(--fx-spring);
+}
+.cat-card:hover .cat-ico { transform: scale(1.18) rotate(-6deg); }
+
+/* The grid deals itself out when the category tray opens. */
+.cat-grid.open > * {
+  animation: cx-deal .4s var(--fx-ease) both;
+  animation-delay: calc(var(--i, 0) * 24ms);
+}
+@keyframes cx-deal { from { opacity: 0; transform: translateY(14px) scale(.96); } }
+
+/* --- buttons: ripple ------------------------------------------------------ */
+
+.btn, .cx-row, .cx-send { position: relative; overflow: hidden; }
+.fx-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .35);
+  transform: scale(0);
+  animation: cx-ripple .55s var(--fx-ease) forwards;
+  pointer-events: none;
+}
+@keyframes cx-ripple { to { transform: scale(2.6); opacity: 0; } }
+
+/* --- scroll reveal -------------------------------------------------------- */
+
+.fx-reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity .6s var(--fx-ease), transform .6s var(--fx-ease);
+}
+.fx-reveal.seen { opacity: 1; transform: none; }
+
+/* --- panel/page switch ---------------------------------------------------- */
+
+.page:not([hidden]),
+.hero:not([hidden]) { animation: cx-page .42s var(--fx-ease) both; }
+@keyframes cx-page { from { opacity: 0; transform: translateY(12px); } }
+
+/* --- brand flicker (once, on load) ---------------------------------------- */
+
+.brand { position: relative; }
+.brand::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -3px;
+  height: 2px;
+  background: var(--magenta, #ff4fa0);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .32s var(--fx-ease);
+}
+.brand:hover::after { transform: scaleX(1); }
+
+/* --- modal entrance ------------------------------------------------------- */
+
+.modal-overlay {
+  opacity: 0;
+  transition: opacity .18s var(--fx-ease);
+}
+.modal-overlay.in { opacity: 1; }
+.modal-overlay .modal-box {
+  transform: translateY(14px) scale(.98);
+  transition: transform .26s var(--fx-spring);
+}
+.modal-overlay.in .modal-box { transform: none; }
+
+/* ============================================================================
+   3. ACCESSIBILITY — one switch turns all of this off
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .cx-scrim,
+  .cx-panel,
+  .cx-screen,
+  .cx-stagger > *,
+  .cat-grid.open > *,
+  .page:not([hidden]),
+  .hero:not([hidden]),
+  .cartridge,
+  .cat-card,
+  .cat-card .cat-ico,
+  .new-ribbon,
+  .modal-overlay,
+  .modal-overlay .modal-box,
+  .cartridge .cover::before {
+    animation: none !important;
+    transition-duration: .01ms !important;
+  }
+  .cx-panel { transition: transform .01ms !important; }
+  .fx-reveal { opacity: 1 !important; transform: none !important; }
+  .cartridge.fx-tilt { transform: none !important; }
+}

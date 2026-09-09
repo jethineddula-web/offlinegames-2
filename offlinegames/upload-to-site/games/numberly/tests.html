@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Numberly | Regression Checks</title>
+  <link rel="stylesheet" href="./styles.css">
+  <style>
+    .tests { max-width: 960px; margin: 0 auto; padding: 40px 22px; }
+    .tests h1 { font-family: var(--font-display); font-size: 36px; line-height: 1.1; letter-spacing: -1px; }
+    .tests p, .tests li { color: #78866b; font-size: 13px; line-height: 1.8; }
+    .tests a { color: #5c7c42; text-decoration: underline; }
+    .tests button { max-width: 250px; margin: 18px 0; }
+    .test-result { border-bottom: 1px solid #e0e6d7; padding: 11px 0; }
+    .test-result.passed { color: #4d7139; }
+    .test-result.failed { color: #a45648; }
+    .test-viewport { width: 100%; overflow: auto; border: 1px solid #d8e3cb; margin: 20px 0; border-radius: 10px; }
+    #smoke-frame { display: block; border: 0; background: #f7f8f2; }
+  </style>
+  <script defer src="./resources.js"></script>
+  <script defer src="./levels.js"></script>
+  <script defer src="./clock.js"></script>
+  <script defer src="./storage.js"></script>
+  <script defer src="./ui.js"></script>
+  <script defer src="./tests.js"></script>
+</head>
+<body>
+  <main class="tests">
+    <div class="eyebrow" style="justify-content:start">NUMBERLY / REGRESSION CHECKS</div>
+    <h1>The same rules.<br>In plain JavaScript.</h1>
+    <p><a href="./index.html">Back to the game</a> / <a href="./deployment.html">Deployment guide</a></p>
+    <p id="test-summary" role="status">Running puzzle and clock checks...</p>
+    <div id="test-results" aria-live="polite"></div>
+    <button id="run-smoke" class="primary-button">Run browser smoke checks</button>
+    <p>Browser checks exercise real UI controls and pointer handlers. The embedded game uses isolated in-memory progress and never requests real ads. Use localhost or HTTPS; browsers restrict frame access when opening files directly.</p>
+    <div id="smoke-viewport" class="test-viewport" hidden></div>
+  </main>
+</body>
+</html>

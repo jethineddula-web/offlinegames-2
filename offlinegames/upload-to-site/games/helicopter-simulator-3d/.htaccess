@@ -1,0 +1,61 @@
+# =====================================================================
+#  Helicopter Simulator 3D — cache policy
+#
+#  The rule that matters: NEVER cache index.html, ALWAYS cache the
+#  versioned assets. index.html is the file that names which build of the
+#  JS/CSS to load (via ?v=...), so as long as the HTML is fresh, everything
+#  else follows. Get this the wrong way round and an app WebView will keep
+#  replaying a months-old build of the game.
+#
+#  Drop this file next to index.html on an Apache host. If you are on nginx,
+#  the equivalent is at the bottom of this file.
+# =====================================================================
+
+<IfModule mod_headers.c>
+
+  # --- the HTML: always revalidate -----------------------------------
+  <FilesMatch "\.(html|htm)$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate, max-age=0"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+  </FilesMatch>
+
+  # --- the manifest and sitemap: short cache -------------------------
+  <FilesMatch "\.(webmanifest|xml|json|txt)$">
+    Header set Cache-Control "public, max-age=3600"
+  </FilesMatch>
+
+  # --- versioned assets: cache hard, the ?v= handles invalidation ----
+  <FilesMatch "\.(js|css|svg|png|jpg|jpeg|webp|woff2?)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+</IfModule>
+
+# --- correct MIME types, in case the host is missing any -------------
+<IfModule mod_mime.c>
+  AddType application/javascript          .js
+  AddType text/css                        .css
+  AddType image/svg+xml                   .svg
+  AddType application/manifest+json       .webmanifest
+</IfModule>
+
+# --- gzip: the game is all text, so this roughly quarters the download
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript \
+                                image/svg+xml application/manifest+json text/plain
+</IfModule>
+
+# =====================================================================
+#  nginx equivalent — put this in your server / location block:
+#
+#    location ~* \.html$ {
+#        add_header Cache-Control "no-cache, no-store, must-revalidate";
+#        expires -1;
+#    }
+#    location ~* \.(js|css|svg|png|jpg|jpeg|webp|woff2?)$ {
+#        add_header Cache-Control "public, max-age=31536000, immutable";
+#    }
+#    gzip on;
+#    gzip_types text/html text/css application/javascript image/svg+xml;
+# =====================================================================

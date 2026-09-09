@@ -1,0 +1,28 @@
+<!-- =========================================================
+     iOS: landscape only. Paste into ios/App/App/Info.plist
+     ========================================================= -->
+
+<key>UISupportedInterfaceOrientations</key>
+<array>
+  <string>UIInterfaceOrientationLandscapeLeft</string>
+  <string>UIInterfaceOrientationLandscapeRight</string>
+</array>
+
+<key>UISupportedInterfaceOrientations~ipad</key>
+<array>
+  <string>UIInterfaceOrientationLandscapeLeft</string>
+  <string>UIInterfaceOrientationLandscapeRight</string>
+</array>
+
+<key>UIRequiresFullScreen</key>
+<true/>
+
+<key>UIStatusBarHidden</key>
+<true/>
+
+<key>UIViewControllerBasedStatusBarAppearance</key>
+<false/>
+
+<!-- AdMob application identifier (the one with a ~, from your AdMob console) -->
+<key>GADApplicationIdentifier</key>
+<string>ca-app-pub-4203857211510947~XXXXXXXXXX</string>

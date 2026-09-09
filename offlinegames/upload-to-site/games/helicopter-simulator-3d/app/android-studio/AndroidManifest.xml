@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =====================================================================
+     Helicopter Simulator 3D — Android WebView wrapper manifest
+
+     THE LINE THAT LOCKS THE APP TO LANDSCAPE is on the <activity> below:
+
+         android:screenOrientation="sensorLandscape"
+
+     "sensorLandscape" lets the player hold the phone either way round in
+     landscape (most people expect this). Use "landscape" to pin one single
+     direction, or "userLandscape" to respect the system rotation lock while
+     still staying landscape.
+
+     Just as important is android:configChanges. Without it Android destroys
+     and recreates the activity on every rotation, which reloads the WebView
+     and restarts the game from scratch.
+     ===================================================================== -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="art.offlinegames.helicopter">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- the game needs a GPU; declaring it keeps it off devices that cannot run it -->
+    <uses-feature android:glEsVersion="0x00030000" android:required="true" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:hardwareAccelerated="true"
+        android:usesCleartextTraffic="false"
+        android:theme="@style/Theme.Fullscreen">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:screenOrientation="sensorLandscape"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboard|keyboardHidden|uiMode|density|locale|fontScale"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.Fullscreen"
+            android:windowSoftInputMode="adjustNothing">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

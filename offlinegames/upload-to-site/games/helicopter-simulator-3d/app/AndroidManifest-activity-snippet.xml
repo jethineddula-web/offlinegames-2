@@ -1,0 +1,21 @@
+<!-- =========================================================
+     The one attribute that actually locks an Android app to landscape.
+     Put it on your main <activity> in AndroidManifest.xml.
+
+     sensorLandscape  = landscape, either way round  (recommended)
+     landscape        = one fixed direction only
+     ========================================================= -->
+
+<activity
+    android:name=".MainActivity"
+    android:label="@string/app_name"
+    android:theme="@style/AppTheme.NoActionBar"
+    android:screenOrientation="sensorLandscape"
+    android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode"
+    android:launchMode="singleTop"
+    android:exported="true">
+  <intent-filter>
+    <action android:name="android.intent.action.MAIN" />
+    <category android:name="android.intent.category.LAUNCHER" />
+  </intent-filter>
+</activity>

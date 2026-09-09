@@ -1,0 +1,21 @@
+{
+  "appId": "art.offlinegames.helicopter",
+  "appName": "Helicopter Simulator 3D",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": true,
+    "captureInput": false,
+    "webContentsDebuggingEnabled": false
+  },
+  "ios": {
+    "contentInset": "never"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 800,
+      "backgroundColor": "#070c12",
+      "androidScaleType": "CENTER_CROP"
+    }
+  }
+}

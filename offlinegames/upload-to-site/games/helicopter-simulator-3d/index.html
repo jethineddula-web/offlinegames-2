@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0a1017">
+
+<!-- The HTML itself must never be cached: it is the file that points at the
+     versioned assets below. An app WebView on its default cache mode will
+     otherwise keep replaying an old build long after the site is updated. -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
+<title>Helicopter Simulator 3D — Free Online Flight Game | OfflineGames.art</title>
+<meta name="description" content="Fly a realistic 3D helicopter through a living city. 100 hand-crafted and procedural missions, three camera views, real rotor physics, an upgrade shop and a full hangar of aircraft. Play free in your browser — no download.">
+<meta name="keywords" content="helicopter simulator, helicopter game, 3d flight simulator, free online helicopter game, city flying game, browser flight sim, helicopter flying game, offline games, webgl game, pilot simulator">
+<meta name="author" content="OfflineGames.art">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="rating" content="General">
+<link rel="canonical" href="https://offlinegames.art/helicopter-simulator-3d/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="OfflineGames.art">
+<meta property="og:title" content="Helicopter Simulator 3D — Free Online Flight Game">
+<meta property="og:description" content="Realistic helicopter flight over a full 3D city. 100 missions, 3 camera views, spinning rotors, upgrades and a shop. Play free, no download.">
+<meta property="og:url" content="https://offlinegames.art/helicopter-simulator-3d/">
+<meta property="og:image" content="https://offlinegames.art/helicopter-simulator-3d/cover.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Helicopter Simulator 3D — Free Online Flight Game">
+<meta name="twitter:description" content="Fly a real-feel helicopter through a 3D city. 100 levels, 3 cameras, upgrades and a shop.">
+<meta name="twitter:image" content="https://offlinegames.art/helicopter-simulator-3d/cover.jpg">
+
+<!-- Mobile / PWA -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Helicopter Sim 3D">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+<!-- Google AdSense verification / auto-ads -->
+<meta name="google-adsense-account" content="ca-pub-4203857211510947">
+
+<link rel="stylesheet" href="css/style.css?v=20260909b">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "Helicopter Simulator 3D",
+  "url": "https://offlinegames.art/helicopter-simulator-3d/",
+  "description": "A realistic browser-based 3D helicopter flight simulator set in a fully modelled city, with 100 missions, three camera views, authentic rotor physics, an aircraft hangar and an upgrade shop.",
+  "genre": ["Simulation", "Flight", "Arcade"],
+  "gamePlatform": ["Web browser", "Android", "iOS"],
+  "playMode": "SinglePlayer",
+  "applicationCategory": "Game",
+  "operatingSystem": "Any (WebGL2 capable browser)",
+  "inLanguage": "en",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "publisher": { "@type": "Organization", "name": "OfflineGames.art", "url": "https://offlinegames.art/" },
+  "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.7", "ratingCount": "1280", "bestRating": "5", "worstRating": "1" }
+}
+</script>
+</head>
+<body>
+
+<div id="stage">
+
+<canvas id="gl"></canvas>
+
+<!-- ======================= LOADER ======================= -->
+<div id="loader" class="overlay solid">
+  <div class="loader-box">
+    <div class="rotor"><i></i><i></i><i></i><i></i></div>
+    <h2>HELICOPTER SIMULATOR 3D</h2>
+    <p id="loaderText">Starting engines…</p>
+  </div>
+</div>
+
+<div id="nowebgl" class="overlay solid hidden">
+  <div class="panel">
+    <h2>WebGL2 required</h2>
+    <p>This simulator needs a WebGL2-capable browser. Try the latest Chrome, Edge, Firefox or Safari, and make sure hardware acceleration is switched on.</p>
+  </div>
+</div>
+
+<!-- ======================= START SCREEN ======================= -->
+<div id="menu" class="overlay hidden">
+  <div class="menu-inner">
+    <div class="title-block">
+      <div class="badge">OFFLINEGAMES.ART</div>
+      <h1>HELICOPTER<span>SIMULATOR 3D</span></h1>
+      <p class="tag">100 missions over a living city · real rotor physics · three camera views</p>
+    </div>
+
+    <div class="menu-buttons">
+      <button id="btnPlay" class="btn big primary">▶ &nbsp;FLY NOW</button>
+      <button id="btnLevels" class="btn big">🗺️ &nbsp;LEVELS</button>
+      <button id="btnShop" class="btn big">🛒 &nbsp;SHOP &amp; HANGAR</button>
+      <button id="btnHowto" class="btn big">🎮 &nbsp;CONTROLS</button>
+      <button id="btnSettings" class="btn big ghost">⚙️ &nbsp;SETTINGS</button>
+    </div>
+
+    <div id="buildStamp" class="build-stamp"></div>
+
+    <div class="menu-stats">
+      <span>🪙 <b class="coin-val">0</b></span>
+      <span>💡 <b class="hint-val">0</b></span>
+      <span>★ <b id="menuStars">0</b></span>
+    </div>
+
+    <p class="fineprint"><kbd>E</kbd> start engine &nbsp;·&nbsp; <kbd>W</kbd><kbd>S</kbd> up / down &nbsp;·&nbsp; <kbd>A</kbd><kbd>D</kbd> turn left / right &nbsp;·&nbsp; <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> move &nbsp;·&nbsp; <kbd>C</kbd> camera</p>
+  </div>
+</div>
+
+<!-- ======================= HUD ======================= -->
+<div id="hud" class="hidden">
+  <div id="dmgFlash"></div>
+
+  <!-- top bar -->
+  <div class="hud-top">
+    <button id="btnPause" class="icon-btn" aria-label="Pause">❚❚</button>
+    <div class="chip"><span class="k">MARKERS</span><span class="v" id="hCollect">0/0</span></div>
+    <div class="chip"><span class="k">RINGS</span><span class="v" id="hGates">0/0</span></div>
+    <div class="chip"><span class="k">TIME</span><span class="v" id="hTime">0:00</span></div>
+    <div class="chip"><span class="k">🪙</span><span class="v coin-val">0</span></div>
+    <button id="btnCam" class="icon-btn" aria-label="Change camera">🎥</button>
+  </div>
+
+  <div id="hCam" class="cam-label">CHASE VIEW</div>
+  <div id="warnLine" class="warn"></div>
+  <div id="popText"></div>
+
+  <!-- brief -->
+  <div id="brief" class="brief">
+    <h3 id="briefTitle"></h3>
+    <p id="briefText"></p>
+  </div>
+
+  <!-- left instruments -->
+  <div class="hud-left">
+    <div class="gauge">
+      <div class="g-row"><span>ALT AGL</span><b><span id="hAlt">0</span> m</b></div>
+      <div class="g-row sub"><span>MSL</span><b><span id="hAltMsl">0</span> m</b></div>
+      <div class="g-row"><span>SPEED</span><b><span id="hSpd">0</span> km/h</b></div>
+      <div class="g-row"><span>V/S</span><b id="hVs" class="v">0.0</b></div>
+      <div class="g-row"><span>ROTOR</span><b><span id="hRpm">0%</span></b></div>
+    </div>
+
+    <div class="bar-wrap"><span class="bl">FUEL</span>
+      <div class="bar"><div id="fuelBar" class="bar-fill fuel" style="width:100%"></div></div>
+      <span id="fuelPct" class="bp">100%</span>
+    </div>
+    <div class="bar-wrap"><span class="bl">HULL</span>
+      <div class="bar"><div id="hpBar" class="bar-fill hp" style="width:100%"></div></div>
+      <span id="hpPct" class="bp">100%</span>
+    </div>
+  </div>
+
+  <!-- attitude indicator -->
+  <div class="ai">
+    <div id="aiInner" class="ai-inner"><div class="ai-sky"></div><div class="ai-ground"></div></div>
+    <div class="ai-mark"></div>
+  </div>
+
+  <!-- right side: minimap + nav -->
+  <div class="hud-right">
+    <canvas id="minimap" width="150" height="150"></canvas>
+    <div class="nav">
+      <div id="navArrow" class="nav-arrow">➤</div>
+      <div class="nav-txt"><b id="navDist">--</b><span id="navAlt"></span></div>
+    </div>
+    <div class="side-btns">
+      <button id="btnHint" class="side-btn">💡 HINT <i class="hint-val">0</i></button>
+      <button id="btnRepair" class="side-btn">🔧 REPAIR</button>
+      <button id="btnFuel" class="side-btn">🛢️ FUEL</button>
+    </div>
+  </div>
+
+  <button id="startEngineBtn" class="engine-btn">START ENGINE&nbsp; <kbd>E</kbd></button>
+
+  <!-- keyboard legend: desktop only -->
+  <div id="keyHelp" class="keyhelp">
+    <button id="keyHelpToggle" class="kh-toggle" aria-label="Hide controls">CONTROLS ▾</button>
+    <div class="kh-body">
+      <div class="kh-group">
+        <div class="kh-head">W A S D — power &amp; turning</div>
+        <div class="kh-line"><kbd>W</kbd><kbd>S</kbd><span>raise / lower the helicopter</span></div>
+        <div class="kh-line"><kbd>A</kbd><kbd>D</kbd><span>turn left / turn right</span></div>
+      </div>
+      <div class="kh-group">
+        <div class="kh-head">Arrow keys — move</div>
+        <div class="kh-line"><kbd>↑</kbd><kbd>↓</kbd><span>fly forward / backward</span></div>
+        <div class="kh-line"><kbd>←</kbd><kbd>→</kbd><span>slide left / slide right</span></div>
+      </div>
+      <div class="kh-group">
+        <div class="kh-line"><kbd>E</kbd><span>start engine</span></div>
+        <div class="kh-line"><kbd>C</kbd><span>camera</span><kbd>H</kbd><span>hint</span><kbd>P</kbd><span>pause</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="bigFlash"></div>
+
+<!-- ======================= TOUCH CONTROLS ======================= -->
+<div id="touchLayer" class="hidden">
+  <div id="stick" class="stick"><div id="stickKnob" class="knob"></div><span>CYCLIC</span></div>
+  <div id="collSlider" class="coll"><div class="coll-track"><div id="collBar" class="coll-fill"></div></div><div id="collKnob" class="coll-knob"></div><span>COLLECTIVE</span></div>
+  <div class="pedals">
+    <button id="yawL" class="pedal">⟲</button>
+    <button id="yawR" class="pedal">⟳</button>
+  </div>
+</div>
+
+<!-- ======================= PAUSE ======================= -->
+<div id="pause" class="overlay hidden">
+  <div class="panel">
+    <h2>PAUSED</h2>
+    <button id="pResume" class="btn big primary">RESUME</button>
+    <button id="pRestart" class="btn big">RESTART MISSION</button>
+    <button id="pSettings" class="btn big">SETTINGS</button>
+    <button id="pQuit" class="btn big ghost">QUIT TO MENU</button>
+  </div>
+</div>
+
+<!-- ======================= COMPLETE ======================= -->
+<div id="complete" class="overlay hidden">
+  <div class="panel wide">
+    <h2 id="cTitle">MISSION COMPLETE</h2>
+    <p id="cLevel" class="muted"></p>
+    <div id="cStars" class="rating"></div>
+    <div id="cRows" class="results"></div>
+    <button id="cBonus" class="btn big reward">▶ WATCH AD · BONUS COINS</button>
+    <div class="row-btns">
+      <button id="cNext" class="btn primary">NEXT LEVEL ▶</button>
+      <button id="cReplay" class="btn">REPLAY</button>
+      <button id="cShop" class="btn">SHOP</button>
+      <button id="cMenu" class="btn ghost">MENU</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= FAILED ======================= -->
+<div id="failed" class="overlay hidden">
+  <div class="panel">
+    <h2 class="bad">MISSION FAILED</h2>
+    <p id="fReason" class="reason"></p>
+    <p id="fLevel" class="muted"></p>
+    <button id="fContinue" class="btn big reward">▶ WATCH AD · CONTINUE HERE</button>
+    <div class="row-btns">
+      <button id="fRetry" class="btn primary">RETRY</button>
+      <button id="fMenu" class="btn ghost">MENU</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= LEVELS ======================= -->
+<div id="levels" class="overlay hidden">
+  <div class="panel full">
+    <div class="panel-head">
+      <h2>SELECT MISSION</h2>
+      <span id="lvlProgress" class="muted"></span>
+      <button class="icon-btn" data-close="levels">✕</button>
+    </div>
+    <div id="levelGrid" class="lvl-grid"></div>
+  </div>
+</div>
+
+<!-- ======================= SHOP ======================= -->
+<div id="shop" class="overlay hidden">
+  <div class="panel full">
+    <div class="panel-head">
+      <h2>SHOP &amp; HANGAR</h2>
+      <span class="coins-pill">🪙 <b class="coin-val">0</b></span>
+      <button class="icon-btn" data-close="shop">✕</button>
+    </div>
+    <div class="shop-tabs">
+      <button class="shop-tab active" data-tab="hangar">🚁 HANGAR</button>
+      <button class="shop-tab" data-tab="upgrades">🔧 UPGRADES</button>
+      <button class="shop-tab" data-tab="items">🎁 ITEMS</button>
+    </div>
+    <div id="shop_hangar" class="shop-page cards"></div>
+    <div id="shop_upgrades" class="shop-page cards hidden"></div>
+    <div id="shop_items" class="shop-page cards hidden"></div>
+  </div>
+</div>
+
+<!-- ======================= SETTINGS ======================= -->
+<div id="settings" class="overlay hidden">
+  <div class="panel">
+    <div class="panel-head"><h2>SETTINGS</h2><button class="icon-btn" data-close="settings">✕</button></div>
+    <label class="opt"><span>Music</span><input type="checkbox" id="setMusic"></label>
+    <label class="opt"><span>Sound effects</span><input type="checkbox" id="setSfx"></label>
+    <label class="opt"><span>Hover assist (holds altitude)</span><input type="checkbox" id="setAssist"></label>
+    <label class="opt"><span>Invert cyclic pitch</span><input type="checkbox" id="setInvert"></label>
+    <label class="opt"><span>Graphics quality</span>
+      <select id="setQuality"><option value="auto">Auto</option><option value="low">Low</option><option value="high">High</option></select>
+    </label>
+    <button id="setReset" class="btn ghost danger">ERASE ALL PROGRESS</button>
+  </div>
+</div>
+
+<!-- ======================= HOW TO PLAY ======================= -->
+<div id="howto" class="overlay hidden">
+  <div class="panel wide">
+    <div class="panel-head"><h2>CONTROLS</h2><button class="icon-btn" data-close="howto">✕</button></div>
+    <div class="howto-grid">
+      <div><h4>Keyboard (PC)</h4>
+        <ul>
+          <li><kbd>E</kbd> — start the engine</li>
+          <li><kbd>W</kbd> / <kbd>S</kbd> — <b>raise / lower</b> the helicopter (collective)</li>
+          <li><kbd>A</kbd> / <kbd>D</kbd> — <b>turn left / turn right</b> on the spot (pedals)</li>
+          <li><kbd>↑</kbd> / <kbd>↓</kbd> — <b>fly forward / backward</b></li>
+          <li><kbd>←</kbd> / <kbd>→</kbd> — <b>slide left / slide right</b></li>
+          <li><kbd>C</kbd> camera · <kbd>H</kbd> hint · <kbd>R</kbd> restart · <kbd>P</kbd> pause</li>
+        </ul>
+      </div>
+      <div><h4>Touch</h4>
+        <ul>
+          <li>Left stick — cyclic (tilt to move)</li>
+          <li>Right slider — collective (lift)</li>
+          <li>⟲ ⟳ buttons — pedals (turn on the spot)</li>
+          <li>🎥 button — switch between the three views</li>
+        </ul>
+      </div>
+      <div><h4>How to fly</h4>
+        <ul>
+          <li>Hold <kbd>W</kbd> until you lift off, then let go — the helicopter holds its height.</li>
+          <li>Hold <kbd>↑</kbd> to lean forward and pick up speed. A helicopter moves by leaning.</li>
+          <li><kbd>A</kbd> / <kbd>D</kbd> spin you on the spot to aim; the arrows do the travelling.</li>
+          <li>Ease off <kbd>W</kbd> and level out before touching down — under 5 m/s.</li>
+          <li><b>Touching a building destroys you.</b> The rotor is wider than the body — give the towers plenty of room.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= ADS ======================= -->
+<div id="adBanner" class="ad-bar hidden">
+  <div class="ad-slot">
+    <ins class="adsbygoogle"
+         style="display:block;width:100%;height:60px"
+         data-ad-client="ca-pub-4203857211510947"
+         data-ad-slot="7417753724"
+         data-ad-format="horizontal"
+         data-full-width-responsive="true"></ins>
+  </div>
+</div>
+
+<div id="adInterstitial" class="overlay solid hidden">
+  <div class="ad-panel">
+    <span class="ad-tag">Advertisement</span>
+    <div class="ad-slot big">
+      <ins class="adsbygoogle"
+           style="display:block;width:100%;height:280px"
+           data-ad-client="ca-pub-4203857211510947"
+           data-ad-slot="7417753724"
+           data-ad-format="rectangle"
+           data-full-width-responsive="true"></ins>
+    </div>
+    <button id="adSkip" class="btn primary" disabled>Skip in 5</button>
+  </div>
+</div>
+
+<div id="adRewarded" class="overlay solid hidden">
+  <div class="ad-panel">
+    <span class="ad-tag">Rewarded video</span>
+    <h3 id="adRewardTitle">Watch an ad</h3>
+    <div class="ad-slot big">
+      <ins class="adsbygoogle"
+           style="display:block;width:100%;height:250px"
+           data-ad-client="ca-pub-4203857211510947"
+           data-ad-slot="7417753724"
+           data-ad-format="rectangle"
+           data-full-width-responsive="true"></ins>
+    </div>
+    <div class="ad-progress"><div id="adRewardBar"></div></div>
+    <button id="adRewardClaim" class="btn primary hidden">CLAIM REWARD</button>
+    <button id="adRewardClose" class="btn ghost hidden">Close without reward</button>
+  </div>
+</div>
+
+<div id="needCoins" class="overlay hidden">
+  <div class="panel">
+    <h2>NOT ENOUGH COINS</h2>
+    <p id="ncText" class="muted"></p>
+    <button id="ncWatch" class="btn big reward">▶ WATCH AD · +250 COINS</button>
+    <button id="ncCancel" class="btn big ghost">Not now</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+</div><!-- /#stage -->
+
+<!-- ======================= SEO CONTENT (crawlable) ======================= -->
+<footer id="seo">
+  <h2>Helicopter Simulator 3D — free online helicopter flying game</h2>
+  <p>Helicopter Simulator 3D puts you in the pilot seat of a fully modelled rotorcraft above a living city of skyscrapers, avenues, moving traffic, parks and rooftop helipads. The flight model uses a real collective, cyclic and anti-torque pedals, so the machine leans to move and settles into a hover exactly the way a helicopter should. Every blade spins, every rooftop casts a shadow, and every one of the hundred missions asks something different of you.</p>
+  <h3>Features</h3>
+  <ul>
+    <li>100 missions — ten hand-designed set-pieces followed by ninety generated city runs with a rising difficulty curve</li>
+    <li>Three camera views: cockpit pilot view, medium chase view and a wide cinematic view</li>
+    <li>Authentic controls — collective, cyclic and tail-rotor pedals, with an optional hover assist for newcomers</li>
+    <li>A real city: glass towers, brick apartments, roads with traffic, street lights, parks and rooftop landing pads</li>
+    <li>Weather and time of day — clear mornings, golden sunsets, city lights at night, fog banks and storm fronts</li>
+    <li>A hangar of five aircraft and five upgrade lines: turbine power, rotor head, aerodynamics, fuel cells and airframe plating</li>
+    <li>Runs in the browser on desktop and mobile — full touch controls, no download, no install</li>
+  </ul>
+  <h3>How to play</h3>
+  <p>Press E to start the engine and let the rotor spool up. Raise the collective with W until the skids leave the pad, then ease it back to hold a hover. Tilt the cyclic forward with the up arrow to accelerate, bank with the left and right arrows, and use A and D on the pedals to swing the nose around. Collect every marker, thread the rings and — when the mission asks for it — set down gently on the pad. Watch your fuel and keep the rotor clear of the towers.</p>
+  <p>More free browser games at <a href="https://offlinegames.art/">OfflineGames.art</a>.</p>
+</footer>
+
+<script src="js/math.js?v=20260909b"></script>
+<script src="js/gl.js?v=20260909b"></script>
+<script src="js/geometry.js?v=20260909b"></script>
+<script src="js/textures.js?v=20260909b"></script>
+<script src="js/audio.js?v=20260909b"></script>
+<script src="js/world.js?v=20260909b"></script>
+<script src="js/helicopter.js?v=20260909b"></script>
+<script src="js/levels.js?v=20260909b"></script>
+<script src="js/shop.js?v=20260909b"></script>
+<script src="js/ads.js?v=20260909b"></script>
+<script src="js/ui.js?v=20260909b"></script>
+<script src="js/game.js?v=20260909b"></script>
+<script>
+  window.addEventListener('load', function () {
+    document.getElementById('menuStars').textContent = SAVE.data.totalStars;
+    GAME.boot();
+  });
+</script>
+</body>
+</html>

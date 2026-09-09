@@ -1,0 +1,28 @@
+<!-- =========================================================
+     Paste these into your Cordova config.xml, inside <widget>.
+     Then:  cordova plugin add cordova-plugin-screen-orientation
+            cordova platform rm android && cordova platform add android
+            cordova build android --release
+     ========================================================= -->
+
+<preference name="Orientation"   value="landscape" />
+<preference name="Fullscreen"    value="true" />
+<preference name="DisallowOverscroll" value="true" />
+<preference name="BackupWebStorage"   value="local" />
+<preference name="AndroidPersistentFileLocation" value="Internal" />
+
+<platform name="android">
+  <preference name="Orientation" value="landscape" />
+  <preference name="AndroidWindowSplitScreenLayout" value="false" />
+</platform>
+
+<platform name="ios">
+  <preference name="Orientation" value="landscape" />
+</platform>
+
+<!-- AdMob: replace the app id with the one from your AdMob console (it has a ~) -->
+<plugin name="admob-plus-cordova" spec="latest">
+  <variable name="APP_ID_ANDROID" value="ca-app-pub-4203857211510947~XXXXXXXXXX" />
+  <variable name="APP_ID_IOS"     value="ca-app-pub-4203857211510947~XXXXXXXXXX" />
+</plugin>
+<plugin name="cordova-plugin-screen-orientation" spec="latest" />

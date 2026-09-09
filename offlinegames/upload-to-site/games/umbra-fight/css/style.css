@@ -1,0 +1,283 @@
+:root {
+  --ink: #07060a;
+  --paper: #f3ead8;
+  --blood: #c41e3a;
+  --gold: #d4a017;
+  --muted: #9a8f7c;
+  --panel: rgba(10, 8, 12, 0.78);
+  --font-ui: "Barlow Condensed", "Trebuchet MS", sans-serif;
+  --font-display: "Cinzel", "Times New Roman", serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-ui);
+  user-select: none;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: #000;
+}
+
+/* Forced-landscape mode: used on phones/tablets that are held in
+   portrait. We rotate the whole app 90deg with CSS and swap the box's
+   width/height so it fills the (now sideways) viewport. This works on
+   every mobile browser, including iOS Safari, which has no reliable
+   JS orientation-lock API. */
+#wrap.rot90 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vh;
+  height: 100vw;
+  width: 100dvh;
+  height: 100dvw;
+  transform-origin: top left;
+  transform: rotate(90deg) translateY(-100%);
+}
+
+#stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  background: #000;
+  overflow: hidden;
+}
+
+canvas {
+  display: block;
+  position: absolute;
+  background: #07060a;
+}
+
+#overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+}
+
+#overlay .hit { pointer-events: auto; }
+
+#ad-wrap {
+  display: none;
+}
+
+#ad-wrap.hidden { display: none; }
+
+#ad-wrap ins {
+  width: 100%;
+  min-height: 50px;
+}
+
+#touch {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: none;
+}
+
+#touch.show { display: block; }
+
+.pad, .actions {
+  position: absolute;
+  bottom: 18px;
+  display: flex;
+  gap: 10px;
+  pointer-events: auto;
+}
+
+.pad { left: 14px; bottom: max(18px, env(safe-area-inset-bottom)); }
+.actions { right: 14px; bottom: max(18px, env(safe-area-inset-bottom)); }
+
+.tbtn {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: 1px solid rgba(212, 160, 23, 0.45);
+  background: rgba(8, 6, 10, 0.55);
+  color: var(--paper);
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+}
+
+.tbtn:active, .tbtn.down {
+  background: rgba(196, 30, 58, 0.55);
+  transform: scale(0.96);
+}
+
+.tbtn.wide { width: 70px; border-radius: 18px; }
+
+@media (min-width: 900px) {
+  .tbtn { width: 64px; height: 64px; }
+}
+
+.hidden { display: none !important; }
+
+#reward-modal {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(7, 6, 10, 0.78);
+  pointer-events: auto;
+}
+
+#reward-modal.hidden { display: none !important; }
+
+.reward-card {
+  width: min(520px, calc(100% - 32px));
+  padding: 28px 28px 22px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(22, 16, 20, 0.96), rgba(10, 8, 12, 0.96));
+  border: 1px solid rgba(212, 160, 23, 0.45);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+  text-align: center;
+}
+
+.reward-card h2 {
+  font-family: var(--font-display);
+  font-size: 28px;
+  letter-spacing: 0.08em;
+  color: var(--paper);
+  margin-bottom: 8px;
+}
+
+.reward-card p {
+  color: var(--muted);
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  margin-bottom: 14px;
+}
+
+#reward-ad {
+  min-height: 90px;
+  background: #120c14;
+  border: 1px solid #2a241c;
+  border-radius: 8px;
+  margin-bottom: 14px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#reward-count {
+  font-family: var(--font-display);
+  color: var(--gold);
+  font-size: 22px;
+  letter-spacing: 0.2em;
+  margin-bottom: 14px;
+}
+
+.reward-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.reward-actions button {
+  flex: 1;
+  height: 48px;
+  border-radius: 10px;
+  border: 1px solid rgba(212, 160, 23, 0.45);
+  background: rgba(10, 8, 12, 0.8);
+  color: var(--paper);
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+}
+
+.reward-actions button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+#reward-claim:not(:disabled) {
+  background: rgba(196, 30, 58, 0.85);
+  border-color: var(--gold);
+}
+
+/* ---------- Rotate-device overlay ---------- */
+
+#rotate-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--ink);
+  color: var(--paper);
+  pointer-events: auto;
+}
+
+#rotate-overlay.hidden { display: none !important; }
+
+.rotate-card {
+  max-width: 340px;
+  text-align: center;
+}
+
+.rotate-icon {
+  width: 96px;
+  height: 96px;
+  color: var(--paper);
+  margin-bottom: 22px;
+}
+
+.rotate-icon-phone {
+  transform-origin: 50px 50px;
+  animation: rotate-phone-tilt 1.8s ease-in-out infinite;
+}
+
+.rotate-icon-arrow,
+.rotate-icon-arrowhead {
+  color: var(--gold);
+  opacity: 0.9;
+}
+
+@keyframes rotate-phone-tilt {
+  0% { transform: rotate(0deg); }
+  35% { transform: rotate(-90deg); }
+  65% { transform: rotate(-90deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.rotate-card h2 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  letter-spacing: 0.06em;
+  margin-bottom: 10px;
+}
+
+.rotate-card p {
+  color: var(--muted);
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+}

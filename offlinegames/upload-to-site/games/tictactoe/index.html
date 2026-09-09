@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+
+  <!-- ===================== SEO META TAGS ===================== -->
+  <title>Tic Tac Toe – Free Online Game vs Friend or Computer | Offline Games</title>
+  <meta name="description" content="Play Tic Tac Toe free online — challenge a friend or the computer with easy, medium, and hard difficulty. No download, no signup, play instantly in your browser." />
+  <meta name="keywords" content="tic tac toe, tic tac toe online, tic tac toe vs computer, free online game, browser game, 2 player game, offline games, offlinegames.art, no download game" />
+  <meta name="author" content="Offline Games" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <link rel="canonical" href="https://offlinegames.art/games/tic-tac-toe/" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Offline Games" />
+  <meta property="og:title" content="Tic Tac Toe – Free Online Game vs Friend or Computer" />
+  <meta property="og:description" content="Challenge a friend or the computer in classic Tic Tac Toe, with three difficulty levels. Fast-loading, no download or signup required." />
+  <meta property="og:url" content="https://offlinegames.art/games/tic-tac-toe/" />
+  <meta property="og:image" content="https://offlinegames.art/assets/tic-tac-toe/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Tic Tac Toe – Free Online Game vs Friend or Computer" />
+  <meta name="twitter:description" content="Challenge a friend or the computer in classic Tic Tac Toe, with three difficulty levels. Play instantly in your browser." />
+  <meta name="twitter:image" content="https://offlinegames.art/assets/tic-tac-toe/og-image.png" />
+
+  <!-- Structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "VideoGame",
+    "name": "Tic Tac Toe",
+    "url": "https://offlinegames.art/games/tic-tac-toe/",
+    "description": "Classic Tic Tac Toe — play against a friend or the computer with easy, medium, and hard difficulty.",
+    "applicationCategory": "Game",
+    "genre": ["Board", "Strategy", "Casual"],
+    "operatingSystem": "Any (Web Browser)",
+    "publisher": { "@type": "Organization", "name": "Offline Games", "url": "https://offlinegames.art" },
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
+  <!-- =================== END SEO META TAGS =================== -->
+
+  <meta name="theme-color" content="#07071a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="application-name" content="Tic Tac Toe" />
+  <link rel="icon" href="logo.png" type="image/png" />
+  <link rel="apple-touch-icon" href="logo.png" />
+  <link rel="stylesheet" href="style.css" />
+
+</head>
+<body>
+  <div class="bg">
+    <div class="orb x"></div>
+    <div class="orb o"></div>
+    <div class="orb w"></div>
+    <div id="floatMarks"></div>
+  </div>
+
+  <div class="app">
+    <section id="startScreen" class="screen start active">
+      <div class="logo-wrap">
+        <div class="brand-logo-frame">
+          <img class="brand-logo" src="logo.png" alt="Tic Tac Toe" />
+        </div>
+        <h1 class="logo" id="logoTitle"></h1>
+      </div>
+      <p class="tagline">Classic. Fast. Addictive.</p>
+      <div class="panel">
+        <button class="btn" id="btnPvp">Play vs Friend</button>
+        <button class="btn pink" id="btnAi">Play vs Computer</button>
+        <div class="diff" id="diffBox">
+          <label>Difficulty</label>
+          <div class="chips">
+            <button class="chip" data-diff="easy">Easy</button>
+            <button class="chip on" data-diff="medium">Medium</button>
+            <button class="chip" data-diff="hard">Hard</button>
+          </div>
+          <button class="btn" id="btnStartAi" style="margin-top:12px">Start Match</button>
+        </div>
+        <div class="toggles">
+          <span>Sound</span>
+          <div class="toggle on" id="soundToggle"><i></i></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="gameScreen" class="screen game">
+      <div class="topbar">
+        <div class="brand-mini"><img src="logo.png" alt="" />TIC <em>TAC</em> TOE</div>
+        <button class="btn ghost small" id="btnMenu">Menu</button>
+      </div>
+      <div class="scores">
+        <div class="score-card x"><b id="scoreX">0</b><span id="labelX">You (X)</span></div>
+        <div class="score-card"><b id="scoreD">0</b><span>Draws</span></div>
+        <div class="score-card o"><b id="scoreO">0</b><span id="labelO">CPU (O)</span></div>
+      </div>
+      <div class="status" id="status">X to play</div>
+      <div class="board-wrap" id="boardWrap">
+        <div class="board" id="board"></div>
+      </div>
+      <div class="actions">
+        <button class="btn ghost" id="btnRestart">New Round</button>
+        <button class="btn" id="btnResetScores">Reset Score</button>
+      </div>
+    </section>
+
+    <div class="ad-wrap" id="adWrap">
+      <ins class="adsbygoogle"
+           style="display:block;width:100%;min-height:60px"
+           data-ad-client="ca-pub-4203857211510947"
+           data-ad-slot="7417753724"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <div class="ad-fallback" id="adFallback" style="display:none">Advertisement</div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h2 id="modalTitle">You Win</h2>
+      <p id="modalText">Nice board control.</p>
+      <button class="btn" id="modalAgain">Play Again</button>
+      <button class="btn ghost" id="modalMenu" style="margin-top:10px">Back to Menu</button>
+    </div>
+  </div>
+  <div class="confetti" id="confetti"></div>
+
+  <script src="game.js"></script>
+
+</body>
+</html>

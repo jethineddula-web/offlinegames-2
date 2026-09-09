@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+  <meta name="description" content="Play Apex Drift free online — a fast 3D car drifting game with chase cam, unique circuits, and reverse. No download required." />
+
+  <title>Apex Drift – Free 3D Car Drifting Game Online | Offline Games</title>
+
+  <!-- SEO -->
+  <meta name="keywords" content="Apex Drift, car drifting game, drift game online, free racing game, 3D car game, drift simulator, online drifting game" />
+  <meta name="author" content="Offline Games" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://offlinegames.art/apex-drift/" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Offline Games" />
+  <meta property="og:title" content="Apex Drift – Free 3D Car Drifting Game Online" />
+  <meta property="og:description" content="Chase cam, unique circuits, reverse. Play Apex Drift free in your browser — no download needed." />
+  <meta property="og:url" content="https://offlinegames.art/apex-drift/" />
+  <meta property="og:image" content="https://offlinegames.art/apex-drift/social-share.png" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Apex Drift – Free 3D Car Drifting Game Online" />
+  <meta name="twitter:description" content="Free browser drift racer with chase cam and unique circuits. No download required." />
+  <meta name="twitter:image" content="https://offlinegames.art/apex-drift/social-share.png" />
+
+  <!-- Structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "VideoGame",
+    "name": "Apex Drift",
+    "url": "https://offlinegames.art/apex-drift/",
+    "description": "Free 3D car drifting game with chase cam, unique circuits, and reverse mode.",
+    "genre": "Racing",
+    "gamePlatform": "Web Browser",
+    "applicationCategory": "Game",
+    "operatingSystem": "Any",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Offline Games"
+    }
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&display=swap"
+  />
+  <link rel="stylesheet" href="./css/style.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.185.1/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="apex-root" id="apex-root">
+    <div class="apex-boot">
+      <p class="apex-boot-kicker">Circuit series</p>
+      <h1 class="apex-boot-title">Apex Drift</h1>
+      <p class="apex-boot-sub">Chase cam &middot; unique circuits &middot; reverse</p>
+    </div>
+  </div>
+  <script type="module">
+    import { mountGame } from "./js/boot.js";
+    const root = document.getElementById("apex-root");
+    mountGame(root);
+  </script>
+</body>
+</html>

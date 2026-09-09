@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0a0d14">
+<title>Thunder Circuit — Free 3D Stock Car Racing Game | OfflineGames.art</title>
+<meta name="description" content="Thunder Circuit is a free 3D stock car racing simulation with 30 international tracks, realistic damage, pit stops, fuel strategy, three camera views and 19 AI rivals. Play instantly in your browser — no download.">
+<meta name="keywords" content="stock car racing game, 3d racing game, free online racing, oval racing simulator, browser racing game, car racing simulation, pit stop game, offlinegames.art">
+<meta name="author" content="OfflineGames.art">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://offlinegames.art/thunder-circuit/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="OfflineGames.art">
+<meta property="og:title" content="Thunder Circuit — Free 3D Stock Car Racing Game">
+<meta property="og:description" content="30 tracks, 20-car fields, real damage, fuel strategy and pit stops. Race stock cars in your browser for free.">
+<meta property="og:url" content="https://offlinegames.art/thunder-circuit/">
+<meta property="og:image" content="https://offlinegames.art/thunder-circuit/cover.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Thunder Circuit — Free 3D Stock Car Racing Game">
+<meta name="twitter:description" content="30 tracks, 20-car fields, real damage, fuel strategy and pit stops. Play free, no download.">
+<meta name="twitter:image" content="https://offlinegames.art/thunder-circuit/cover.jpg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="screen-orientation" content="landscape">
+<meta name="x5-orientation" content="landscape">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"VideoGame","name":"Thunder Circuit","alternateName":"Thunder Circuit: Stock Car Racing",
+"url":"https://offlinegames.art/thunder-circuit/","description":"Free 3D stock car racing simulation with 30 international tracks, damage modelling, fuel strategy and pit stops.",
+"genre":["Racing","Simulation","Sports"],"playMode":"SinglePlayer","applicationCategory":"Game",
+"gamePlatform":["Web browser","Android"],"operatingSystem":"Any","inLanguage":"en",
+"author":{"@type":"Organization","name":"OfflineGames.art","url":"https://offlinegames.art/"},
+"publisher":{"@type":"Organization","name":"OfflineGames.art","url":"https://offlinegames.art/"},
+"offers":{"@type":"Offer","price":"0","priceCurrency":"USD","availability":"https://schema.org/InStock"},
+"aggregateRating":{"@type":"AggregateRating","ratingValue":"4.7","ratingCount":"1280","bestRating":"5"}}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4203857211510947" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="game.css">
+</head>
+<body>
+<div id="game"><canvas id="c"></canvas></div>
+
+<!-- ================= HUD ================= -->
+<div id="hud" class="hide">
+  <div id="pos" class="hudbox"><div class="p">1<sup style="font-size:.45em">st</sup></div><div class="t">POSITION</div></div>
+  <div id="leftinfo" class="hudbox">
+    <div class="hrow"><span>LAP</span><b id="hLap">1 / 7</b></div>
+    <div class="hrow"><span>TIME</span><b id="hTime">0:00.0</b></div>
+    <div class="hrow"><span>BEST</span><b id="hBest">--:--</b></div>
+    <div class="hrow" style="margin-top:5px"><span>FUEL</span><span id="hFuelT" style="color:#cfd9ea">100%</span></div>
+    <div class="bar"><i id="hFuel" style="width:100%;background:linear-gradient(90deg,#3ee08a,#ffd45e)"></i></div>
+    <div class="hrow"><span>DAMAGE</span><span id="hDmgT" style="color:#cfd9ea">0%</span></div>
+    <div class="bar"><i id="hDmg" style="width:0%;background:linear-gradient(90deg,#ffd45e,#ff3b30)"></i></div>
+    <div class="hrow"><span>TYRES</span><span id="hTyreT" style="color:#cfd9ea">100%</span></div>
+    <div class="bar"><i id="hTyre" style="width:100%;background:linear-gradient(90deg,#4aa8ff,#8ed0ff)"></i></div>
+  </div>
+  <canvas id="minimap" width="264" height="264"></canvas>
+  <div id="board" class="hudbox"></div>
+  <div id="speedo" class="hudbox">
+    <div class="kmh" id="hSpeed">0</div><div class="unit">KM / H</div>
+    <div class="gear" id="hGear">N</div>
+    <div id="rpmbar"><i id="rpmfill"></i></div>
+  </div>
+  <div id="centermsg"></div>
+  <div id="pitprompt" class="hide">PIT LANE OPEN — KEEP RIGHT, SLOW TO 60</div>
+  <div id="pitpanel" class="hudbox hide">
+    <div class="pt">PIT STOP</div>
+    <div class="bar" style="height:9px;margin:7px 0 5px"><i id="pitfill" style="width:0%;background:linear-gradient(90deg,#3ee08a,#ffd45e)"></i></div>
+    <div id="pitstage">CREW OVER THE WALL</div>
+  </div>
+  <div id="hintarrow" class="hide">▲ RACING LINE ACTIVE</div>
+</div>
+<div id="flash"></div>
+<div id="speedfx"></div>
+
+<!-- ================= TOUCH ================= -->
+<div id="touch" class="hide">
+  <div class="tbtn" id="tLeft">◀</div><div class="tbtn" id="tRight">▶</div>
+  <div class="tbtn" id="tGas">GAS</div><div class="tbtn" id="tBrake">BRAKE</div>
+  <div class="tbtn" id="tHand">DRIFT</div><div class="tbtn" id="tCam">CAM</div><div class="tbtn" id="tPause">II</div>
+</div>
+
+<!-- ================= LOADING ================= -->
+<div id="loading"><h1 class="logo">THUNDER<br>CIRCUIT</h1><div id="lbar"><i id="lfill"></i></div><div id="ltext">Warming the engines…</div></div>
+
+<!-- ================= MAIN MENU ================= -->
+<div class="screen hide" id="scrMenu">
+  <h1 class="logo">THUNDER CIRCUIT</h1>
+  <div class="sub">Stock Car Racing Simulation</div>
+  <div class="menu">
+    <button class="btn" id="mQuick">▶ Quick Race</button>
+    <button class="btn ghost" id="mCareer">🏁 Championship</button>
+    <button class="btn ghost" id="mTracks">🌍 Choose Track</button>
+    <button class="btn ghost" id="mShop">🛒 Shop &amp; Garage</button>
+    <button class="btn ghost" id="mHow">📖 How To Play</button>
+    <button class="btn ghost" id="mSettings">⚙ Settings</button>
+  </div>
+  <div class="row" style="margin-top:18px;align-items:center">
+    <div class="coins">🪙 <span id="coinsMenu">0</span></div>
+    <div class="muted" style="margin-left:10px">Level <b id="lvlMenu" style="color:#ffd45e">1</b></div>
+  </div>
+  <div class="muted" style="margin-top:16px;text-align:center;max-width:520px">
+    30 circuits · 20-car fields · real damage · fuel strategy · pit stops<br>
+    <span style="opacity:.6">An original racing game by OfflineGames.art</span>
+  </div>
+</div>
+
+<!-- ================= TRACK SELECT ================= -->
+<div class="screen hide" id="scrTracks">
+  <button class="btn ghost small close" data-back>✕ Back</button>
+  <div class="title">Select Circuit</div>
+  <div class="tabs" id="regionTabs"></div>
+  <div class="scrollbox"><div class="tracks" id="trackGrid"></div></div>
+</div>
+
+<!-- ================= PRE-RACE ================= -->
+<div class="screen hide" id="scrPre">
+  <button class="btn ghost small close" data-back>✕ Back</button>
+  <div class="title" id="preName">Circuit</div>
+  <div class="card" style="width:min(680px,calc(var(--vw) * 0.94))">
+    <div class="row" style="justify-content:space-between">
+      <div><div class="muted">COUNTRY</div><b id="preCountry">—</b></div>
+      <div><div class="muted">LAYOUT</div><b id="preType">—</b></div>
+      <div><div class="muted">LENGTH</div><b id="preLen">—</b></div>
+      <div><div class="muted">LAPS</div><b id="preLaps">—</b></div>
+      <div><div class="muted">CONDITIONS</div><b id="preTod">—</b></div>
+    </div>
+    <div style="height:12px"></div>
+    <div class="row">
+      <label class="muted">Difficulty
+        <select id="preDiff" style="margin-left:8px;background:#161d2e;color:#e8edf6;border:1px solid #2c3a58;border-radius:7px;padding:6px 9px">
+          <option value="0">Rookie</option><option value="1" selected>Pro</option><option value="2">Legend</option>
+        </select></label>
+      <label class="muted">Laps
+        <select id="preLapSel" style="margin-left:8px;background:#161d2e;color:#e8edf6;border:1px solid #2c3a58;border-radius:7px;padding:6px 9px">
+          <option value="6">6</option><option value="7" selected>7</option><option value="10">10</option><option value="15">15</option>
+        </select></label>
+    </div>
+  </div>
+  <div class="menu"><button class="btn" id="preGo">▶ Start Race</button></div>
+</div>
+
+<!-- ================= HOW TO PLAY ================= -->
+<div class="screen hide" id="scrHow">
+  <button class="btn ghost small close" data-back>✕ Back</button>
+  <div class="title">How To Play</div>
+  <div class="tabs"><div class="tab" data-howtab="web">💻 Web / Desktop</div><div class="tab" data-howtab="app">📱 App / Phone</div></div>
+  <div class="scrollbox"><div id="howBody" class="card"></div></div>
+</div>
+
+<!-- ================= SETTINGS ================= -->
+<div class="screen hide" id="scrSet">
+  <button class="btn ghost small close" data-back>✕ Back</button>
+  <div class="title">Settings</div>
+  <div class="card" style="width:min(560px,calc(var(--vw) * 0.94));display:flex;flex-direction:column;gap:12px" id="setBody"></div>
+</div>
+
+<!-- ================= SHOP ================= -->
+<div class="screen hide" id="scrShop">
+  <button class="btn ghost small close" data-back>✕ Back</button>
+  <div class="title">Shop &amp; Garage</div>
+  <div class="row" style="margin-bottom:12px"><div class="coins">🪙 <span id="coinsShop">0</span></div>
+    <button class="btn small ghost" id="shopEarn">📺 Watch ad · +250</button></div>
+  <div class="tabs"><div class="tab on" data-shoptab="up">Upgrades</div><div class="tab" data-shoptab="paint">Paint</div><div class="tab" data-shoptab="cons">Consumables</div></div>
+  <div class="scrollbox"><div id="shopBody"></div></div>
+</div>
+
+<!-- ================= PAUSE ================= -->
+<div class="screen hide" id="scrPause">
+  <div class="title">Paused</div>
+  <div class="menu">
+    <button class="btn" id="pResume">▶ Resume</button>
+    <button class="btn ghost" id="pHint">💡 Watch ad · Racing line + repair</button>
+    <button class="btn ghost" id="pRestart">↻ Restart Race</button>
+    <button class="btn ghost" id="pCam">🎥 Change Camera</button>
+    <button class="btn ghost" id="pQuit">✕ Quit to Menu</button>
+  </div>
+</div>
+
+<!-- ================= RESULTS ================= -->
+<div class="screen hide" id="scrRes">
+  <div class="title" id="resTitle">Race Result</div>
+  <div class="card" style="width:min(720px,calc(var(--vw) * 0.95))">
+    <div class="scrollbox" style="max-height:calc(var(--vh) * 0.46)"><table class="res" id="resTable"></table></div>
+  </div>
+  <div class="row" style="margin-top:12px"><div class="coins">🪙 +<span id="resCoins">0</span></div></div>
+  <div class="menu"><button class="btn" id="resNext">▶ Continue</button><button class="btn ghost" id="resRetry">↻ Race Again</button>
+    <button class="btn ghost" id="resMenu">✕ Main Menu</button></div>
+</div>
+
+<!-- ================= ADS ================= -->
+<div id="adTop" class="hide"></div>
+<div id="adBottom" class="hide"></div>
+<div id="adInter"><div class="adlabel">Advertisement</div><div class="slotbox" id="adInterSlot"></div>
+  <div id="adSkip">Continuing in 5…</div><button class="btn small ghost hide" id="adClose">✕ Close</button></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

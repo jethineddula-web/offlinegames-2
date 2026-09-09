@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+
+<!-- ============================================================
+     SEO META TAGS
+     ============================================================ -->
+<title>Flappy Plane - Free Online Flying Game | Offline Games</title>
+<meta name="description" content="Play Flappy Plane free online! Tap, click, or press space to keep your plane flying and dodge buildings. No download needed - play instantly in your browser." />
+<meta name="keywords" content="flappy plane, flappy bird game, plane game, flying game, arcade game, free online game, browser game, offline games, hold the plane in air" />
+<meta name="author" content="Offline Games" />
+<meta name="robots" content="index, follow" />
+<meta name="theme-color" content="#5EC6E8" />
+<link rel="canonical" href="https://offlinegames.art/flappy-plane/" />
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://offlinegames.art/flappy-plane/" />
+<meta property="og:title" content="Flappy Plane - Free Online Flying Game" />
+<meta property="og:description" content="Tap, click, or press space to keep your plane flying and dodge buildings. Play Flappy Plane free, right in your browser - no download needed." />
+<meta property="og:image" content="https://offlinegames.art/assets/flappy-plane-og.jpg" />
+<meta property="og:site_name" content="Offline Games" />
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content="https://offlinegames.art/flappy-plane/" />
+<meta name="twitter:title" content="Flappy Plane - Free Online Flying Game" />
+<meta name="twitter:description" content="Tap, click, or press space to keep your plane flying and dodge buildings. Play free in your browser." />
+<meta name="twitter:image" content="https://offlinegames.art/assets/flappy-plane-og.jpg" />
+
+<!-- ============================================================
+     GOOGLE ADSENSE
+     Replace/verify these two values if your client or slot ID
+     ever changes. AD_CLIENT loads the AdSense script; AD_SLOT_BANNER
+     is used for every ad unit on this page (start screen, game
+     over screen, and the "extra life" ad panel).
+     ============================================================ -->
+<script>
+  var AD_CLIENT = "ca-pub-4203857211510947";
+  var AD_SLOT_BANNER = "7417753724";
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+        crossorigin="anonymous"></script>
+<script>
+  document.write('<script>(adsbygoogle = window.adsbygoogle || []).push({google_ad_client: "' + AD_CLIENT + '", enable_page_level_ads: false});<\/scr' + 'ipt>');
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --sky-top:#5EC6E8;
+    --sky-bottom:#BDEBFF;
+    --sun:#FFD166;
+    --plane-red:#FF5A5F;
+    --plane-cream:#FFF6E9;
+    --cloud:#FFFFFF;
+    --ground-dark:#5C4630;
+    --ground-light:#8B6B47;
+    --ink:#1B2B34;
+    --panel:#FFFDF7;
+    --accent:#2E8B7A;
+    --accent-dark:#1F6154;
+  }
+
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+
+  html,body{
+    margin:0; padding:0; width:100%; height:100%;
+    overscroll-behavior:none; touch-action:none;
+    background:#0d1b22;
+    font-family:'Nunito', sans-serif;
+    color:var(--ink);
+  }
+
+  #app{
+    position:fixed; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    background:#0d1b22;
+  }
+
+  #stage{
+    position:relative;
+    width:100%; height:100%;
+    max-width:560px;
+    background:linear-gradient(to bottom, var(--sky-top), var(--sky-bottom));
+    overflow:hidden;
+    display:flex; flex-direction:column;
+  }
+
+  @media (min-aspect-ratio: 3/4){
+    #stage{ max-width:min(560px, calc(100vh * 0.62)); }
+  }
+
+  canvas{
+    display:block; width:100%; height:100%; touch-action:none;
+  }
+
+  /* ---------- HUD ---------- */
+  #hud{
+    position:absolute; top:0; left:0; right:0;
+    display:flex; justify-content:space-between; align-items:flex-start;
+    padding:calc(env(safe-area-inset-top,0px) + 10px) 14px 0 14px;
+    pointer-events:none; z-index:5;
+  }
+  #hud .pill{
+    background:rgba(27,43,52,0.55);
+    color:#fff;
+    padding:6px 14px;
+    border-radius:999px;
+    font-family:'Baloo 2', sans-serif;
+    font-weight:700;
+    font-size:20px;
+    letter-spacing:0.5px;
+    pointer-events:auto;
+  }
+  #muteBtn{
+    background:rgba(27,43,52,0.55);
+    color:#fff; border:none; border-radius:999px;
+    width:38px; height:38px; font-size:18px;
+    pointer-events:auto; cursor:pointer;
+  }
+  #hudRight{ display:flex; gap:8px; align-items:center; }
+
+  /* ---------- Overlays ---------- */
+  .overlay{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:14px;
+    padding:24px 20px;
+    background:rgba(13,27,34,0.55);
+    backdrop-filter:blur(2px);
+    z-index:10;
+    text-align:center;
+  }
+  .hidden{ display:none !important; }
+
+  .panel{
+    width:100%; max-width:380px;
+    background:var(--panel);
+    border-radius:22px;
+    padding:22px 22px 18px;
+    box-shadow:0 14px 34px rgba(0,0,0,0.35);
+    border:3px solid #E8DCC0;
+  }
+
+  .title{
+    font-family:'Baloo 2', sans-serif;
+    font-weight:800;
+    font-size:clamp(30px, 8vw, 42px);
+    color:var(--plane-red);
+    margin:0 0 2px;
+    text-shadow:2px 2px 0 #fff, 4px 4px 0 rgba(0,0,0,0.12);
+  }
+  .subtitle{
+    font-weight:700; color:var(--ink); opacity:0.75;
+    margin:0 0 16px; font-size:14px;
+  }
+
+  .plane-icon{ font-size:56px; display:block; margin:0 auto 6px; filter:drop-shadow(0 4px 4px rgba(0,0,0,0.25)); }
+
+  .scoreRow{
+    display:flex; justify-content:center; gap:26px;
+    margin:6px 0 18px;
+  }
+  .scoreBox{ text-align:center; }
+  .scoreBox .num{
+    font-family:'Baloo 2', sans-serif; font-weight:800; font-size:30px; color:var(--accent-dark);
+    line-height:1;
+  }
+  .scoreBox .lbl{
+    font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#8a7f68;
+  }
+
+  button.btn{
+    font-family:'Baloo 2', sans-serif;
+    font-weight:700; font-size:19px;
+    border:none; border-radius:16px;
+    padding:13px 20px;
+    width:100%;
+    cursor:pointer;
+    color:#fff;
+    background:var(--accent);
+    box-shadow:0 5px 0 var(--accent-dark);
+    transition:transform .05s ease;
+    margin-top:8px;
+  }
+  button.btn:active{ transform:translateY(3px); box-shadow:0 2px 0 var(--accent-dark); }
+
+  button.btn.secondary{
+    background:#EDE4CF; color:var(--ink);
+    box-shadow:0 5px 0 #C9BC9C;
+  }
+  button.btn.secondary:active{ box-shadow:0 2px 0 #C9BC9C; }
+
+  button.btn.ad{
+    background:var(--sun); color:#5C4207;
+    box-shadow:0 5px 0 #C99A2E;
+  }
+  button.btn.ad:active{ box-shadow:0 2px 0 #C99A2E; }
+
+  .controlHint{
+    display:inline-block;
+    font-family:'Baloo 2', sans-serif;
+    font-weight:700; font-size:13.5px;
+    color:var(--accent-dark);
+    background:#E4F0EA;
+    border:2px solid #C6E0D3;
+    border-radius:999px;
+    padding:7px 16px;
+    margin:0 0 14px;
+  }
+
+  .hint{
+    font-size:12.5px; color:#7a705c; font-weight:600; margin-top:10px; line-height:1.5;
+  }
+
+  .newBadge{
+    display:inline-block; background:var(--plane-red); color:#fff; font-size:11px;
+    font-weight:800; padding:2px 8px; border-radius:999px; margin-left:6px; letter-spacing:0.5px;
+    vertical-align:middle;
+  }
+
+  .ad-slot{
+    width:100%;
+    min-height:60px;
+    margin:10px 0 2px;
+    display:flex; align-items:center; justify-content:center;
+    background:#F3EEDE;
+    border-radius:10px;
+    overflow:hidden;
+  }
+  .ad-slot .adsbygoogle{ width:100%; }
+  .ad-label{
+    font-size:9.5px; font-weight:700; letter-spacing:1px; text-transform:uppercase;
+    color:#a89c7f; margin-bottom:3px;
+  }
+
+  #countdown{
+    font-family:'Baloo 2', sans-serif; font-weight:800; font-size:15px; color:var(--accent-dark);
+    margin-top:8px;
+  }
+
+  #rotateNotice{
+    position:absolute; inset:0; z-index:50;
+    background:#0d1b22; color:#fff;
+    display:none;
+    align-items:center; justify-content:center;
+    text-align:center; padding:30px; font-family:'Baloo 2', sans-serif; font-size:20px;
+  }
+
+  .flash{
+    position:absolute; inset:0; background:#fff; opacity:0; pointer-events:none; z-index:20;
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div id="stage">
+
+    <canvas id="game"></canvas>
+    <div class="flash" id="flash"></div>
+
+    <!-- In-game HUD -->
+    <div id="hud">
+      <div class="pill" id="liveScore">0</div>
+      <div id="hudRight">
+        <div class="pill" id="liveBest">Best 0</div>
+        <button id="muteBtn" aria-label="Toggle sound">🔊</button>
+      </div>
+    </div>
+
+    <!-- START SCREEN -->
+    <div class="overlay" id="startScreen">
+      <div class="panel">
+        <span class="plane-icon">🛩️</span>
+        <h1 class="title">Flappy Plane</h1>
+        <p class="subtitle">Tap, click, or press space to keep it flying</p>
+
+        <div class="scoreRow">
+          <div class="scoreBox">
+            <div class="num" id="startBest">0</div>
+            <div class="lbl">High Score</div>
+          </div>
+        </div>
+
+        <button class="btn" id="playBtn">▶ Play</button>
+        <button class="btn secondary hidden" id="newGameBtn">New Game</button>
+
+        <div class="ad-slot">
+          <ins class="adsbygoogle"
+               style="display:block"
+               data-ad-client="ca-pub-4203857211510947"
+               data-ad-slot="7417753724"
+               data-ad-format="auto"
+               data-full-width-responsive="true"></ins>
+        </div>
+
+        <p class="controlHint" id="controlHint">Press Space or click to fly</p>
+
+        <p class="hint">Fly through the gaps between the buildings. Every gap you clear adds a point. Clip one and it's game over — unless you rescue yourself with an extra life!</p>
+      </div>
+    </div>
+
+    <!-- GAME OVER SCREEN -->
+    <div class="overlay hidden" id="overScreen">
+      <div class="panel">
+        <h1 class="title" style="font-size:28px;">Crashed!</h1>
+
+        <div class="scoreRow">
+          <div class="scoreBox">
+            <div class="num" id="finalScore">0</div>
+            <div class="lbl">Score</div>
+          </div>
+          <div class="scoreBox">
+            <div class="num" id="finalBest">0</div>
+            <div class="lbl">Best <span id="newBadgeSlot"></span></div>
+          </div>
+        </div>
+
+        <button class="btn ad" id="reviveBtn">📺 Watch Ad for Extra Life</button>
+        <button class="btn" id="retryBtn">↻ Play Again</button>
+        <button class="btn secondary" id="menuBtn">🏠 Back to Menu</button>
+
+        <div class="ad-slot">
+          <ins class="adsbygoogle"
+               style="display:block"
+               data-ad-client="ca-pub-4203857211510947"
+               data-ad-slot="7417753724"
+               data-ad-format="auto"
+               data-full-width-responsive="true"></ins>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXTRA LIFE AD MODAL -->
+    <div class="overlay hidden" id="adModal">
+      <div class="panel">
+        <h1 class="title" style="font-size:24px;">Sponsor Break</h1>
+        <p class="subtitle" style="margin-bottom:8px;">Your extra life unlocks when the ad finishes</p>
+        <div class="ad-label">Advertisement</div>
+        <div class="ad-slot">
+          <ins class="adsbygoogle"
+               style="display:block"
+               data-ad-client="ca-pub-4203857211510947"
+               data-ad-slot="7417753724"
+               data-ad-format="auto"
+               data-full-width-responsive="true"></ins>
+        </div>
+        <div id="countdown">Loading ad… 5</div>
+      </div>
+    </div>
+
+    <!-- Pause -->
+    <div class="overlay hidden" id="pauseScreen">
+      <div class="panel">
+        <h1 class="title" style="font-size:26px;">Paused</h1>
+        <button class="btn" id="resumeBtn">▶ Resume</button>
+        <button class="btn secondary" id="quitBtn">🏠 Quit to Menu</button>
+      </div>
+    </div>
+
+    <div id="rotateNotice">Keep going — the game adapts to<br>whichever way you're holding it 🔄</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* =========================================================
+     SETUP
+  ========================================================= */
+  var stage   = document.getElementById('stage');
+  var canvas  = document.getElementById('game');
+  var ctx     = canvas.getContext('2d');
+
+  var startScreen = document.getElementById('startScreen');
+  var overScreen  = document.getElementById('overScreen');
+  var adModal     = document.getElementById('adModal');
+  var pauseScreen = document.getElementById('pauseScreen');
+  var flashEl     = document.getElementById('flash');
+
+  var liveScoreEl = document.getElementById('liveScore');
+  var controlHintEl = document.getElementById('controlHint');
+  var liveBestEl  = document.getElementById('liveBest');
+  var startBestEl = document.getElementById('startBest');
+  var finalScoreEl= document.getElementById('finalScore');
+  var finalBestEl = document.getElementById('finalBest');
+  var newBadgeSlot= document.getElementById('newBadgeSlot');
+  var countdownEl = document.getElementById('countdown');
+
+  var playBtn    = document.getElementById('playBtn');
+  var newGameBtn = document.getElementById('newGameBtn');
+  var retryBtn   = document.getElementById('retryBtn');
+  var reviveBtn  = document.getElementById('reviveBtn');
+  var menuBtn    = document.getElementById('menuBtn');
+  var muteBtn    = document.getElementById('muteBtn');
+  var resumeBtn  = document.getElementById('resumeBtn');
+  var quitBtn    = document.getElementById('quitBtn');
+
+  var HIGH_SCORE_KEY = 'flappyPlane.highScore';
+  var highScore = parseInt(localStorage.getItem(HIGH_SCORE_KEY) || '0', 10);
+  startBestEl.textContent = highScore;
+  liveBestEl.textContent = 'Best ' + highScore;
+
+  /* =========================================================
+     CONTROLS HINT — shown on the start screen before the player's
+     first flight, worded for whichever input the device actually has.
+  ========================================================= */
+  function isTouchDevice(){
+    var coarsePointer = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+    var hasTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    return coarsePointer || hasTouch;
+  }
+  controlHintEl.textContent = isTouchDevice()
+    ? '📱 Tap the screen to fly'
+    : '⌨️ Press Space or click the mouse to fly';
+
+  /* =========================================================
+     SOUND — generated with the Web Audio API (no audio files
+     needed, so it works fully offline once the page is loaded).
+  ========================================================= */
+  var audioCtx = null;
+  var muted = false;
+
+  function ensureAudio(){
+    if (!audioCtx){
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (AC) audioCtx = new AC();
+    }
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+  }
+
+  function tone(freq, dur, type, startGain, delay){
+    if (muted || !audioCtx) return;
+    var t0 = audioCtx.currentTime + (delay || 0);
+    var osc = audioCtx.createOscillator();
+    var gain = audioCtx.createGain();
+    osc.type = type || 'sine';
+    osc.frequency.setValueAtTime(freq, t0);
+    gain.gain.setValueAtTime(0, t0);
+    gain.gain.linearRampToValueAtTime(startGain != null ? startGain : 0.18, t0 + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    osc.connect(gain).connect(audioCtx.destination);
+    osc.start(t0);
+    osc.stop(t0 + dur + 0.02);
+  }
+
+  var sfx = {
+    flap: function(){ tone(520, 0.11, 'square', 0.12); tone(700, 0.07, 'square', 0.08, 0.02); },
+    score: function(){ tone(880, 0.09, 'sine', 0.16); tone(1180, 0.12, 'sine', 0.14, 0.07); },
+    hit: function(){
+      if (muted || !audioCtx) return;
+      var t0 = audioCtx.currentTime;
+
+      // Low-end impact "thud"
+      var boom = audioCtx.createOscillator();
+      var boomGain = audioCtx.createGain();
+      boom.type = 'sine';
+      boom.frequency.setValueAtTime(160, t0);
+      boom.frequency.exponentialRampToValueAtTime(28, t0 + 0.35);
+      boomGain.gain.setValueAtTime(0.4, t0);
+      boomGain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.45);
+      boom.connect(boomGain).connect(audioCtx.destination);
+      boom.start(t0); boom.stop(t0 + 0.5);
+
+      // A short metallic "crack" on top of the boom
+      var crack = audioCtx.createOscillator();
+      var crackGain = audioCtx.createGain();
+      crack.type = 'square';
+      crack.frequency.setValueAtTime(900, t0);
+      crack.frequency.exponentialRampToValueAtTime(120, t0 + 0.12);
+      crackGain.gain.setValueAtTime(0.18, t0);
+      crackGain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.14);
+      crack.connect(crackGain).connect(audioCtx.destination);
+      crack.start(t0); crack.stop(t0 + 0.16);
+
+      // Crumbling debris noise burst, filtered so it decays like real debris
+      var bufferSize = Math.floor(audioCtx.sampleRate * 0.5);
+      var buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      var data = buffer.getChannelData(0);
+      for (var i = 0; i < bufferSize; i++){
+        var decay = Math.pow(1 - i / bufferSize, 2.2);
+        data[i] = (Math.random() * 2 - 1) * decay;
+      }
+      var noise = audioCtx.createBufferSource();
+      noise.buffer = buffer;
+      var filter = audioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(2200, t0);
+      filter.frequency.exponentialRampToValueAtTime(250, t0 + 0.45);
+      var noiseGain = audioCtx.createGain();
+      noiseGain.gain.setValueAtTime(0.32, t0);
+      noiseGain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.48);
+      noise.connect(filter).connect(noiseGain).connect(audioCtx.destination);
+      noise.start(t0);
+    },
+    life: function(){
+      [523,659,784,1046].forEach(function(f,i){ tone(f, 0.16, 'triangle', 0.15, i*0.09); });
+    },
+    swoosh: function(){ tone(200, 0.2, 'sine', 0.06); }
+  };
+
+  muteBtn.addEventListener('click', function(){
+    muted = !muted;
+    muteBtn.textContent = muted ? '🔇' : '🔊';
+  });
+
+  /* =========================================================
+     RESIZE / ORIENTATION
+     The canvas simply fills the stage at the device pixel ratio,
+     so the game plays correctly whether the phone is held in
+     portrait or landscape — no orientation is "wrong". The lock
+     button below additionally asks the browser to freeze rotation
+     at whatever angle the player is holding the device when they
+     tap it (supported on most Android browsers in fullscreen;
+     iOS Safari does not expose a lock API, so there it simply
+     stays responsive to both orientations instead).
+  ========================================================= */
+  var W = 0, H = 0, DPR = 1;
+
+  function resize(){
+    var rect = stage.getBoundingClientRect();
+    DPR = Math.min(window.devicePixelRatio || 1, 2.5);
+    W = rect.width; H = rect.height;
+    canvas.width = Math.floor(W * DPR);
+    canvas.height = Math.floor(H * DPR);
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    if (typeof layoutWorld === 'function') layoutWorld();
+  }
+  window.addEventListener('resize', resize);
+  window.addEventListener('orientationchange', function(){ setTimeout(resize, 150); });
+
+  // No manual lock button anymore — the canvas simply redraws itself to
+  // fit whichever orientation the device is currently in (handled by
+  // resize()/orientationchange above), so the game just keeps working.
+
+  /* =========================================================
+     GAME STATE
+  ========================================================= */
+  var STATE = { READY:'ready', PLAYING:'playing', DEAD:'dead', PAUSED:'paused' };
+  var state = STATE.READY;
+  var hasPausedGame = false; // true when a run is paused and waiting to be resumed from the menu
+
+  var plane, pipes, particles, explosions, shake, groundOffset, score, usedRevive, spawnTimer;
+  var GRAVITY, FLAP_V, PIPE_GAP, PIPE_SPEED, PIPE_INTERVAL, GROUND_H;
+
+  var BUILDING_PALETTE = [
+    { face:'#7C8A94', faceLight:'#93A0A9', ledge:'#5B6970', window:'#FFE9A8' },
+    { face:'#8A7561', faceLight:'#A08B76', ledge:'#665443', window:'#FFD98F' },
+    { face:'#6E7F8C', faceLight:'#8496A2', ledge:'#4F5D68', window:'#FFF0C2' },
+    { face:'#9B8B77', faceLight:'#B1A08C', ledge:'#736451', window:'#FFE1A0' },
+    { face:'#6B7C6E', faceLight:'#839684', ledge:'#4C5A4E', window:'#FFEAB0' }
+  ];
+
+  function layoutWorld(){
+    GROUND_H = Math.max(60, H * 0.12);
+    GRAVITY = H * 2.1;
+    FLAP_V  = -H * 0.62;
+    PIPE_GAP = Math.max(150, H * 0.30);
+    PIPE_SPEED = W * 0.34;
+    PIPE_INTERVAL = 1.5;
+    if (plane) plane.x = W * 0.28;
+  }
+
+  function resetGame(){
+    layoutWorld();
+    plane = {
+      x: W * 0.28,
+      y: H * 0.42,
+      vy: 0,
+      r: Math.max(14, Math.min(W,H) * 0.045),
+      rot: 0
+    };
+    pipes = [];
+    particles = [];
+    explosions = [];
+    shake = 0;
+    groundOffset = 0;
+    score = 0;
+    usedRevive = false;
+    spawnTimer = 0;
+    liveScoreEl.textContent = '0';
+  }
+
+  function spawnPipe(){
+    var margin = H * 0.08;
+    var usable = H - GROUND_H - margin*2 - PIPE_GAP;
+    var gapY = margin + Math.random() * Math.max(30, usable);
+    var palette = BUILDING_PALETTE[Math.floor(Math.random()*BUILDING_PALETTE.length)];
+    pipes.push({
+      x: W + 40, gapY: gapY, w: Math.max(46, W*0.13), passed:false,
+      seed: Math.floor(Math.random()*100000),
+      colors: palette
+    });
+  }
+
+  // Deterministic pseudo-random window light, so each building's lit
+  // windows stay fixed as it scrolls across the screen instead of
+  // flickering every frame.
+  function windowLit(seed, part, row, col){
+    var h = (seed*374761393) ^ (part*668265263) ^ (row*2246822519) ^ (col*3266489917);
+    h = (h ^ (h >>> 13)) * 1274126177;
+    h = h ^ (h >>> 16);
+    return (h & 0xff) < 72;
+  }
+
+  function burst(x, y, color, count, spread){
+    for (var i=0; i < (count||14); i++){
+      particles.push({
+        x:x, y:y,
+        vx:(Math.random()-0.5) * (spread||260),
+        vy:(Math.random()-0.9) * (spread||260),
+        life:0.5 + Math.random()*0.5,
+        age:0,
+        size: 3 + Math.random()*3,
+        color: color
+      });
+    }
+  }
+
+  function addExplosion(x, y){
+    explosions.push({ x:x, y:y, age:0, life:0.55 });
+    shake = Math.max(shake, 22);
+  }
+
+  /* =========================================================
+     INPUT
+  ========================================================= */
+  function flap(){
+    if (state === STATE.PLAYING){
+      plane.vy = FLAP_V;
+      sfx.flap();
+    }
+  }
+
+  function pointerDown(e){
+    if (e.cancelable) e.preventDefault();
+    ensureAudio();
+    if (state === STATE.PLAYING) flap();
+  }
+  canvas.addEventListener('pointerdown', pointerDown);
+  window.addEventListener('keydown', function(e){
+    if (e.code === 'Space'){
+      e.preventDefault();
+      ensureAudio();
+      if (state === STATE.PLAYING) flap();
+      else if (state === STATE.READY) startGame();
+    }
+    if (e.code === 'KeyP') togglePause();
+  });
+
+  document.addEventListener('visibilitychange', function(){
+    if (document.hidden && state === STATE.PLAYING) togglePause(true);
+  });
+
+  function togglePause(forcePause){
+    if (state === STATE.PLAYING && (forcePause || true)){
+      state = STATE.PAUSED;
+      pauseScreen.classList.remove('hidden');
+    } else if (state === STATE.PAUSED && !forcePause){
+      resumeFromPause();
+    }
+  }
+
+  function resumeFromPause(){
+    state = STATE.PLAYING;
+    pauseScreen.classList.add('hidden');
+    lastTime = performance.now();
+  }
+  resumeBtn.addEventListener('click', resumeFromPause);
+
+  // Quitting mid-flight doesn't reset anything — the run just waits,
+  // and the menu's Play button turns into Resume until the player
+  // either continues it or explicitly starts a new game.
+  quitBtn.addEventListener('click', function(){
+    hasPausedGame = true;
+    pauseScreen.classList.add('hidden');
+    showStartScreen();
+  });
+
+  menuBtn.addEventListener('click', function(){
+    hasPausedGame = false; // that run is over, nothing to resume
+    overScreen.classList.add('hidden');
+    showStartScreen();
+  });
+
+  function showStartScreen(){
+    if (hasPausedGame){
+      playBtn.textContent = '▶ Resume';
+      newGameBtn.classList.remove('hidden');
+    } else {
+      playBtn.textContent = '▶ Play';
+      newGameBtn.classList.add('hidden');
+    }
+    startScreen.classList.remove('hidden');
+  }
+
+  /* =========================================================
+     FLOW: start / game over / revive
+  ========================================================= */
+  function startGame(){
+    ensureAudio();
+    hasPausedGame = false;
+    resetGame();
+    state = STATE.PLAYING;
+    startScreen.classList.add('hidden');
+    overScreen.classList.add('hidden');
+    lastTime = performance.now();
+  }
+
+  playBtn.addEventListener('click', function(){
+    ensureAudio();
+    if (hasPausedGame){
+      // Continue exactly where the player quit out — no reset.
+      hasPausedGame = false;
+      state = STATE.PLAYING;
+      startScreen.classList.add('hidden');
+      lastTime = performance.now();
+    } else {
+      startGame();
+    }
+  });
+
+  newGameBtn.addEventListener('click', startGame);
+  retryBtn.addEventListener('click', startGame);
+
+  function gameOver(){
+    if (state !== STATE.PLAYING) return;
+    state = STATE.DEAD;
+    sfx.hit();
+
+    addExplosion(plane.x, plane.y);
+    burst(plane.x, plane.y, '255,90,30', 10, 340);   // fire
+    burst(plane.x, plane.y, '255,200,60', 8, 260);   // sparks
+    burst(plane.x, plane.y, '110,110,110', 10, 160); // smoke
+
+    flashEl.style.transition = 'none';
+    flashEl.style.opacity = '0.9';
+    requestAnimationFrame(function(){
+      flashEl.style.transition = 'opacity 0.5s ease';
+      flashEl.style.opacity = '0';
+    });
+
+    var isNew = score > highScore;
+    if (isNew){
+      highScore = score;
+      localStorage.setItem(HIGH_SCORE_KEY, String(highScore));
+    }
+
+    setTimeout(function(){
+      finalScoreEl.textContent = score;
+      finalBestEl.textContent = highScore;
+      newBadgeSlot.innerHTML = isNew ? '<span class="newBadge">NEW</span>' : '';
+      liveBestEl.textContent = 'Best ' + highScore;
+      reviveBtn.classList.toggle('hidden', usedRevive);
+      overScreen.classList.remove('hidden');
+    }, 550);
+  }
+
+  reviveBtn.addEventListener('click', function(){
+    overScreen.classList.add('hidden');
+    adModal.classList.remove('hidden');
+    var seconds = 5;
+    countdownEl.textContent = 'Loading ad… ' + seconds;
+    try{ (window.adsbygoogle = window.adsbygoogle || []).push({}); }catch(e){}
+    var iv = setInterval(function(){
+      seconds--;
+      if (seconds > 0){
+        countdownEl.textContent = 'Ad plays for ' + seconds + ' more second' + (seconds===1?'':'s') + '…';
+      } else {
+        clearInterval(iv);
+        countdownEl.textContent = 'Thanks for watching! Extra life granted 🎉';
+        setTimeout(finishRevive, 700);
+      }
+    }, 1000);
+  });
+
+  function finishRevive(){
+    adModal.classList.add('hidden');
+    usedRevive = true;
+    sfx.life();
+    // Give the plane a fresh, safe position and clear nearby pipes.
+    plane.y = H * 0.42;
+    plane.vy = FLAP_V * 0.6;
+    pipes = pipes.filter(function(p){ return p.x > W * 0.6; });
+    burst(plane.x, plane.y, '46,139,122');
+    state = STATE.PLAYING;
+    lastTime = performance.now();
+  }
+
+  /* =========================================================
+     UPDATE / DRAW
+  ========================================================= */
+  var lastTime = 0;
+
+  function update(dt){
+    dt = Math.min(dt, 0.035);
+
+    groundOffset -= PIPE_SPEED * dt;
+
+    // Plane physics
+    plane.vy += GRAVITY * dt;
+    plane.y  += plane.vy * dt;
+    plane.rot = Math.max(-0.5, Math.min(1.1, plane.vy / (H*0.9)));
+
+    // Ceiling
+    if (plane.y - plane.r < 0){ plane.y = plane.r; plane.vy = 0; }
+
+    // Ground collision
+    if (plane.y + plane.r > H - GROUND_H){
+      plane.y = H - GROUND_H - plane.r;
+      gameOver();
+    }
+
+    // Pipes
+    spawnTimer -= dt;
+    if (spawnTimer <= 0){ spawnPipe(); spawnTimer = PIPE_INTERVAL; }
+
+    for (var i = pipes.length - 1; i >= 0; i--){
+      var p = pipes[i];
+      p.x -= PIPE_SPEED * dt;
+
+      if (!p.passed && p.x + p.w < plane.x - plane.r){
+        p.passed = true;
+        score++;
+        liveScoreEl.textContent = score;
+        sfx.score();
+      }
+
+      // Collision
+      var withinX = plane.x + plane.r > p.x && plane.x - plane.r < p.x + p.w;
+      if (withinX){
+        var topH = p.gapY;
+        var botY = p.gapY + PIPE_GAP;
+        if (plane.y - plane.r < topH || plane.y + plane.r > botY){
+          gameOver();
+        }
+      }
+
+      if (p.x + p.w < -20) pipes.splice(i,1);
+    }
+  }
+
+  // Runs every frame regardless of game state (except while paused) so
+  // the explosion, sparks, and smoke keep animating for a moment even
+  // after the crash has frozen gameplay and brought up the overlay.
+  function updateFX(dt){
+    for (var j = particles.length - 1; j >= 0; j--){
+      var pt = particles[j];
+      pt.age += dt;
+      if (pt.age >= pt.life){ particles.splice(j,1); continue; }
+      pt.x += pt.vx * dt;
+      pt.y += pt.vy * dt;
+      pt.vy += 340 * dt;
+    }
+
+    for (var k = explosions.length - 1; k >= 0; k--){
+      var ex = explosions[k];
+      ex.age += dt;
+      if (ex.age >= ex.life) explosions.splice(k,1);
+    }
+
+    if (shake > 0) shake = Math.max(0, shake - dt * 70);
+  }
+
+  function drawBackground(){
+    // sky gradient already via CSS on stage; add sun + clouds
+    ctx.fillStyle = 'rgba(255,209,102,0.9)';
+    ctx.beginPath();
+    ctx.arc(W*0.82, H*0.14, Math.min(W,H)*0.09, 0, Math.PI*2);
+    ctx.fill();
+
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    drawCloud(W*0.18, H*0.16, W*0.10);
+    drawCloud(W*0.55, H*0.09, W*0.07);
+    drawCloud((W*0.75 + groundOffset*0.3) % (W+100) - 50, H*0.30, W*0.08);
+  }
+
+  function drawCloud(cx, cy, s){
+    ctx.beginPath();
+    ctx.arc(cx, cy, s*0.6, 0, Math.PI*2);
+    ctx.arc(cx+s*0.55, cy+s*0.1, s*0.45, 0, Math.PI*2);
+    ctx.arc(cx-s*0.5, cy+s*0.12, s*0.4, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  function drawGround(){
+    var y = H - GROUND_H;
+    ctx.fillStyle = '#8B6B47';
+    ctx.fillRect(0, y, W, GROUND_H);
+    ctx.fillStyle = '#5C4630';
+    ctx.fillRect(0, y, W, 10);
+
+    var stripeW = 34;
+    ctx.fillStyle = 'rgba(0,0,0,0.08)';
+    var offset = ((groundOffset % stripeW) + stripeW) % stripeW;
+    for (var x = -offset; x < W; x += stripeW){
+      ctx.fillRect(x, y+10, stripeW*0.5, GROUND_H-10);
+    }
+  }
+
+  function drawBuildings(){
+    var groundY = H - GROUND_H;
+    pipes.forEach(function(p){
+      var botY = p.gapY + PIPE_GAP;
+      drawBuildingBlock(p, 0, p.gapY, 0);              // top building, hangs from the sky
+      drawBuildingBlock(p, botY, groundY - botY, 1);   // bottom building, rises from the ground
+    });
+  }
+
+  function drawBuildingBlock(p, top, height, part){
+    if (height <= 0) return;
+    var x = p.x, w = p.w;
+    var c = p.colors;
+
+    // facade with a soft left-to-right shade so it reads as a solid mass
+    var grd = ctx.createLinearGradient(x, 0, x + w, 0);
+    grd.addColorStop(0, c.face);
+    grd.addColorStop(0.55, c.faceLight);
+    grd.addColorStop(1, c.face);
+    ctx.fillStyle = grd;
+    ctx.fillRect(x, top, w, height);
+
+    // rooftop / ledge cap — sits at the top of the top building, and at
+    // the exposed top edge of the bottom building
+    ctx.fillStyle = c.ledge;
+    ctx.fillRect(x - 4, part === 0 ? top + height - 14 : top, w + 8, 14);
+
+    // small rooftop antenna on the sky-side building for silhouette variety
+    if (part === 0){
+      ctx.strokeStyle = c.ledge;
+      ctx.lineWidth = Math.max(2, w*0.03);
+      ctx.beginPath();
+      ctx.moveTo(x + w*0.5, top + height - 14);
+      ctx.lineTo(x + w*0.5, top + height - 14 - w*0.5);
+      ctx.stroke();
+      ctx.fillStyle = '#E8544F';
+      ctx.beginPath();
+      ctx.arc(x + w*0.5, top + height - 14 - w*0.5, Math.max(2, w*0.045), 0, Math.PI*2);
+      ctx.fill();
+    }
+
+    // window grid — deterministic per-building so it doesn't flicker
+    var cellW = Math.max(10, w * 0.20);
+    var cellH = cellW * 1.15;
+    var padX = (w - Math.floor(w / cellW) * cellW) / 2 + cellW * 0.28;
+    var cols = Math.max(1, Math.floor((w - padX) / cellW));
+    var innerTop = part === 0 ? top : top + 16;
+    var innerBottom = part === 0 ? top + height - 18 : top + height;
+    var rows = Math.max(0, Math.floor((innerBottom - innerTop) / cellH));
+
+    for (var row = 0; row < rows; row++){
+      for (var col = 0; col < cols; col++){
+        var wx = x + padX + col * cellW;
+        var wy = innerTop + 10 + row * cellH;
+        var lit = windowLit(p.seed, part, row, col);
+        ctx.fillStyle = lit ? c.window : 'rgba(20,28,32,0.35)';
+        ctx.fillRect(wx, wy, cellW * 0.6, cellH * 0.55);
+      }
+    }
+  }
+
+  var propSpin = 0;
+
+  function drawPlane(){
+    var r = plane.r;
+    propSpin += 55; // fast constant spin looks like a real propeller blur
+
+    ctx.save();
+    ctx.translate(plane.x, plane.y);
+    ctx.rotate(plane.rot * 0.6);
+
+    // ---- drop shadow under the fuselage for depth ----
+    ctx.save();
+    ctx.globalAlpha = 0.18;
+    ctx.fillStyle = '#000';
+    ctx.beginPath();
+    ctx.ellipse(-r*0.1, r*0.55, r*1.5, r*0.35, 0, 0, Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+
+    // ---- horizontal tail stabilizer (small, near the tail) ----
+    ctx.fillStyle = '#C23B40';
+    ctx.beginPath();
+    ctx.moveTo(-r*1.55, r*0.05);
+    ctx.lineTo(-r*2.15, r*0.55);
+    ctx.lineTo(-r*1.75, r*0.1);
+    ctx.closePath();
+    ctx.fill();
+
+    // ---- vertical tail fin ----
+    ctx.fillStyle = '#FF5A5F';
+    ctx.beginPath();
+    ctx.moveTo(-r*1.35, -r*0.1);
+    ctx.lineTo(-r*2.05, -r*1.05);
+    ctx.lineTo(-r*1.5, -r*0.25);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+    ctx.lineWidth = r*0.05;
+    ctx.stroke();
+
+    // ---- low main wing (near side), swept back slightly ----
+    ctx.save();
+    ctx.fillStyle = '#D94549';
+    ctx.beginPath();
+    ctx.moveTo(r*0.35, r*0.15);
+    ctx.lineTo(-r*0.55, r*1.55);
+    ctx.lineTo(-r*1.15, r*1.5);
+    ctx.lineTo(-r*0.25, r*0.2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+    ctx.lineWidth = r*0.05;
+    ctx.stroke();
+    ctx.restore();
+
+    // ---- far-side wing, mirrored above the fuselage so both wings show ----
+    ctx.save();
+    ctx.fillStyle = '#C23B40';
+    ctx.beginPath();
+    ctx.moveTo(r*0.3, -r*0.2);
+    ctx.lineTo(-r*0.45, -r*1.35);
+    ctx.lineTo(-r*1.0, -r*1.3);
+    ctx.lineTo(-r*0.2, -r*0.25);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(0,0,0,0.18)';
+    ctx.lineWidth = r*0.05;
+    ctx.stroke();
+    ctx.restore();
+
+    // ---- fuselage: tapered nose-to-tail body with metallic shading ----
+    var bodyGrad = ctx.createLinearGradient(0, -r*0.6, 0, r*0.6);
+    bodyGrad.addColorStop(0, '#FFFFFF');
+    bodyGrad.addColorStop(0.45, '#E7E2D6');
+    bodyGrad.addColorStop(1, '#B9B2A0');
+    ctx.fillStyle = bodyGrad;
+    ctx.beginPath();
+    ctx.moveTo(r*1.55, 0);                                  // nose tip
+    ctx.quadraticCurveTo(r*1.2, -r*0.62, r*0.2, -r*0.55);    // upper nose->cabin
+    ctx.quadraticCurveTo(-r*1.0, -r*0.5, -r*1.55, -r*0.12);  // upper body->tail
+    ctx.lineTo(-r*1.55, r*0.12);                             // tail cap
+    ctx.quadraticCurveTo(-r*1.0, r*0.5, r*0.2, r*0.55);      // lower body
+    ctx.quadraticCurveTo(r*1.2, r*0.6, r*1.55, 0);           // lower nose
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(0,0,0,0.18)';
+    ctx.lineWidth = r*0.045;
+    ctx.stroke();
+
+    // fuselage stripe
+    ctx.strokeStyle = '#2E6FA8';
+    ctx.lineWidth = r*0.09;
+    ctx.beginPath();
+    ctx.moveTo(-r*1.5, -r*0.02);
+    ctx.lineTo(r*1.1, -r*0.02);
+    ctx.stroke();
+
+    // cockpit canopy
+    var glassGrad = ctx.createLinearGradient(0, -r*0.55, 0, -r*0.1);
+    glassGrad.addColorStop(0, '#BFE7F5');
+    glassGrad.addColorStop(1, '#4E9BC4');
+    ctx.fillStyle = glassGrad;
+    ctx.beginPath();
+    ctx.ellipse(r*0.15, -r*0.32, r*0.42, r*0.24, -0.1, 0, Math.PI*2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(0,0,0,0.25)';
+    ctx.lineWidth = r*0.03;
+    ctx.stroke();
+
+    // nose cone / spinner
+    ctx.fillStyle = '#8A8578';
+    ctx.beginPath();
+    ctx.ellipse(r*1.5, 0, r*0.16, r*0.22, 0, 0, Math.PI*2);
+    ctx.fill();
+
+    // spinning propeller (alternates a thin blade with a soft blur disc)
+    ctx.save();
+    ctx.translate(r*1.68, 0);
+    ctx.globalAlpha = 0.35;
+    ctx.fillStyle = '#3A3A3A';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, r*0.08, r*0.85, 0, 0, Math.PI*2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = '#222';
+    ctx.lineWidth = r*0.09;
+    ctx.rotate((propSpin % 180) * Math.PI/180);
+    ctx.beginPath();
+    ctx.moveTo(0, -r*0.75);
+    ctx.lineTo(0, r*0.75);
+    ctx.stroke();
+    ctx.restore();
+
+    // small landing wheel hint under the belly
+    ctx.fillStyle = '#3A3A3A';
+    ctx.beginPath();
+    ctx.arc(r*0.35, r*0.68, r*0.12, 0, Math.PI*2);
+    ctx.fill();
+
+    ctx.restore();
+  }
+
+  function drawParticles(){
+    particles.forEach(function(p){
+      var a = 1 - p.age/p.life;
+      ctx.fillStyle = 'rgba(' + p.color + ',' + a + ')';
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size*a+1, 0, Math.PI*2);
+      ctx.fill();
+    });
+  }
+
+  function drawExplosions(){
+    explosions.forEach(function(e){
+      var t = e.age / e.life;
+      if (t >= 1) return;
+      var radius = t * plane.r * 6.5;
+
+      ctx.save();
+      ctx.globalAlpha = 1 - t;
+      var grd = ctx.createRadialGradient(e.x, e.y, 0, e.x, e.y, radius);
+      grd.addColorStop(0, 'rgba(255,235,150,0.95)');
+      grd.addColorStop(0.35, 'rgba(255,150,40,0.8)');
+      grd.addColorStop(1, 'rgba(255,80,20,0)');
+      ctx.fillStyle = grd;
+      ctx.beginPath();
+      ctx.arc(e.x, e.y, radius, 0, Math.PI*2);
+      ctx.fill();
+
+      ctx.strokeStyle = 'rgba(255,255,255,' + (1-t)*0.85 + ')';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(e.x, e.y, radius * 0.9, 0, Math.PI*2);
+      ctx.stroke();
+      ctx.restore();
+    });
+  }
+
+  function render(){
+    ctx.save();
+    if (shake > 0){
+      ctx.translate((Math.random()-0.5) * shake, (Math.random()-0.5) * shake);
+    }
+    ctx.clearRect(-20, -20, W+40, H+40);
+    drawBackground();
+    drawBuildings();
+    drawGround();
+    // hide the plane briefly right at the moment of impact so the boom reads as the plane itself
+    if (plane && !(state === STATE.DEAD && explosions.length && explosions[0].age < 0.12)){
+      drawPlane();
+    }
+    drawParticles();
+    drawExplosions();
+    ctx.restore();
+  }
+
+  function loop(now){
+    var dt = (now - lastTime) / 1000;
+    lastTime = now;
+    if (state === STATE.PLAYING) update(dt);
+    if (state !== STATE.PAUSED) updateFX(dt);
+    render();
+    requestAnimationFrame(loop);
+  }
+
+  /* =========================================================
+     INIT
+  ========================================================= */
+  resize();
+  resetGame();
+  render();
+  requestAnimationFrame(function(t){ lastTime = t; requestAnimationFrame(loop); });
+
+})();
+</script>
+</body>
+</html>

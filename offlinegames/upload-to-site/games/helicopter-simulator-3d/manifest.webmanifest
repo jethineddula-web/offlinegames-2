@@ -1,0 +1,15 @@
+{
+  "name": "Helicopter Simulator 3D",
+  "short_name": "Heli Sim 3D",
+  "description": "Realistic 3D helicopter flight over a living city — 100 missions, three camera views, upgrades and a hangar.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#070c12",
+  "theme_color": "#0a1017",
+  "categories": ["games", "simulation"],
+  "icons": [
+    { "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

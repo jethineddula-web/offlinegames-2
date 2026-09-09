@@ -1,0 +1,26 @@
+{
+  "name": "Piano World — Free Piano Tiles Rhythm Game",
+  "short_name": "Piano World",
+  "description": "Tap and hold glowing piano tiles across 6 music worlds. Free on offlinegames.art.",
+  "id": "/games/piano-world",
+  "start_url": "/games/piano-world",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#21123e",
+  "theme_color": "#21123e",
+  "icons": [
+    {
+      "src": "/images/song-cover-dream.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/piano-world-home.jpg",
+      "sizes": "800x1200",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
+}

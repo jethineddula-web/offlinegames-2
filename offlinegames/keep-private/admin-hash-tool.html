@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>OfflineGames — Admin password hash tool</title>
+<style>
+  :root { color-scheme: dark; }
+  body {
+    margin: 0; padding: 40px 20px; background: #090A16; color: #e8ecf4;
+    font: 15px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  .box { max-width: 620px; margin: 0 auto; }
+  h1 { font-size: 22px; margin: 0 0 6px; }
+  .sub { color: #8b93a7; margin: 0 0 28px; font-size: 14px; }
+  .warn {
+    background: rgba(255,79,160,.08); border: 1px solid rgba(255,79,160,.35);
+    border-radius: 12px; padding: 14px 16px; margin: 0 0 24px; font-size: 14px;
+  }
+  .warn b { color: #ff4fa0; }
+  label { display: block; font-size: 13px; color: #8b93a7; margin: 18px 0 6px; }
+  input {
+    width: 100%; box-sizing: border-box; padding: 12px 14px; border-radius: 10px;
+    border: 1px solid #262b3d; background: #11131f; color: #e8ecf4; font-size: 15px;
+  }
+  input:focus { outline: none; border-color: #ff4fa0; }
+  button {
+    margin-top: 22px; padding: 12px 22px; border-radius: 999px; border: 0;
+    background: #ff4fa0; color: #fff; font-size: 15px; font-weight: 600; cursor: pointer;
+  }
+  button:disabled { opacity: .5; cursor: default; }
+  pre {
+    background: #11131f; border: 1px solid #262b3d; border-radius: 12px;
+    padding: 16px; overflow-x: auto; font-size: 13px; margin-top: 24px;
+    white-space: pre; color: #7ee0c4;
+  }
+  .hint { color: #8b93a7; font-size: 13px; }
+  .err { color: #ff6b6b; font-size: 14px; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>Admin password hash tool</h1>
+  <p class="sub">Generates the <code>ADMIN</code> block for <b>site-admin.js</b>.</p>
+
+  <div class="warn">
+    <b>Run this file from your own computer</b> — open it directly, or serve it
+    over <code>https://localhost</code>. Never upload it to offlinegames.art.
+    Your password is typed here, hashed in this page, and never leaves your machine.
+  </div>
+
+  <label for="pw">Password you want to use</label>
+  <input id="pw" type="password" placeholder="Pick something you don't use elsewhere" autocomplete="new-password">
+
+  <label for="pw2">Type it again</label>
+  <input id="pw2" type="password" placeholder="Confirm" autocomplete="new-password">
+
+  <button id="go">Generate hash</button>
+  <div class="err" id="err" hidden></div>
+
+  <pre id="out" hidden></pre>
+  <p class="hint" id="hint" hidden>
+    Copy the block above and paste it over the existing <code>var ADMIN = {…}</code>
+    near the top of <b>site-admin.js</b>, then upload that file. Keep your password
+    in a password manager — the hash cannot be turned back into it.
+  </p>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var pw = document.getElementById("pw");
+  var pw2 = document.getElementById("pw2");
+  var go = document.getElementById("go");
+  var out = document.getElementById("out");
+  var hint = document.getElementById("hint");
+  var err = document.getElementById("err");
+  var ITERATIONS = 210000;
+
+  function bytesToHex(buf) {
+    return Array.prototype.map.call(new Uint8Array(buf), function (b) {
+      return ("0" + b.toString(16)).slice(-2);
+    }).join("");
+  }
+
+  function fail(msg) {
+    err.textContent = msg;
+    err.hidden = false;
+    out.hidden = true;
+    hint.hidden = true;
+  }
+
+  go.addEventListener("click", function () {
+    err.hidden = true;
+    if (!window.crypto || !window.crypto.subtle) {
+      fail("This browser blocks Web Crypto on file:// — open the page over https://localhost instead.");
+      return;
+    }
+    if (pw.value.length < 10) { fail("Use at least 10 characters. This is the only thing standing in the way."); return; }
+    if (pw.value !== pw2.value) { fail("The two passwords don't match."); return; }
+
+    go.disabled = true;
+    go.textContent = "Hashing…";
+
+    var salt = crypto.getRandomValues(new Uint8Array(16));
+    var saltHex = bytesToHex(salt);
+
+    crypto.subtle.importKey("raw", new TextEncoder().encode(pw.value), { name: "PBKDF2" }, false, ["deriveBits"])
+      .then(function (key) {
+        return crypto.subtle.deriveBits(
+          { name: "PBKDF2", salt: salt, iterations: ITERATIONS, hash: "SHA-256" }, key, 256
+        );
+      })
+      .then(function (bits) {
+        out.textContent =
+          "  var ADMIN = {\n" +
+          '    salt: "' + saltHex + '",\n' +
+          '    hash: "' + bytesToHex(bits) + '",\n' +
+          "    iterations: " + ITERATIONS + "\n" +
+          "  };";
+        out.hidden = false;
+        hint.hidden = false;
+        go.disabled = false;
+        go.textContent = "Generate hash";
+        pw.value = ""; pw2.value = "";
+      })
+      .catch(function (e) {
+        go.disabled = false;
+        go.textContent = "Generate hash";
+        fail("Hashing failed: " + e.message);
+      });
+  });
+})();
+</script>
+</body>
+</html>

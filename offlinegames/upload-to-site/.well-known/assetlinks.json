@@ -1,0 +1,13 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "art.offlinegames.twa",
+      "sha256_cert_fingerprints": [
+        "99:BD:7D:FE:50:69:1C:39:A7:86:51:AF:5D:D6:79:5E:8B:3E:71:46:88:7F:F5:FE:9E:4A:D9:B6:61:2C:FE:44",
+        "2A:3C:4D:E6:61:82:4C:59:18:44:F0:AA:68:66:97:02:A8:F3:FE:F0:9C:D1:05:48:00:25:A9:9E:FC:C9:FB:11"
+      ]
+    }
+  }
+]

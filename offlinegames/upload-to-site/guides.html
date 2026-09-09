@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4203857211510947" crossorigin="anonymous"></script>
+  <meta name="google-site-verification" content="Zn2DBtYI302Pt-HaJqHp2Pw7a9AWeq_m--B8oBfizEc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>How to play browser games without downloads — OfflineGames</title>
+  <meta name="description" content="A practical guide to playing free HTML5 games in your browser: what “offline” means here, how phones load the vault, and how we pick cartridges for offlinegames.art.">
+  <link rel="canonical" href="https://offlinegames.art/guides.html">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#090A16">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="ui-fx.css">
+  <link rel="stylesheet" href="console-ui.css">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="index.html">OFFLINEGAMES</a>
+    <nav class="top-nav" aria-label="Main">
+      <a href="index.html">Vault</a>
+      <a href="news.html">News</a>
+      <a href="about.html">About</a>
+      <a class="active extra" href="guides.html">Guides</a>
+      <a class="extra" href="library.html">Library</a>
+    </nav>
+  </header>
+  <main class="page">
+    <a class="back" href="index.html">← Back to the vault</a>
+    <p class="eyebrow">from the editor</p>
+    <h1>How we play games in a browser tab</h1>
+    <div class="prose">
+      <div class="card">
+        <p>Most “free games” sites send you through a maze of fake buttons before a Unity loader appears. OfflineGames is the opposite of that. The vault is a list of HTML5 cabinets we host ourselves. You tap a cover, the game opens in an overlay, and the files come from this same domain — not a mystery iframe farm.</p>
+        <p>When we say offline, we mean two practical things. First, you do not visit an app store. Second, once a game has loaded in the tab, many of them keep running even if the signal blips, because the logic lives in the page. You still need a connection to open the vault the first time. That is honest, and it is better than promising a miracle download-free console.</p>
+      </div>
+      <div class="card">
+        <h2>What we look for before a game is added</h2>
+        <p>Every cartridge in the grid had to pass the same boring tests. It has to start without a login. It has to be playable with a thumb or a mouse. It has to be something we would actually reopen, not a wrapper around a 2012 flash port with the sound broken. If a build is huge — Chess 3D is the obvious example — we still ship it because the game is real, but we do not pretend it is a 200 KB toy.</p>
+        <p>We also keep a short written note for each title on the <a href="library.html">library page</a>. That is not filler for search engines; it is how a parent can tell Chess 3D from Crazy Kingdom before a child taps the wrong cover.</p>
+      </div>
+      <div class="card">
+        <h2>Phones versus laptops</h2>
+        <p>The same catalog file feeds every device. If a laptop shows a new game and a phone does not, the phone is usually holding an old copy of that file in a service worker cache. This site now asks the network for the game list instead of trusting a week-old cache. After you upload a new catalog, give the phone a refresh. You should see UNO, LUDO, Juicy Match, and whatever we add next in both places.</p>
+        <p>On a phone we also skip hover previews. Those previews are iframes. They look nice on a desktop with a mouse, and they melt a mid-range Android. Tap once to play; that is the whole gesture.</p>
+      </div>
+      <div class="card">
+        <h2>A short way to play well</h2>
+        <ul>
+          <li>Use the category button if you only want puzzles or racing.</li>
+          <li>Use search if you already know the name.</li>
+          <li>Random Game is a random pick when you do not want to decide.</li>
+          <li>Close the play overlay with the ✕ — it unloads the game so the next one is fresh.</li>
+        </ul>
+        <p>If something is stuck, the <a href="contact.html">contact page</a> is the right door. We would rather fix a broken embed than collect a newsletter.</p>
+      </div>
+      <p>Ready? <a href="index.html">Open the vault</a> and pick a cartridge.</p>
+    </div>
+  </main>
+  <footer class="site-foot">
+    <nav>
+      <a href="about.html">About</a>
+      <a href="library.html">Library</a>
+      <a href="guides.html">Guides</a>
+      <a href="contact.html">Contact</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </nav>
+    <p>offlinegames.art — copyright Jethin Productions</p>
+  </footer>
+  <script src="contact-panel.js"></script>
+  <script src="ui-fx.js"></script>
+  <script src="console-ui.js"></script>
+  <script src="pwa.js"></script>
+</body>
+</html>

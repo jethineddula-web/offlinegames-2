@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4203857211510947"
+   crossorigin="anonymous"></script>
+
+  <!-- Google Search Console verification -->
+  <meta name="google-site-verification" content="Zn2DBtYI302Pt-HaJqHp2Pw7a9AWeq_m--B8oBfizEc" />
+
+  <script>
+    /* Matches index.html: a WebView (your Android wrapper) must NOT get a
+       service worker, and any it already has is removed. This page used to
+       register unconditionally, which meant the app could end up with a
+       service worker index.html had deliberately unregistered. */
+    if ("serviceWorker" in navigator && !(/; wv\)/.test(navigator.userAgent||"") || /WebView/i.test(navigator.userAgent||""))) {
+      navigator.serviceWorker.register("/sw.js", { scope: "/" });
+    } else if (navigator.serviceWorker) {
+      navigator.serviceWorker.getRegistrations().then(function(rs){ rs.forEach(function(r){ r.unregister(); }); });
+    }
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>News — Offline Games</title>
+  <meta name="description" content="What's new at Offline Games: newly added browser games, updates, and site news.">
+  <meta name="author" content="Jethin Productions">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="application-name" content="🎮 Offline Games">
+  <!-- Canonical -->
+  <link rel="canonical" href="https://offlinegames.art/news.html">
+
+  <!-- Open Graph -->
+  <meta property="og:site_name" content="🎮 Offline Games">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://offlinegames.art/news.html">
+  <meta property="og:title" content="News — Offline Games">
+  <meta property="og:description" content="What's new at Offline Games: newly added browser games, updates, and site news.">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="News — Offline Games">
+  <meta name="twitter:description" content="What's new at Offline Games: newly added browser games, updates, and site news.">
+  <meta name="theme-color" content="#090A16">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="OfflineGames">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="ui-fx.css">
+  <link rel="stylesheet" href="console-ui.css">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="index.html">OFFLINEGAMES</a>
+    <nav class="top-nav" aria-label="Main">
+      <a href="index.html">Vault</a>
+      <a class="active" href="news.html">News</a>
+      <a href="about.html">About</a>
+      <a class="extra" href="contact.html">Contact</a>
+    </nav>
+  </header>
+  <main class="page" style="max-width:1100px">
+    <a class="back" href="index.html">← Back to the vault</a>
+    <p class="eyebrow">what's new</p>
+    <h1>News</h1>
+    <p class="prose">Updates from the vault. Open news.html#admin06 to add or edit posts.</p>
+    <div class="news-grid" id="news-list" style="margin-top:24px"></div>
+  </main>
+  <button type="button" class="fab fab-save" id="lib-save-exit" hidden>Save & exit</button>
+  <footer class="site-foot">
+    <nav>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </nav>
+    <p>offlinegames.art — copyright Jethin Productions</p>
+  </footer>
+  <div id="toast-container"></div>
+  <script src="catalog.js"></script>
+  <script src="site-admin.js"></script>
+  <script src="admin-forms.js"></script>
+  <script src="admin-export.js"></script>
+  <script>
+  (function () {
+    var SA = window.SiteAdmin;
+    var games = (window.SITE_GAMES || []).slice();
+    var news = (window.SITE_NEWS || []).slice();
+
+    /* WAS: this page merged a localStorage snapshot ("og-catalog-draft") over
+     * the freshly downloaded catalog, and persist() wrote that snapshot back.
+     * Because render() runs on every load, every visitor ended up storing one.
+     *
+     * The merge kept the server's copy for any id it already had, then
+     * appended every id the snapshot had that the server did not — so a news
+     * post or game you DELETED came straight back out of the visitor's own
+     * localStorage on every future visit. Incognito looked right because
+     * incognito has no localStorage to merge.
+     *
+     * catalog.js is the only source of truth now. Any snapshot left over from
+     * the old code is deleted here, so already-affected browsers heal
+     * themselves on the next load. */
+    try { localStorage.removeItem("og-catalog-draft"); } catch (e) {}
+
+    function persist() {
+      try {
+        /* Only useful while you are mid-edit in the admin panel. Writing it
+           for ordinary visitors is what caused deleted posts to reappear. */
+        if (SA && SA.isAdmin && SA.isAdmin()) {
+          localStorage.setItem("og-catalog-draft", JSON.stringify({ games: games, news: news }));
+        }
+      } catch (e) {}
+    }
+
+    function render() {
+      var admin = SA && SA.isAdmin && SA.isAdmin();
+      var sorted = news.slice().sort(function (a, b) { return String(b.date).localeCompare(String(a.date)); });
+      var html = admin
+        ? '<button type="button" class="add-news-card" id="add-news"><span>＋</span><span>Add News Post</span></button>'
+        : "";
+      html += sorted.map(function (n) {
+        var d = new Date(n.date);
+        var ds = isNaN(d) ? n.date : d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+        var actions = admin
+          ? '<div class="cart-admin-actions">' +
+              '<button type="button" class="icon-btn" data-edit="' + n.id + '">✎</button>' +
+              '<button type="button" class="icon-btn danger" data-del="' + n.id + '">✕</button></div>'
+          : "";
+        var thumb = n.image
+          ? '<img src="' + n.image + '" alt="">'
+          : (n.emoji || "✦");
+        return '<article class="news-card">' + actions +
+          '<div class="thumb">' + thumb + "</div>" +
+          '<div class="body"><span class="badge date">' + ds + "</span><h3>" + n.title + "</h3><p>" + (n.excerpt || "") + "</p></div></article>";
+      }).join("");
+      document.getElementById("news-list").innerHTML = html;
+      document.getElementById("lib-save-exit").hidden = !admin;
+      var add = document.getElementById("add-news");
+      if (add) add.onclick = function () {
+        window.AdminForms.openNewsForm(null, function (record) { news.push(record); persist(); render(); });
+      };
+      document.getElementById("news-list").onclick = function (e) {
+        var ed = e.target.closest("[data-edit]");
+        var dl = e.target.closest("[data-del]");
+        if (ed) {
+          var n = news.find(function (x) { return x.id === ed.getAttribute("data-edit"); });
+          window.AdminForms.openNewsForm(n, function (record) {
+            var i = news.findIndex(function (x) { return x.id === record.id; });
+            if (i >= 0) news[i] = record;
+            persist();
+            render();
+          });
+        }
+        if (dl) {
+          var n2 = news.find(function (x) { return x.id === dl.getAttribute("data-del"); });
+          window.AdminForms.confirmDelete(n2.title, function () {
+            news = news.filter(function (x) { return x.id !== n2.id; });
+            persist();
+            render();
+          });
+        }
+      };
+    }
+
+    document.getElementById("lib-save-exit").onclick = function () {
+      window.AdminForms.downloadCatalog(games, news);
+    };
+    if (location.hash === "#admin06") {
+      try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+      if (SA && !SA.isAdmin()) SA.promptSignIn(render);
+    }
+    render();
+  })();
+  </script>
+  <script src="contact-panel.js"></script>
+  <script src="ui-fx.js"></script>
+  <script src="console-ui.js"></script>
+  <script src="pwa.js"></script>
+</body>
+</html>

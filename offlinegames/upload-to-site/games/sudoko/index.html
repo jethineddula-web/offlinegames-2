@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Sudoku Online — Free Puzzle Game with 50 Difficulty Levels</title>
+<meta name="description" content="Play free Sudoku online. 50 difficulty levels from beginner to master, hints, notes, undo, a timer, and calming background music. No download needed — works on phone, tablet, and desktop.">
+<meta name="keywords" content="sudoku, sudoku online, free sudoku, sudoku game, play sudoku, sudoku puzzle, number puzzle, brain game, logic game, daily sudoku">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#141821">
+<meta name="author" content="Sudoku Online">
+<link rel="canonical" href="https://example.com/sudoku/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Sudoku Online — Free Puzzle Game, 50 Difficulty Levels">
+<meta property="og:description" content="50 difficulty levels, hints, notes, timer and calming sound. Play Sudoku free in your browser — no download needed.">
+<meta property="og:url" content="https://example.com/sudoku/">
+<meta property="og:image" content="https://example.com/sudoku/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Sudoku Online — Free Puzzle Game">
+<meta name="twitter:description" content="50 difficulty levels, hints, notes, timer and calming sound. Play Sudoku free in your browser.">
+<meta name="twitter:image" content="https://example.com/sudoku/og-image.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%23141821'/%3E%3Cg stroke='%23C9A227' stroke-width='5'%3E%3Cline x1='34' y1='8' x2='34' y2='92'/%3E%3Cline x1='66' y1='8' x2='66' y2='92'/%3E%3Cline x1='8' y1='34' x2='92' y2='34'/%3E%3Cline x1='8' y1='66' x2='92' y2='66'/%3E%3C/g%3E%3Ctext x='50' y='60' font-size='34' text-anchor='middle' fill='%23EDE7DC' font-family='Georgia,serif'%3E9%3C/text%3E%3C/svg%3E">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Game",
+  "name": "Sudoku Online",
+  "description": "Free browser Sudoku with 50 difficulty levels, hints, notes, undo and calming background music.",
+  "genre": "Puzzle",
+  "playMode": "SinglePlayer",
+  "applicationCategory": "Game",
+  "operatingSystem": "Any"
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4203857211510947" crossorigin="anonymous"></script>
+
+<style>
+  :root{
+    --bg: #10141c;
+    --panel: #1a2030;
+    --panel-2: #212942;
+    --paper: #ece5d6;
+    --paper-2: #e2d9c6;
+    --ink: #232323;
+    --grid-line: #3a4358;
+    --gold: #c9a227;
+    --gold-soft: #e0c264;
+    --teal: #3fa796;
+    --red: #c1443b;
+    --text: #ede7dc;
+    --text-muted: #8b93a7;
+    --radius: 14px;
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;padding:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    height:100%;
+    -webkit-tap-highlight-color:transparent;
+    overscroll-behavior:none;
+  }
+  body{
+    min-height:100vh;
+    min-height:100dvh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+
+  /* ---------- orientation-lock fallback (works with or without native lock) ---------- */
+  @media screen and (orientation:landscape){
+    html.force-rotate-cw body{
+      position:absolute;top:0;left:0;
+      width:100vh;height:100vw;
+      transform-origin:top left;
+      transform:rotate(90deg) translateY(-100%);
+    }
+    html.force-rotate-ccw body{
+      position:absolute;top:0;left:0;
+      width:100vh;height:100vw;
+      transform-origin:top left;
+      transform:rotate(-90deg) translateX(-100%);
+    }
+  }
+
+  a{color:inherit;}
+  button{font-family:var(--sans);}
+
+  .visually-hidden{position:absolute !important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
+
+  /* ---------- shared layout ---------- */
+  .app{
+    width:100%;
+    max-width:520px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:14px 14px 24px;
+    flex:1;
+  }
+  .screen{display:none;width:100%;flex-direction:column;align-items:center;}
+  .screen.active{display:flex;}
+
+  .ad-slot{
+    width:100%;
+    min-height:60px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:8px 0;
+    overflow:hidden;
+  }
+  .ad-slot .adsbygoogle{width:100%;}
+  .ad-label{
+    font-size:10px;
+    letter-spacing:.08em;
+    color:var(--text-muted);
+    text-transform:uppercase;
+    margin-bottom:2px;
+  }
+  /* In the native app, AdMob banners are drawn natively above the WebView
+     (they aren't real DOM elements), so the AdSense .ad-slot placeholders
+     are hidden and we reserve space at the bottom instead. */
+  body.native-app .ad-slot{display:none;}
+  body.native-banner-space .app{padding-bottom:64px;}
+
+  /* ---------- start screen ---------- */
+  .brand{
+    text-align:center;
+    margin:18px 0 6px;
+  }
+  .brand h1{
+    font-family:var(--serif);
+    font-weight:700;
+    font-size:clamp(40px,11vw,58px);
+    margin:0;
+    color:var(--gold-soft);
+    letter-spacing:.01em;
+  }
+  .brand p{
+    margin:6px 0 0;
+    color:var(--text-muted);
+    font-size:15px;
+    font-style:italic;
+    font-family:var(--serif);
+  }
+
+  .board-preview{
+    width:min(60vw,220px);
+    aspect-ratio:1/1;
+    margin:22px auto 8px;
+    display:grid;
+    grid-template-columns:repeat(9,1fr);
+    grid-template-rows:repeat(9,1fr);
+    border:3px solid var(--gold);
+    border-radius:8px;
+    overflow:hidden;
+    background:var(--paper);
+  }
+  .board-preview div{border:1px solid rgba(58,67,88,.25);}
+  .board-preview div:nth-child(9n+3),.board-preview div:nth-child(9n+6){border-right:2px solid var(--gold);}
+  .board-preview div:nth-child(n+19):nth-child(-n+27),.board-preview div:nth-child(n+46):nth-child(-n+54){border-bottom:2px solid var(--gold);}
+
+  .menu-stack{
+    width:100%;
+    max-width:340px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin-top:18px;
+  }
+
+  .btn{
+    appearance:none;border:none;cursor:pointer;
+    border-radius:999px;
+    padding:14px 20px;
+    font-size:16px;
+    font-weight:600;
+    font-family:var(--sans);
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    transition:transform .12s ease, filter .12s ease;
+  }
+  .btn:active{transform:scale(.97);}
+  .btn-primary{background:linear-gradient(180deg,var(--gold-soft),var(--gold));color:#1b1608;}
+  .btn-secondary{background:var(--panel-2);color:var(--text);}
+  .btn-ghost{background:transparent;color:var(--text-muted);border:1px solid var(--grid-line);}
+  .btn-block{width:100%;}
+  .btn-row{display:flex;gap:10px;}
+  .btn-row .btn{flex:1;}
+  .btn[disabled]{opacity:.4;cursor:default;}
+
+  .diff-row{
+    display:flex;align-items:center;justify-content:space-between;
+    background:var(--panel-2);
+    border-radius:999px;
+    padding:10px 8px 10px 18px;
+  }
+  .diff-row span{font-size:14px;color:var(--text-muted);}
+  .diff-row strong{color:var(--gold-soft);font-family:var(--serif);}
+
+  .toggle-row{display:flex;gap:10px;}
+  .toggle-btn{
+    flex:1;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    background:var(--panel-2);
+    border-radius:12px;padding:12px;
+    font-size:13px;color:var(--text-muted);
+    cursor:pointer;border:1px solid transparent;
+  }
+  .toggle-btn.on{color:var(--teal);border-color:var(--teal);}
+
+  .footnote{margin-top:20px;font-size:11px;color:var(--text-muted);text-align:center;line-height:1.6;}
+  .footnote a{text-decoration:underline;}
+
+  /* ---------- game screen ---------- */
+  .game-header{
+    width:100%;display:flex;align-items:center;justify-content:space-between;
+    margin:6px 0 14px;
+  }
+  .icon-btn{
+    background:var(--panel-2);border:none;color:var(--text);
+    width:40px;height:40px;border-radius:10px;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;font-size:18px;
+  }
+  .stat-group{display:flex;gap:10px;}
+  .stat{
+    background:var(--panel-2);border-radius:10px;
+    padding:8px 12px;text-align:center;min-width:64px;
+  }
+  .stat .num{font-family:var(--serif);font-weight:600;font-size:16px;color:var(--gold-soft);}
+  .stat .lbl{font-size:9px;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase;}
+
+  .board-wrap{position:relative;width:100%;max-width:440px;}
+  #grid{
+    width:100%;
+    aspect-ratio:1/1;
+    display:grid;
+    grid-template-columns:repeat(9,1fr);
+    grid-template-rows:repeat(9,1fr);
+    background:var(--paper);
+    border:3px solid var(--gold);
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 10px 30px rgba(0,0,0,.35);
+    touch-action:manipulation;
+  }
+  .cell{
+    position:relative;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--paper);
+    border:1px solid rgba(58,67,88,.22);
+    font-family:var(--sans);
+    font-size:clamp(15px,4.4vw,22px);
+    font-weight:500;
+    color:var(--ink);
+    cursor:pointer;
+    user-select:none;
+  }
+  .cell:nth-child(9n+3),.cell:nth-child(9n+6){border-right:3px solid var(--gold);}
+  .cell:nth-child(n+19):nth-child(-n+27),.cell:nth-child(n+46):nth-child(-n+54){border-bottom:3px solid var(--gold);}
+  .cell.given{font-weight:700;color:#141821;}
+  .cell.user-val{color:#1f6f63;font-weight:600;}
+  .cell.error{color:var(--red);background:#f3d9d6;}
+  .cell.peer{background:var(--paper-2);}
+  .cell.selected{background:#cfe8e2;}
+  .cell.same-val{background:#f4e6a8;}
+  .cell.hint-flash{animation:flashHint .6s ease;}
+  @keyframes flashHint{0%{background:#fff2b0;}100%{background:var(--paper);}}
+  .notes-grid{
+    position:absolute;inset:2px;
+    display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);
+    pointer-events:none;
+  }
+  .notes-grid span{
+    font-size:clamp(7px,1.8vw,9px);
+    color:#6b7280;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:600;
+  }
+
+  .controls-row{width:100%;max-width:440px;display:flex;gap:8px;margin:14px 0 10px;}
+  .ctrl-btn{
+    flex:1;background:var(--panel-2);border:none;color:var(--text);
+    border-radius:12px;padding:10px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;
+    font-size:10px;color:var(--text-muted);cursor:pointer;position:relative;
+  }
+  .ctrl-btn .ic{font-size:17px;color:var(--text);}
+  .ctrl-btn.active{color:var(--teal);}
+  .ctrl-btn.active .ic{color:var(--teal);}
+  .badge{
+    position:absolute;top:2px;right:10px;background:var(--gold);color:#1b1608;
+    font-size:9px;font-weight:700;border-radius:999px;min-width:15px;height:15px;
+    display:flex;align-items:center;justify-content:center;padding:0 3px;
+  }
+
+  .numpad{
+    width:100%;max-width:440px;
+    display:grid;grid-template-columns:repeat(9,1fr);gap:6px;
+  }
+  .num-btn{
+    aspect-ratio:1/1;background:var(--panel-2);border:none;border-radius:10px;
+    color:var(--text);font-size:clamp(14px,4vw,19px);font-weight:600;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;
+  }
+  .num-btn .count{font-size:8px;color:var(--text-muted);margin-top:1px;}
+  .num-btn.done{opacity:.25;pointer-events:none;}
+  .num-btn:active{transform:scale(.94);}
+
+  /* ---------- modals / overlays ---------- */
+  .overlay{
+    position:fixed;inset:0;background:rgba(8,10,15,.86);
+    display:none;align-items:center;justify-content:center;
+    padding:20px;z-index:50;
+  }
+  .overlay.active{display:flex;}
+  .modal{
+    background:var(--panel);
+    border-radius:18px;
+    padding:22px;
+    width:100%;max-width:380px;
+    max-height:85vh;overflow-y:auto;
+    box-shadow:0 20px 60px rgba(0,0,0,.5);
+  }
+  .modal h2{
+    font-family:var(--serif);color:var(--gold-soft);margin:0 0 6px;font-size:24px;font-weight:600;
+  }
+  .modal p{color:var(--text-muted);font-size:13.5px;line-height:1.6;margin:0 0 14px;}
+  .modal .close-x{
+    float:right;background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;
+  }
+
+  .level-tiers{display:flex;flex-direction:column;gap:14px;}
+  .tier-title{
+    font-family:var(--serif);font-size:14px;color:var(--gold-soft);
+    display:flex;justify-content:space-between;align-items:baseline;
+  }
+  .tier-title small{color:var(--text-muted);font-family:var(--sans);font-size:11px;}
+  .level-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:6px;}
+  .lvl-btn{
+    background:var(--panel-2);border:1px solid transparent;color:var(--text);
+    border-radius:8px;padding:8px 0;font-size:13px;cursor:pointer;
+  }
+  .lvl-btn.selected{border-color:var(--gold);color:var(--gold-soft);background:#2a2410;}
+  .lvl-btn.best::after{content:'★';font-size:8px;display:block;color:var(--gold);}
+
+  .howto-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
+  .howto-list li{font-size:13.5px;color:var(--text);line-height:1.5;}
+
+  .win-stats{display:flex;gap:10px;margin:14px 0;}
+  .win-stats .stat{flex:1;}
+
+  #toast{
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+    background:var(--panel-2);color:var(--text);padding:10px 18px;border-radius:999px;
+    font-size:13px;z-index:80;opacity:0;pointer-events:none;transition:opacity .25s ease;
+  }
+  #toast.show{opacity:1;}
+
+  @media (min-width:600px){
+    .app{max-width:460px;}
+  }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- ============ START SCREEN ============ -->
+  <section class="screen active" id="screen-start">
+    <div class="ad-slot" id="ad-top-start"></div>
+
+    <div class="brand">
+      <h1>Sudoku</h1>
+      <p>sharpen your mind, one grid at a time</p>
+    </div>
+
+    <div class="board-preview" id="board-preview" aria-hidden="true"></div>
+
+    <div class="menu-stack">
+      <button class="btn btn-primary btn-block" id="btn-continue" style="display:none;">Continue Level <span id="continue-level"></span></button>
+      <button class="btn btn-primary btn-block" id="btn-play">▶ Play</button>
+
+      <button class="diff-row" id="btn-open-difficulty">
+        <span>Difficulty — <strong id="diff-label">Level 1 · Novice</strong></span>
+        <span>▾</span>
+      </button>
+
+      <div class="toggle-row">
+        <div class="toggle-btn on" id="toggle-sound">🔊 Sound</div>
+        <div class="toggle-btn on" id="toggle-music">🎵 Music</div>
+      </div>
+
+      <button class="btn btn-ghost btn-block" id="btn-howto">How to play</button>
+    </div>
+
+    <div class="ad-slot" id="ad-bottom-start"></div>
+    <p class="footnote">50 hand-tuned difficulty levels · works offline once loaded · no account needed<br>
+      <a href="#" id="link-privacy-stub">About this app</a>
+    </p>
+  </section>
+
+  <!-- ============ GAME SCREEN ============ -->
+  <section class="screen" id="screen-game">
+    <div class="ad-slot" id="ad-top-game"></div>
+
+    <div class="game-header">
+      <button class="icon-btn" id="btn-menu" aria-label="Back to menu">☰</button>
+      <div class="stat-group">
+        <div class="stat"><div class="num" id="stat-level">1</div><div class="lbl">Level</div></div>
+        <div class="stat"><div class="num" id="stat-time">00:00</div><div class="lbl">Time</div></div>
+        <div class="stat"><div class="num" id="stat-mistakes">0/3</div><div class="lbl">Mistakes</div></div>
+      </div>
+      <button class="icon-btn" id="btn-pause" aria-label="Pause">⏸</button>
+    </div>
+
+    <div class="board-wrap">
+      <div id="grid" role="grid" aria-label="Sudoku grid"></div>
+    </div>
+
+    <div class="controls-row">
+      <button class="ctrl-btn" id="ctrl-undo"><span class="ic">↶</span>Undo</button>
+      <button class="ctrl-btn" id="ctrl-erase"><span class="ic">⌫</span>Erase</button>
+      <button class="ctrl-btn" id="ctrl-notes"><span class="ic">✎</span>Notes</button>
+      <button class="ctrl-btn" id="ctrl-hint"><span class="ic">💡</span>Hint<span class="badge" id="hint-badge">AD</span></button>
+    </div>
+
+    <div class="numpad" id="numpad"></div>
+
+    <div class="ad-slot" id="ad-bottom-game"></div>
+  </section>
+</div>
+
+<!-- ============ DIFFICULTY MODAL ============ -->
+<div class="overlay" id="overlay-difficulty">
+  <div class="modal">
+    <button class="close-x" data-close="overlay-difficulty">✕</button>
+    <h2>Choose a level</h2>
+    <p>50 levels across five tiers. Higher levels remove more starting numbers.</p>
+    <div class="level-tiers" id="level-tiers"></div>
+  </div>
+</div>
+
+<!-- ============ HOW TO PLAY MODAL ============ -->
+<div class="overlay" id="overlay-howto">
+  <div class="modal">
+    <button class="close-x" data-close="overlay-howto">✕</button>
+    <h2>How to play</h2>
+    <ul class="howto-list">
+      <li>Fill the grid so every <strong>row</strong>, every <strong>column</strong>, and every <strong>3×3 box</strong> contains the digits 1 through 9 exactly once.</li>
+      <li>Tap a cell to select it, then tap a number below to place it. Bold numbers were given to you and can't be changed.</li>
+      <li>Turn on <strong>Notes</strong> to pencil in small candidate numbers while you think.</li>
+      <li><strong>Hint</strong> reveals the correct number for the selected cell after a short ad — use as many as you like.</li>
+      <li>Three wrong entries end the round, so double-check before you tap.</li>
+    </ul>
+    <button class="btn btn-primary btn-block" data-close="overlay-howto">Got it</button>
+  </div>
+</div>
+
+<!-- ============ PAUSE OVERLAY ============ -->
+<div class="overlay" id="overlay-pause">
+  <div class="modal" style="text-align:center;">
+    <h2>Paused</h2>
+    <p>Take your time — the timer is stopped.</p>
+    <div class="menu-stack" style="margin:0 auto;">
+      <button class="btn btn-primary btn-block" id="btn-resume">Resume</button>
+      <button class="btn btn-secondary btn-block" id="btn-restart-puzzle">Restart this puzzle</button>
+      <button class="btn btn-ghost btn-block" id="btn-quit-to-menu">Quit to menu</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ GAME OVER OVERLAY ============ -->
+<div class="overlay" id="overlay-gameover">
+  <div class="modal" style="text-align:center;">
+    <h2 style="color:var(--red);">Three mistakes</h2>
+    <p>That's the limit for this round. Try the same puzzle again, or start a fresh one.</p>
+    <div class="menu-stack" style="margin:0 auto;">
+      <button class="btn btn-primary btn-block" id="btn-retry-same">Try again</button>
+      <button class="btn btn-secondary btn-block" id="btn-new-after-loss">New puzzle</button>
+      <button class="btn btn-ghost btn-block" id="btn-menu-after-loss">Menu</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ AD-GATED HINT OVERLAY ============ -->
+<div class="overlay" id="overlay-ad-hint">
+  <div class="modal" style="text-align:center;">
+    <h2>Watch an ad for a hint</h2>
+    <p>Your hint unlocks as soon as the ad below has had a moment to load and show.</p>
+    <div class="ad-slot" id="ad-hint-slot"></div>
+    <div class="menu-stack" style="margin:0 auto;">
+      <button class="btn btn-primary btn-block" id="btn-claim-hint" disabled>Loading ad… <span id="ad-hint-countdown">5</span>s</button>
+      <button class="btn btn-ghost btn-block" id="btn-cancel-hint">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ WIN OVERLAY ============ -->
+<div class="overlay" id="overlay-win">
+  <div class="modal" style="text-align:center;">
+    <h2>Solved!</h2>
+    <div class="win-stats">
+      <div class="stat"><div class="num" id="win-time">00:00</div><div class="lbl">Time</div></div>
+      <div class="stat"><div class="num" id="win-best">00:00</div><div class="lbl">Best</div></div>
+      <div class="stat"><div class="num" id="win-level">1</div><div class="lbl">Level</div></div>
+    </div>
+    <div class="ad-slot" id="ad-win"></div>
+    <div class="menu-stack" style="margin:0 auto;">
+      <button class="btn btn-primary btn-block" id="btn-next-level">Next level →</button>
+      <button class="btn btn-secondary btn-block" id="btn-replay-level">Play same level again</button>
+      <button class="btn btn-ghost btn-block" id="btn-win-menu">Menu</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* =========================================================================
+   AD MANAGER — one layer, two backends:
+     - WEB: Google AdSense (display banners in the .ad-slot <div>s; hints
+       are gated behind a short timed banner view, since AdSense has no
+       rewarded-video format).
+     - APP: Google AdMob via Capacitor (native banner overlay + a real
+       rewarded-video ad for hints), used when this page is running inside
+       a Capacitor-built native app.
+
+   PLATFORM DETECTION
+   When this HTML is bundled as the `index.html` of a Capacitor app and run
+   on-device, Capacitor's native runtime injects a `window.Capacitor` bridge
+   automatically — no <script> tag needed here. In a normal browser tab
+   `window.Capacitor` simply doesn't exist, so this falls back to AdSense.
+
+   APP SETUP (one-time, outside this file)
+   1. In your Capacitor project: npm install @capacitor-community/admob
+      then: npx cap sync
+   2. Add your AdMob App ID to AndroidManifest.xml / Info.plist (see the
+      plugin's README) — the IDs below are placeholders for that.
+   3. Replace ADMOB_APP_ID_* / ADMOB_BANNER_ID_* / ADMOB_REWARDED_ID_*
+      below with the real IDs from your AdMob console before release.
+      Until then this uses Google's official TEST ad unit IDs, which is
+      exactly what you want during development (real ads + a dev device
+      can get your AdMob account flagged for invalid traffic).
+   ========================================================================= */
+var AdManager = (function(){
+
+  var isNative = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+  var AdMob = (isNative && window.Capacitor.Plugins) ? window.Capacitor.Plugins.AdMob : null;
+  var platform = (isNative && window.Capacitor.getPlatform) ? window.Capacitor.getPlatform() : "web";
+
+  // ---- AdSense (web) ----
+  var ADSENSE_CLIENT = "ca-pub-4203857211510947";
+  var ADSENSE_BANNER_SLOT = "7417753724";
+
+  // ---- AdMob (app) — TEST IDs from Google. Swap for your real IDs before
+  // you publish: https://apps.admob.com ----
+  var ADMOB_BANNER_ID_ANDROID   = "ca-app-pub-3940256099942544/6300978111";
+  var ADMOB_BANNER_ID_IOS       = "ca-app-pub-3940256099942544/2934735716";
+  var ADMOB_REWARDED_ID_ANDROID = "ca-app-pub-3940256099942544/5224354917";
+  var ADMOB_REWARDED_ID_IOS     = "ca-app-pub-3940256099942544/1712485313";
+
+  function bannerId(){ return platform === "ios" ? ADMOB_BANNER_ID_IOS : ADMOB_BANNER_ID_ANDROID; }
+  function rewardedId(){ return platform === "ios" ? ADMOB_REWARDED_ID_IOS : ADMOB_REWARDED_ID_ANDROID; }
+
+  var rewardedReady = false;
+  var nativeBannerVisible = false;
+
+  function init(){
+    if(!isNative || !AdMob) return;
+    AdMob.initialize({ requestTrackingAuthorization: true })
+      .then(prepareRewarded)
+      .catch(function(e){ console.warn("[AdMob] init failed", e); });
+  }
+
+  // ---------- BANNERS ----------
+  function injectWebAd(containerId){
+    var el = document.getElementById(containerId);
+    if(!el || el.dataset.loaded) return;
+    el.dataset.loaded = "1";
+    var ins = document.createElement("ins");
+    ins.className = "adsbygoogle";
+    ins.style.display = "block";
+    ins.style.width = "100%";
+    ins.setAttribute("data-ad-client", ADSENSE_CLIENT);
+    ins.setAttribute("data-ad-slot", ADSENSE_BANNER_SLOT);
+    ins.setAttribute("data-ad-format", "auto");
+    ins.setAttribute("data-full-width-responsive", "true");
+    el.appendChild(ins);
+    try{ (window.adsbygoogle = window.adsbygoogle || []).push({}); }catch(e){}
+  }
+  function loadVisibleWebAds(){
+    ["ad-top-start","ad-bottom-start","ad-top-game","ad-bottom-game","ad-win"].forEach(function(id){
+      var el = document.getElementById(id);
+      if(el && el.offsetParent !== null) injectWebAd(id);
+    });
+  }
+  function showNativeBanner(){
+    if(!isNative || !AdMob) return;
+    AdMob.showBanner({
+      adId: bannerId(),
+      adSize: "ADAPTIVE_BANNER",
+      position: "BOTTOM_CENTER",
+      margin: 0
+    }).then(function(){
+      nativeBannerVisible = true;
+      document.body.classList.add("native-banner-space");
+    }).catch(function(e){ console.warn("[AdMob] banner failed", e); });
+  }
+  function hideNativeBanner(){
+    if(!isNative || !AdMob || !nativeBannerVisible) return;
+    AdMob.hideBanner().catch(function(){});
+    document.body.classList.remove("native-banner-space");
+    nativeBannerVisible = false;
+  }
+  // Call whenever a screen/overlay change should refresh what's on screen.
+  function refreshBanners(){
+    if(isNative) showNativeBanner();
+    else loadVisibleWebAds();
+  }
+
+  // ---------- REWARDED VIDEO (used for hints, app only) ----------
+  function prepareRewarded(){
+    if(!isNative || !AdMob) return;
+    rewardedReady = false;
+    AdMob.prepareRewardVideoAd({ adId: rewardedId() })
+      .then(function(){ rewardedReady = true; })
+      .catch(function(e){ console.warn("[AdMob] rewarded prepare failed", e); });
+  }
+  function isRewardedReady(){ return isNative && rewardedReady; }
+
+  // onReward fires only if the viewer watched long enough to earn the
+  // reward; onDone always fires once, so the caller can unpause/clean up.
+  function showRewarded(onReward, onDone){
+    if(!isNative || !AdMob || !rewardedReady){ onDone && onDone(); return; }
+    var earned = false;
+    var listeners = [];
+    function cleanup(){
+      listeners.forEach(function(h){ h && h.remove && h.remove(); });
+      prepareRewarded(); // queue up the next one
+    }
+    listeners.push(AdMob.addListener("onRewardedVideoAdReward", function(){ earned = true; }));
+    listeners.push(AdMob.addListener("onRewardedVideoAdDismissed", function(){
+      cleanup();
+      if(earned) onReward && onReward();
+      onDone && onDone();
+    }));
+    listeners.push(AdMob.addListener("onRewardedVideoAdFailedToShow", function(){
+      cleanup();
+      onDone && onDone();
+    }));
+    AdMob.showRewardVideoAd().catch(function(){
+      cleanup();
+      onDone && onDone();
+    });
+  }
+
+  return {
+    isNative: isNative,
+    init: init,
+    refreshBanners: refreshBanners,
+    hideNativeBanner: hideNativeBanner,
+    isRewardedReady: isRewardedReady,
+    showRewarded: showRewarded,
+    injectWebAd: injectWebAd // used by the web-only ad-gated hint modal
+  };
+})();
+
+/* =========================================================================
+   SOUND — generated with the Web Audio API, no external audio files needed.
+   ========================================================================= */
+var audioCtx = null;
+function ctx(){
+  if(!audioCtx){
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if(AC) audioCtx = new AC();
+  }
+  return audioCtx;
+}
+document.addEventListener("click", function unlock(){
+  var c = ctx();
+  if(c && c.state === "suspended") c.resume();
+}, {once:false});
+
+function beep(opts){
+  if(!settings.sound) return;
+  var c = ctx(); if(!c) return;
+  var o = opts || {};
+  var freq = o.freq || 440, dur = o.dur || 0.12, type = o.type || "sine";
+  var vol = o.vol !== undefined ? o.vol : 0.22, delay = o.delay || 0;
+  var t0 = c.currentTime + delay;
+  var osc = c.createOscillator();
+  var gain = c.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, t0);
+  gain.gain.setValueAtTime(0, t0);
+  gain.gain.linearRampToValueAtTime(vol, t0 + 0.012);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  osc.connect(gain).connect(c.destination);
+  osc.start(t0);
+  osc.stop(t0 + dur + 0.03);
+}
+function sfxClick(){ beep({freq:720,dur:0.05,type:"triangle",vol:0.16}); }
+function sfxPlace(){ beep({freq:540,dur:0.08,type:"sine",vol:0.2}); }
+function sfxErase(){ beep({freq:340,dur:0.06,type:"triangle",vol:0.15}); }
+function sfxError(){ beep({freq:190,dur:0.16,type:"sawtooth",vol:0.22}); beep({freq:140,dur:0.2,type:"sawtooth",vol:0.18,delay:0.06}); }
+function sfxUnit(){ [523,659,784].forEach(function(f,i){ beep({freq:f,dur:0.14,vol:0.18,delay:i*0.08}); }); }
+function sfxWin(){ [523,659,784,1046,784,1046].forEach(function(f,i){ beep({freq:f,dur:0.17,vol:0.2,delay:i*0.11}); }); }
+function sfxLose(){ [400,300,220].forEach(function(f,i){ beep({freq:f,dur:0.22,type:"sawtooth",vol:0.16,delay:i*0.14}); }); }
+
+var musicTimer = null, musicGain = null, musicStep = 0;
+var musicNotes = [261.6,329.6,392.0,440.0,392.0,329.6,293.7,246.9];
+function startMusic(){
+  if(!settings.music || musicTimer) return;
+  var c = ctx(); if(!c) return;
+  musicGain = c.createGain();
+  musicGain.gain.value = 0.05;
+  musicGain.connect(c.destination);
+  function playNote(){
+    if(!settings.music){ stopMusic(); return; }
+    var cc = ctx(); if(!cc) return;
+    var osc = cc.createOscillator();
+    var g = cc.createGain();
+    osc.type = "sine";
+    osc.frequency.value = musicNotes[musicStep % musicNotes.length];
+    g.gain.setValueAtTime(0, cc.currentTime);
+    g.gain.linearRampToValueAtTime(0.07, cc.currentTime + 0.08);
+    g.gain.exponentialRampToValueAtTime(0.0001, cc.currentTime + 1.1);
+    osc.connect(g).connect(musicGain);
+    osc.start();
+    osc.stop(cc.currentTime + 1.15);
+    musicStep++;
+  }
+  playNote();
+  musicTimer = setInterval(playNote, 950);
+}
+function stopMusic(){
+  if(musicTimer){ clearInterval(musicTimer); musicTimer = null; }
+  if(musicGain){ try{musicGain.disconnect();}catch(e){} musicGain = null; }
+}
+
+/* =========================================================================
+   SETTINGS + PERSISTENCE
+   ========================================================================= */
+var settings = loadJSON("sudoku_settings", {sound:true, music:true});
+var bestTimes = loadJSON("sudoku_best_times", {});
+function loadJSON(key, fallback){
+  try{ var v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }catch(e){ return fallback; }
+}
+function saveJSON(key, val){
+  try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){}
+}
+
+/* =========================================================================
+   SUDOKU ENGINE
+   ========================================================================= */
+function emptyBoard(){ return Array.from({length:9}, function(){ return new Array(9).fill(0); }); }
+function cloneBoard(b){ return b.map(function(r){ return r.slice(); }); }
+function shuffle(arr){
+  for(var i=arr.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=arr[i]; arr[i]=arr[j]; arr[j]=t; }
+  return arr;
+}
+function isValid(board,row,col,num){
+  for(var x=0;x<9;x++){
+    if(board[row][x]===num) return false;
+    if(board[x][col]===num) return false;
+  }
+  var br=row-row%3, bc=col-col%3;
+  for(var r=0;r<3;r++) for(var c=0;c<3;c++){ if(board[br+r][bc+c]===num) return false; }
+  return true;
+}
+function fillBoard(board){
+  for(var i=0;i<81;i++){
+    var row=Math.floor(i/9), col=i%9;
+    if(board[row][col]===0){
+      var nums = shuffle([1,2,3,4,5,6,7,8,9]);
+      for(var n=0;n<9;n++){
+        var num = nums[n];
+        if(isValid(board,row,col,num)){
+          board[row][col]=num;
+          if(fillBoard(board)) return true;
+          board[row][col]=0;
+        }
+      }
+      return false;
+    }
+  }
+  return true;
+}
+function countSolutions(board,limit){
+  var count=0;
+  function solve(){
+    if(count>=limit) return;
+    for(var i=0;i<81;i++){
+      var row=Math.floor(i/9), col=i%9;
+      if(board[row][col]===0){
+        for(var num=1;num<=9;num++){
+          if(isValid(board,row,col,num)){
+            board[row][col]=num;
+            solve();
+            board[row][col]=0;
+            if(count>=limit) return;
+          }
+        }
+        return;
+      }
+    }
+    count++;
+  }
+  solve();
+  return count;
+}
+function clueCountForLevel(level){
+  var minClues=24, maxClues=46;
+  return Math.round(maxClues - (level-1) * (maxClues-minClues) / 49);
+}
+function generatePuzzle(level){
+  var solved = emptyBoard();
+  fillBoard(solved);
+  var puzzle = cloneBoard(solved);
+  var target = clueCountForLevel(level);
+  var clues = 81;
+  var positions = shuffle(Array.from({length:81}, function(_,i){return i;}));
+  for(var p=0;p<positions.length;p++){
+    if(clues<=target) break;
+    var pos = positions[p], row=Math.floor(pos/9), col=pos%9;
+    var backup = puzzle[row][col];
+    if(backup===0) continue;
+    puzzle[row][col]=0;
+    var test = cloneBoard(puzzle);
+    var sol = countSolutions(test,2);
+    if(sol!==1){ puzzle[row][col]=backup; } else { clues--; }
+  }
+  return {puzzle:puzzle, solved:solved, clues:clues};
+}
+
+/* =========================================================================
+   LEVEL TIERS (50 levels, 5 named tiers of 10)
+   ========================================================================= */
+var TIERS = [
+  {name:"Novice", from:1, to:10},
+  {name:"Apprentice", from:11, to:20},
+  {name:"Skilled", from:21, to:30},
+  {name:"Expert", from:31, to:40},
+  {name:"Master", from:41, to:50}
+];
+function tierForLevel(level){
+  for(var i=0;i<TIERS.length;i++){ if(level>=TIERS[i].from && level<=TIERS[i].to) return TIERS[i]; }
+  return TIERS[0];
+}
+
+/* =========================================================================
+   GAME STATE
+   ========================================================================= */
+var game = {
+  level: 1,
+  puzzle: null,
+  solved: null,
+  given: null,
+  board: null,
+  notes: null,
+  selected: null,
+  mistakes: 0,
+  hintsUsed: 0,
+  noteMode: false,
+  seconds: 0,
+  timerId: null,
+  paused: false,
+  finished: false,
+  history: []
+};
+
+/* =========================================================================
+   DOM refs
+   ========================================================================= */
+var $ = function(id){ return document.getElementById(id); };
+var gridEl = $("grid");
+var numpadEl = $("numpad");
+
+/* =========================================================================
+   SCREEN / OVERLAY HELPERS
+   ========================================================================= */
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(function(s){ s.classList.remove("active"); });
+  $(id).classList.add("active");
+  setTimeout(function(){ AdManager.refreshBanners(); }, 60);
+}
+function openOverlay(id){ $(id).classList.add("active"); }
+function closeOverlay(id){ $(id).classList.remove("active"); }
+document.querySelectorAll("[data-close]").forEach(function(btn){
+  btn.addEventListener("click", function(){ closeOverlay(btn.getAttribute("data-close")); });
+});
+function toast(msg){
+  var t = $("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toast._h);
+  toast._h = setTimeout(function(){ t.classList.remove("show"); }, 1600);
+}
+
+/* =========================================================================
+   BOARD PREVIEW (decorative, start screen)
+   ========================================================================= */
+(function buildPreview(){
+  var el = $("board-preview");
+  var frag = document.createDocumentFragment();
+  for(var i=0;i<81;i++){
+    var d = document.createElement("div");
+    if(Math.random() < 0.45){
+      d.textContent = String(1 + Math.floor(Math.random()*9));
+      d.style.fontFamily = "var(--sans)";
+      d.style.fontSize = "9px";
+      d.style.display = "flex";
+      d.style.alignItems = "center";
+      d.style.justifyContent = "center";
+      d.style.color = "#4b5563";
+    }
+    frag.appendChild(d);
+  }
+  el.appendChild(frag);
+})();
+
+/* =========================================================================
+   DIFFICULTY MODAL
+   ========================================================================= */
+function buildLevelTiers(){
+  var wrap = $("level-tiers");
+  wrap.innerHTML = "";
+  TIERS.forEach(function(tier){
+    var block = document.createElement("div");
+    var title = document.createElement("div");
+    title.className = "tier-title";
+    title.innerHTML = "<span>"+tier.name+"</span><small>Levels "+tier.from+"–"+tier.to+"</small>";
+    block.appendChild(title);
+    var lg = document.createElement("div");
+    lg.className = "level-grid";
+    for(var lvl=tier.from; lvl<=tier.to; lvl++){
+      (function(lvl){
+        var b = document.createElement("button");
+        b.className = "lvl-btn" + (lvl===game.level ? " selected":"") + (bestTimes[lvl] ? " best":"");
+        b.textContent = lvl;
+        b.addEventListener("click", function(){
+          game.level = lvl;
+          updateDiffLabel();
+          closeOverlay("overlay-difficulty");
+          buildLevelTiers();
+          sfxClick();
+        });
+        lg.appendChild(b);
+      })(lvl);
+    }
+    block.appendChild(lg);
+    wrap.appendChild(block);
+  });
+}
+function updateDiffLabel(){
+  var t = tierForLevel(game.level);
+  $("diff-label").textContent = "Level " + game.level + " · " + t.name;
+}
+
+/* =========================================================================
+   SAVE / RESUME
+   ========================================================================= */
+function saveProgress(){
+  if(game.finished || !game.board) return;
+  saveJSON("sudoku_save", {
+    level: game.level, puzzle: game.puzzle, solved: game.solved,
+    given: game.given, board: game.board, notes: game.notes,
+    mistakes: game.mistakes, hintsUsed: game.hintsUsed, seconds: game.seconds
+  });
+}
+function clearProgress(){ try{ localStorage.removeItem("sudoku_save"); }catch(e){} }
+function checkContinue(){
+  var save = loadJSON("sudoku_save", null);
+  if(save && save.board){
+    $("btn-continue").style.display = "flex";
+    $("continue-level").textContent = save.level;
+  } else {
+    $("btn-continue").style.display = "none";
+  }
+}
+
+/* =========================================================================
+   GAME LIFECYCLE
+   ========================================================================= */
+function startNewGame(level){
+  stopTimer();
+  toast("Building your puzzle…");
+  setTimeout(function(){
+    var gen = generatePuzzle(level);
+    game.level = level;
+    game.puzzle = gen.puzzle;
+    game.solved = gen.solved;
+    game.given = gen.puzzle.map(function(r){ return r.map(function(v){ return v!==0; }); });
+    game.board = cloneBoard(gen.puzzle);
+    game.notes = Array.from({length:9}, function(){ return Array.from({length:9}, function(){ return new Set(); }); });
+    game.selected = null;
+    game.mistakes = 0;
+    game.hintsUsed = 0;
+    game.noteMode = false;
+    game.seconds = 0;
+    game.finished = false;
+    game.history = [];
+    renderAll();
+    startTimer();
+    showScreen("screen-game");
+    saveProgress();
+  }, 30);
+}
+function resumeGame(){
+  var save = loadJSON("sudoku_save", null);
+  if(!save) return startNewGame(game.level);
+  game.level = save.level;
+  game.puzzle = save.puzzle;
+  game.solved = save.solved;
+  game.given = save.given;
+  game.board = save.board;
+  game.notes = save.notes.map(function(row){ return row.map(function(arr){ return new Set(arr); }); });
+  game.selected = null;
+  game.mistakes = save.mistakes;
+  game.hintsUsed = save.hintsUsed || 0;
+  game.noteMode = false;
+  game.seconds = save.seconds;
+  game.finished = false;
+  game.history = [];
+  renderAll();
+  startTimer();
+  showScreen("screen-game");
+}
+function restartSamePuzzle(){
+  stopTimer();
+  game.board = cloneBoard(game.puzzle);
+  game.notes = Array.from({length:9}, function(){ return Array.from({length:9}, function(){ return new Set(); }); });
+  game.selected = null;
+  game.mistakes = 0;
+  game.hintsUsed = 0;
+  game.seconds = 0;
+  game.finished = false;
+  game.history = [];
+  renderAll();
+  startTimer();
+  saveProgress();
+}
+function startTimer(){
+  stopTimer();
+  game.timerId = setInterval(function(){
+    if(!game.paused && !game.finished){
+      game.seconds++;
+      $("stat-time").textContent = formatTime(game.seconds);
+    }
+  }, 1000);
+}
+function stopTimer(){ if(game.timerId){ clearInterval(game.timerId); game.timerId=null; } }
+function formatTime(s){
+  var m = Math.floor(s/60), sec = s%60;
+  return (m<10?"0":"")+m+":"+(sec<10?"0":"")+sec;
+}
+
+/* =========================================================================
+   RENDERING
+   ========================================================================= */
+function renderAll(){
+  buildGrid();
+  buildNumpad();
+  $("stat-level").textContent = game.level;
+  $("stat-time").textContent = formatTime(game.seconds);
+  $("stat-mistakes").textContent = game.mistakes + "/3";
+  $("ctrl-notes").classList.toggle("active", game.noteMode);
+}
+function buildGrid(){
+  gridEl.innerHTML = "";
+  for(var i=0;i<81;i++){
+    var row = Math.floor(i/9), col = i%9;
+    var cell = document.createElement("div");
+    cell.className = "cell";
+    cell.dataset.row = row; cell.dataset.col = col;
+    cell.setAttribute("role","gridcell");
+    cell.addEventListener("click", onCellClick);
+    gridEl.appendChild(cell);
+  }
+  refreshGrid();
+}
+function refreshGrid(){
+  var cells = gridEl.children;
+  for(var i=0;i<81;i++){
+    var row = Math.floor(i/9), col = i%9;
+    var cell = cells[i];
+    var val = game.board[row][col];
+    cell.className = "cell";
+    cell.innerHTML = "";
+    if(game.given[row][col]){
+      cell.classList.add("given");
+      cell.textContent = val;
+    } else if(val !== 0){
+      var correct = val === game.solved[row][col];
+      cell.classList.add(correct ? "user-val" : "error");
+      cell.textContent = val;
+    } else if(game.notes[row][col].size){
+      var ng = document.createElement("div");
+      ng.className = "notes-grid";
+      for(var n=1;n<=9;n++){
+        var span = document.createElement("span");
+        span.textContent = game.notes[row][col].has(n) ? n : "";
+        ng.appendChild(span);
+      }
+      cell.appendChild(ng);
+    }
+  }
+  applySelectionHighlights();
+}
+function applySelectionHighlights(){
+  var cells = gridEl.children;
+  var sel = game.selected;
+  var selVal = sel ? game.board[sel.row][sel.col] : 0;
+  for(var i=0;i<81;i++){
+    var row = Math.floor(i/9), col = i%9;
+    var cell = cells[i];
+    cell.classList.remove("peer","selected","same-val");
+    if(!sel) continue;
+    var isSel = row===sel.row && col===sel.col;
+    var isPeer = row===sel.row || col===sel.col || (Math.floor(row/3)===Math.floor(sel.row/3) && Math.floor(col/3)===Math.floor(sel.col/3));
+    if(isSel) cell.classList.add("selected");
+    else if(isPeer) cell.classList.add("peer");
+    if(selVal && game.board[row][col]===selVal && !isSel) cell.classList.add("same-val");
+  }
+}
+function buildNumpad(){
+  numpadEl.innerHTML = "";
+  var counts = new Array(10).fill(0);
+  for(var r=0;r<9;r++) for(var c=0;c<9;c++){
+    var v = game.board[r][c];
+    if(v && v===game.solved[r][c]) counts[v]++;
+  }
+  for(var n=1;n<=9;n++){
+    var b = document.createElement("button");
+    b.className = "num-btn" + (counts[n]>=9 ? " done":"");
+    b.innerHTML = n + '<span class="count">'+(9-counts[n])+' left</span>';
+    b.addEventListener("click", (function(num){ return function(){ placeNumber(num); }; })(n));
+    numpadEl.appendChild(b);
+  }
+}
+
+/* =========================================================================
+   INTERACTIONS
+   ========================================================================= */
+function onCellClick(e){
+  if(game.finished || game.paused) return;
+  var row = +e.currentTarget.dataset.row, col = +e.currentTarget.dataset.col;
+  game.selected = {row:row,col:col};
+  sfxClick();
+  applySelectionHighlights();
+}
+function placeNumber(num){
+  if(game.finished || game.paused || !game.selected) { if(!game.selected) toast("Select a cell first"); return; }
+  var row = game.selected.row, col = game.selected.col;
+  if(game.given[row][col]) return;
+
+  if(game.noteMode){
+    var set = game.notes[row][col];
+    if(game.board[row][col]!==0) return;
+    if(set.has(num)) set.delete(num); else set.add(num);
+    sfxClick();
+    refreshGrid();
+    saveProgress();
+    return;
+  }
+
+  game.history.push({row:row,col:col,prevVal:game.board[row][col], prevNotes:new Set(game.notes[row][col])});
+  game.board[row][col] = num;
+  game.notes[row][col].clear();
+  clearPeerNotes(row,col,num);
+
+  var correct = num === game.solved[row][col];
+  if(correct){
+    sfxPlace();
+    checkUnitsComplete(row,col);
+    if(isBoardComplete()) return handleWin();
+  } else {
+    game.mistakes++;
+    sfxError();
+    $("stat-mistakes").textContent = game.mistakes + "/3";
+    if(game.mistakes>=3){ refreshGrid(); buildNumpad(); return handleLoss(); }
+  }
+  refreshGrid();
+  buildNumpad();
+  saveProgress();
+}
+function clearPeerNotes(row,col,num){
+  for(var i=0;i<9;i++){ game.notes[row][i].delete(num); game.notes[i][col].delete(num); }
+  var br=row-row%3, bc=col-col%3;
+  for(var r=0;r<3;r++) for(var c=0;c<3;c++){ game.notes[br+r][bc+c].delete(num); }
+}
+function checkUnitsComplete(row,col){
+  var rowDone = true, colDone = true, boxDone = true;
+  for(var i=0;i<9;i++){
+    if(game.board[row][i]!==game.solved[row][i]) rowDone=false;
+    if(game.board[i][col]!==game.solved[i][col]) colDone=false;
+  }
+  var br=row-row%3, bc=col-col%3;
+  for(var r=0;r<3;r++) for(var c=0;c<3;c++){ if(game.board[br+r][bc+c]!==game.solved[br+r][bc+c]) boxDone=false; }
+  if(rowDone||colDone||boxDone) sfxUnit();
+}
+function isBoardComplete(){
+  for(var r=0;r<9;r++) for(var c=0;c<9;c++){ if(game.board[r][c]!==game.solved[r][c]) return false; }
+  return true;
+}
+function eraseSelected(){
+  if(!game.selected || game.finished || game.paused) return;
+  var row=game.selected.row, col=game.selected.col;
+  if(game.given[row][col]) return;
+  if(game.board[row][col]===0 && game.notes[row][col].size===0) return;
+  game.history.push({row:row,col:col,prevVal:game.board[row][col], prevNotes:new Set(game.notes[row][col])});
+  game.board[row][col]=0;
+  game.notes[row][col].clear();
+  sfxErase();
+  refreshGrid();
+  buildNumpad();
+  saveProgress();
+}
+function undo(){
+  if(!game.history.length) return;
+  var last = game.history.pop();
+  game.board[last.row][last.col] = last.prevVal;
+  game.notes[last.row][last.col] = last.prevNotes;
+  sfxClick();
+  refreshGrid();
+  buildNumpad();
+  saveProgress();
+}
+/* ---- ad-gated hint flow ----
+   WEB: the AdSense unit here is a standard *display* banner, not a
+   rewarded-video format, so there's no "reward earned" callback to hook
+   into. This shows the banner in a modal and holds a short countdown to
+   approximate a rewarded-ad pause before granting the hint.
+
+   APP: real AdMob rewarded-video ad. AdManager.showRewarded() only calls
+   onReward() if the AdMob SDK reports the viewer actually earned the
+   reward (watched to completion), so no artificial countdown is needed —
+   the ad itself is the gate. */
+var hintCountdownTimer = null;
+var pendingHintTarget = null;
+
+function findHintTarget(){
+  var target = game.selected;
+  if(!target || game.given[target.row][target.col] || game.board[target.row][target.col]===game.solved[target.row][target.col]){
+    target = null;
+    outer:
+    for(var r=0;r<9;r++) for(var c=0;c<9;c++){
+      if(!game.given[r][c] && game.board[r][c]!==game.solved[r][c]){ target={row:r,col:c}; break outer; }
+    }
+  }
+  return target;
+}
+
+function useHint(){
+  if(game.finished || game.paused) return;
+  var target = findHintTarget();
+  if(!target){ toast("No cells left to hint"); return; }
+
+  if(AdManager.isNative){
+    if(!AdManager.isRewardedReady()){ toast("Ad not ready yet — try again in a moment"); return; }
+    game.paused = true;
+    AdManager.showRewarded(
+      function onReward(){ applyHint(target); },
+      function onDone(){ game.paused = false; }
+    );
+  } else {
+    pendingHintTarget = target;
+    openAdHintGate();
+  }
+}
+
+function openAdHintGate(){
+  game.paused = true;
+  var btn = $("btn-claim-hint");
+  var seconds = 5;
+  btn.disabled = true;
+  btn.innerHTML = 'Loading ad… <span id="ad-hint-countdown">' + seconds + '</span>s';
+  openOverlay("overlay-ad-hint");
+  setTimeout(function(){ AdManager.injectWebAd("ad-hint-slot"); }, 60);
+  clearInterval(hintCountdownTimer);
+  hintCountdownTimer = setInterval(function(){
+    seconds--;
+    if(seconds<=0){
+      clearInterval(hintCountdownTimer);
+      btn.disabled = false;
+      btn.textContent = "Get hint";
+    } else {
+      var countdownEl = $("ad-hint-countdown");
+      if(countdownEl) countdownEl.textContent = seconds;
+    }
+  }, 1000);
+}
+function closeAdHintGate(grantHint){
+  clearInterval(hintCountdownTimer);
+  closeOverlay("overlay-ad-hint");
+  game.paused = false;
+  var target = pendingHintTarget;
+  pendingHintTarget = null;
+  if(grantHint && target) applyHint(target);
+}
+function applyHint(target){
+  game.hintsUsed++;
+  game.board[target.row][target.col] = game.solved[target.row][target.col];
+  game.notes[target.row][target.col].clear();
+  clearPeerNotes(target.row,target.col,game.solved[target.row][target.col]);
+  game.selected = target;
+  sfxUnit();
+  refreshGrid();
+  buildNumpad();
+  saveProgress();
+  var idx = target.row*9+target.col;
+  var cellEl = gridEl.children[idx];
+  cellEl.classList.add("hint-flash");
+  setTimeout(function(){ cellEl.classList.remove("hint-flash"); }, 650);
+  if(isBoardComplete()) handleWin();
+}
+$("btn-claim-hint").addEventListener("click", function(){
+  if(this.disabled) return;
+  closeAdHintGate(true);
+});
+$("btn-cancel-hint").addEventListener("click", function(){ closeAdHintGate(false); });
+function toggleNoteMode(){
+  game.noteMode = !game.noteMode;
+  $("ctrl-notes").classList.toggle("active", game.noteMode);
+  sfxClick();
+}
+
+/* =========================================================================
+   WIN / LOSS
+   ========================================================================= */
+function handleWin(){
+  game.finished = true;
+  stopTimer();
+  clearProgress();
+  sfxWin();
+  var prevBest = bestTimes[game.level];
+  if(!prevBest || game.seconds < prevBest){ bestTimes[game.level] = game.seconds; saveJSON("sudoku_best_times", bestTimes); }
+  $("win-time").textContent = formatTime(game.seconds);
+  $("win-best").textContent = formatTime(bestTimes[game.level]);
+  $("win-level").textContent = game.level;
+  refreshGrid();
+  setTimeout(function(){ openOverlay("overlay-win"); setTimeout(function(){ AdManager.refreshBanners(); },60); }, 500);
+}
+function handleLoss(){
+  game.finished = true;
+  stopTimer();
+  clearProgress();
+  sfxLose();
+  setTimeout(function(){ openOverlay("overlay-gameover"); }, 400);
+}
+
+/* =========================================================================
+   ORIENTATION LOCK — CSS fallback works everywhere; native lock is a bonus
+   where the browser allows it (mostly installed/fullscreen apps on Android).
+   ========================================================================= */
+var isTouchDevice = ("ontouchstart" in window) || navigator.maxTouchPoints > 0;
+function updateOrientationLock(){
+  if(!isTouchDevice) return;
+  var root = document.documentElement;
+  var isLandscape = window.matchMedia("(orientation: landscape)").matches;
+  root.classList.remove("force-rotate-cw","force-rotate-ccw");
+  if(!isLandscape) return;
+  var angle = null;
+  if(screen.orientation && typeof screen.orientation.angle === "number") angle = screen.orientation.angle;
+  else if(typeof window.orientation === "number") angle = window.orientation;
+  if(angle===90 || angle===-270) root.classList.add("force-rotate-ccw");
+  else root.classList.add("force-rotate-cw");
+}
+window.addEventListener("orientationchange", updateOrientationLock);
+window.addEventListener("resize", updateOrientationLock);
+async function tryNativeLock(){
+  try{
+    if(screen.orientation && screen.orientation.lock){ await screen.orientation.lock("portrait"); }
+  }catch(e){ /* not supported — CSS fallback already handles the visual */ }
+}
+
+/* =========================================================================
+   WIRING
+   ========================================================================= */
+$("btn-play").addEventListener("click", function(){ tryNativeLock(); startNewGame(game.level); });
+$("btn-continue").addEventListener("click", function(){ tryNativeLock(); resumeGame(); });
+$("btn-open-difficulty").addEventListener("click", function(){ buildLevelTiers(); openOverlay("overlay-difficulty"); });
+$("btn-howto").addEventListener("click", function(){ openOverlay("overlay-howto"); });
+
+$("toggle-sound").addEventListener("click", function(){
+  settings.sound = !settings.sound;
+  this.classList.toggle("on", settings.sound);
+  saveJSON("sudoku_settings", settings);
+  if(settings.sound) sfxClick();
+});
+$("toggle-music").addEventListener("click", function(){
+  settings.music = !settings.music;
+  this.classList.toggle("on", settings.music);
+  saveJSON("sudoku_settings", settings);
+  saveJSON("sudoku_settings", settings);
+  if(settings.music) startMusic(); else stopMusic();
+});
+
+$("btn-menu").addEventListener("click", function(){ saveProgress(); stopTimer(); stopMusic(); checkContinue(); showScreen("screen-start"); if(settings.music) startMusic(); });
+$("btn-pause").addEventListener("click", function(){ game.paused = true; openOverlay("overlay-pause"); });
+$("btn-resume").addEventListener("click", function(){ game.paused = false; closeOverlay("overlay-pause"); });
+$("btn-restart-puzzle").addEventListener("click", function(){ game.paused=false; closeOverlay("overlay-pause"); restartSamePuzzle(); });
+$("btn-quit-to-menu").addEventListener("click", function(){ game.paused=false; closeOverlay("overlay-pause"); saveProgress(); stopTimer(); checkContinue(); showScreen("screen-start"); });
+
+$("btn-retry-same").addEventListener("click", function(){ closeOverlay("overlay-gameover"); restartSamePuzzle(); });
+$("btn-new-after-loss").addEventListener("click", function(){ closeOverlay("overlay-gameover"); startNewGame(game.level); });
+$("btn-menu-after-loss").addEventListener("click", function(){ closeOverlay("overlay-gameover"); checkContinue(); showScreen("screen-start"); });
+
+$("btn-next-level").addEventListener("click", function(){ closeOverlay("overlay-win"); startNewGame(Math.min(50, game.level+1)); });
+$("btn-replay-level").addEventListener("click", function(){ closeOverlay("overlay-win"); startNewGame(game.level); });
+$("btn-win-menu").addEventListener("click", function(){ closeOverlay("overlay-win"); checkContinue(); showScreen("screen-start"); });
+
+$("ctrl-undo").addEventListener("click", undo);
+$("ctrl-erase").addEventListener("click", eraseSelected);
+$("ctrl-notes").addEventListener("click", toggleNoteMode);
+$("ctrl-hint").addEventListener("click", useHint);
+
+document.addEventListener("keydown", function(e){
+  if(!$("screen-game").classList.contains("active") || game.paused || game.finished) return;
+  if(e.key>="1" && e.key<="9"){ placeNumber(+e.key); }
+  else if(e.key==="Backspace" || e.key==="Delete"){ eraseSelected(); }
+  else if(e.key.toLowerCase()==="n"){ toggleNoteMode(); }
+  else if(e.key.toLowerCase()==="h"){ useHint(); }
+  else if(e.key.toLowerCase()==="z" && (e.ctrlKey||e.metaKey)){ undo(); }
+  else if(game.selected && e.key.indexOf("Arrow")===0){
+    var r=game.selected.row, c=game.selected.col;
+    if(e.key==="ArrowUp") r=Math.max(0,r-1);
+    if(e.key==="ArrowDown") r=Math.min(8,r+1);
+    if(e.key==="ArrowLeft") c=Math.max(0,c-1);
+    if(e.key==="ArrowRight") c=Math.min(8,c+1);
+    game.selected={row:r,col:c};
+    applySelectionHighlights();
+    e.preventDefault();
+  }
+});
+
+/* =========================================================================
+   BOOT
+   ========================================================================= */
+if(AdManager.isNative) document.body.classList.add("native-app");
+AdManager.init();
+updateDiffLabel();
+buildLevelTiers();
+checkContinue();
+updateOrientationLock();
+AdManager.refreshBanners();
+$("toggle-sound").classList.toggle("on", settings.sound);
+$("toggle-music").classList.toggle("on", settings.music);
+if(settings.music){
+  document.addEventListener("click", function once(){ startMusic(); document.removeEventListener("click", once); }, {once:true});
+}
+
+})();
+</script>
+</body>
+</html>

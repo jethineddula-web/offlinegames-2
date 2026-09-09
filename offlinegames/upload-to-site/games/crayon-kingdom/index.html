@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Crayon Kingdom — Free Color by Number Game Online</title>
+  <meta name="theme-color" content="#F6F0E6" />
+  <meta name="description" content="Play Crayon Kingdom free online — a relaxing color-by-number game. Pick a crayon, drag across matching pixels, and watch each picture come to life." />
+
+  <!-- SEO -->
+  <meta name="keywords" content="Crayon Kingdom, color by number game, free coloring game online, pixel coloring game, relaxing coloring game, paint by number" />
+  <meta name="author" content="Offline Games" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://offlinegames.art/crayon-kingdom/" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Offline Games" />
+  <meta property="og:title" content="Crayon Kingdom — Free Color by Number Game Online" />
+  <meta property="og:description" content="Pick a crayon, drag across matching pixels, and watch each picture come to life. Free, relaxing, no download." />
+  <meta property="og:url" content="https://offlinegames.art/crayon-kingdom/" />
+  <meta property="og:image" content="https://offlinegames.art/crayon-kingdom/social-share.png" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Crayon Kingdom — Free Color by Number Game Online" />
+  <meta name="twitter:description" content="Free color-by-number game — pick a crayon, fill the pixels, unlock new pictures." />
+  <meta name="twitter:image" content="https://offlinegames.art/crayon-kingdom/social-share.png" />
+
+  <!-- Structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "VideoGame",
+    "name": "Crayon Kingdom",
+    "url": "https://offlinegames.art/crayon-kingdom/",
+    "description": "Free online color-by-number game. Pick a crayon, drag across matching pixels, and watch each picture appear.",
+    "genre": "Puzzle, Casual",
+    "gamePlatform": "Web Browser",
+    "applicationCategory": "Game",
+    "operatingSystem": "Any",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Offline Games"
+    }
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script>
+    var AD_CLIENT = "ca-pub-4203857211510947";
+    var AD_SLOT_BANNER = "7417753724";
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4203857211510947" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="app">
+
+  <section id="home" class="screen active">
+    <div class="row">
+      <div class="chip" id="coinChip">Coins 0</div>
+      <div class="spacer"></div>
+      <div class="muted" id="homeProgress">0/40 colored</div>
+    </div>
+    <div style="margin-top:32px;text-align:center">
+      <svg viewBox="0 0 88 88" width="88" height="88" aria-hidden="true">
+        <rect x="8" y="8" width="72" height="72" rx="20" fill="#FFFBF5" stroke="#E4DCCB" stroke-width="3"/>
+        <rect x="18" y="18" width="22" height="22" rx="4" fill="#F6F0E6"/>
+        <rect x="48" y="18" width="22" height="22" rx="4" fill="#E85D4C"/>
+        <rect x="18" y="48" width="22" height="22" rx="4" fill="#3D9A5F"/>
+        <rect x="48" y="48" width="22" height="22" rx="4" fill="#6FB6E8"/>
+        <text x="29" y="35" text-anchor="middle" font-family="Fredoka, sans-serif" font-size="14" font-weight="700" fill="#2A2838">1</text>
+        <path d="M62 70 L74 42 L80 44 L68 72 Z" fill="#E85D4C"/>
+        <path d="M74 42 L80 44 L78 36 Z" fill="#F5C84B"/>
+        <path d="M62 70 L68 72 L61 76 Z" fill="#2A2838"/>
+      </svg>
+      <h1 style="margin-top:16px;font-size:42px;line-height:.95">Crayon<br>Kingdom</h1>
+      <p style="margin:12px auto 0;max-width:280px;font-weight:700;color:var(--ink-soft);font-size:15px">
+        Pick a crayon. Drag across each matching pixel. Watch the picture appear.
+      </p>
+    </div>
+    <button class="big-btn" id="playBtn" style="margin-top:32px">Start coloring</button>
+    <button class="ghost-btn" id="galleryBtn">Picture gallery</button>
+    <div class="row" style="justify-content:center;margin-top:20px;gap:12px">
+      <button class="icon-btn" id="muteBtn" aria-label="Mute">🔊</button>
+      <button class="icon-btn" id="howBtn" aria-label="How to play">?</button>
+    </div>
+    <div id="demoChips" class="row" style="justify-content:center;margin-top:24px;gap:6px"></div>
+    <div class="ad-slot" data-ad="banner"></div>
+  </section>
+
+  <section id="gallery" class="screen">
+    <div class="row" style="margin-bottom:12px">
+      <button class="icon-btn" id="galBack" aria-label="Back">←</button>
+      <div class="spacer">
+        <h2 style="font-size:26px">Pictures</h2>
+        <p class="hint" style="text-align:left;margin:4px 0 0">Finish one to unlock the next</p>
+      </div>
+      <button class="icon-btn" id="resetBtn" aria-label="Reset">⌫</button>
+    </div>
+    <div class="scroll" id="galleryList"></div>
+    <div class="ad-slot" data-ad="banner"></div>
+  </section>
+
+  <section id="play" class="screen">
+    <div class="row">
+      <button class="icon-btn" id="playBack" aria-label="Back">←</button>
+      <div class="spacer chip" id="lvlBadge" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Level</div>
+      <button class="icon-btn" id="undoBtn" aria-label="Undo">↺</button>
+    </div>
+    <div class="progress"><i id="progressBar"></i></div>
+    <div class="row" style="gap:6px;margin-bottom:8px">
+      <button class="tool" id="hintBtn">Hint</button>
+      <button class="tool" id="peekBtn">Peek</button>
+      <button class="tool" id="fillBtn">Fill color · 12</button>
+    </div>
+    <div class="canvas-wrap" id="canvasWrap">
+      <canvas id="gameCanvas"></canvas>
+      <div class="toast" id="toast"></div>
+      <div class="tut" id="tut" hidden>
+        <span id="tutText"></span>
+        <button type="button" id="tutSkip" aria-label="Skip">✕</button>
+      </div>
+    </div>
+    <div class="palette" id="palette"></div>
+    <p class="hint" id="playHint">Tap a numbered crayon, then drag across matching pixels in the picture.</p>
+  </section>
+
+  <section id="complete" class="screen" style="align-items:center">
+    <div class="complete-card">
+      <div class="thumb" style="width:112px;height:112px;margin:0 auto;border-radius:22px">
+        <canvas id="completeThumb"></canvas>
+      </div>
+      <h2 id="completeTitle" style="margin-top:16px;font-size:28px">Picture complete</h2>
+      <p id="completeSub" style="font-weight:800;color:var(--ink-soft);margin:8px 0 0"></p>
+      <div id="completeStars" class="stars" style="font-size:28px;margin-top:12px">★★★</div>
+      <p class="hint" id="completeCoins">+0 coins</p>
+      <button class="big-btn" id="nextBtn" style="margin-top:20px">Next picture</button>
+      <button class="ghost-btn" id="replayBtn">Color it again</button>
+      <button class="ghost-btn" id="toGalleryBtn">All pictures</button>
+    </div>
+    <div class="ad-slot square" data-ad="square"></div>
+  </section>
+
+  <section id="howto" class="screen">
+    <div class="row" style="margin-bottom:16px">
+      <button class="icon-btn" id="howBack" aria-label="Back">←</button>
+      <h2 style="font-size:26px">How to play</h2>
+    </div>
+    <article class="help-card"><div class="help-n">1</div><div><h3>Pick a crayon</h3><p style="margin:6px 0 0;font-weight:700;color:var(--ink-soft);font-size:14px">The tray at the bottom is your palette. Each crayon has a number and a color.</p></div></article>
+    <article class="help-card"><div class="help-n">2</div><div><h3>Drag each matching pixel</h3><p style="margin:6px 0 0;font-weight:700;color:var(--ink-soft);font-size:14px">Find that same number in the picture and drag across every square. Each pixel colors on its own — not the whole patch.</p></div></article>
+    <article class="help-card"><div class="help-n">3</div><div><h3>Finish the picture</h3><p style="margin:6px 0 0;font-weight:700;color:var(--ink-soft);font-size:14px">When a crayon is used up it fades. Keep going until every pixel is filled. Zero mistakes earns three stars.</p></div></article>
+    <p style="font-weight:700;color:var(--ink-soft);font-size:14px;margin-top:8px">Stuck? Hint fills a small leftover cluster. Peek flashes the finished picture. Fill color paints every remaining pixel of the crayon you picked.</p>
+    <button class="big-btn" id="gotItBtn" style="margin-top:24px">Got it — let’s color</button>
+  </section>
+
+</div>
+<script src="game.js"></script>
+</body>
+</html>

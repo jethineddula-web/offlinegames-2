@@ -1,0 +1,2753 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<!-- Primary SEO -->
+<title>Impossible Master – Brutal 30-Level Precision Platformer | Offline Games</title>
+<meta name="description" content="30 brutal levels of spikes, crushing walls and hidden push cubes. Impossible Master is a free rage-platformer you can play right in your browser — no download, no signup.">
+<meta name="keywords" content="Impossible Master, rage game, precision platformer, hard platformer online, free browser game, offline games, spike level game">
+<meta name="robots" content="index, follow">
+<meta name="author" content="Offline Games">
+<link rel="canonical" href="https://offlinegames.art/impossible-master/">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Offline Games">
+<meta property="og:title" content="Impossible Master – Brutal 30-Level Precision Platformer">
+<meta property="og:description" content="30 brutal levels of spikes, crushing walls and hidden push cubes. Free, no download, no signup.">
+<meta property="og:url" content="https://offlinegames.art/impossible-master/">
+<meta property="og:image" content="https://offlinegames.art/impossible-master/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Impossible Master – Brutal 30-Level Precision Platformer">
+<meta name="twitter:description" content="30 brutal levels of spikes, crushing walls and hidden push cubes. Free, no download, no signup.">
+<meta name="twitter:image" content="https://offlinegames.art/impossible-master/og-image.png">
+
+<!-- Structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "Impossible Master",
+  "url": "https://offlinegames.art/impossible-master/",
+  "description": "30 brutal levels of spikes, crushing walls and hidden push cubes. A free rage-platformer playable right in the browser.",
+  "applicationCategory": "Game",
+  "genre": "Platformer",
+  "gamePlatform": "Web Browser",
+  "operatingSystem": "Any",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Offline Games",
+    "url": "https://offlinegames.art"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+}
+</script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap');
+
+:root{
+  --bg:#08060d;
+  --bg2:#120f1e;
+  --panel:#15111f;
+  --cyan:#00f0ff;
+  --magenta:#ff2e88;
+  --amber:#ffb800;
+  --green:#39ff88;
+  --red:#ff3b3b;
+  --text:#e8e6f0;
+  --muted:#79728f;
+  --line:#2a2440;
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none;}
+html,body{
+  margin:0; padding:0; width:100%; height:100%;
+  background:var(--bg);
+  font-family:'JetBrains Mono', monospace;
+  color:var(--text);
+  overflow:hidden;
+  overscroll-behavior:none;
+}
+
+/* ---- Force-landscape wrapper ----
+   On narrow/portrait phones we rotate the whole page 90deg so the game
+   always plays in landscape, regardless of how the phone is held.
+   Uses dvh/dvw (dynamic viewport units) instead of vh/vw so the layout
+   stays pixel-aligned with the real viewport even as the browser's
+   address bar shows/hides mid-session. These are ALSO re-applied as
+   explicit pixel values from JS (see applyRotateWrapperSize) because
+   dvh/dvw support/behaviour is inconsistent across mobile browsers and
+   was the root cause of the game rendering tiny on some devices. */
+.rotate-wrapper{
+  width:100%;
+  height:100%;
+}
+@media screen and (max-width: 900px) and (orientation: portrait){
+  html, body{ width:100%; height:100%; overflow:hidden; }
+  .rotate-wrapper{ width:100%; height:100%; transform:none; }
+}
+
+#app{
+  position:relative;
+  width:100%; height:100%;
+  display:flex; align-items:center; justify-content:center;
+  background:
+    radial-gradient(ellipse at 50% -10%, #23163a 0%, transparent 60%),
+    var(--bg);
+}
+#stage{
+  position:relative;
+  width:100%; height:100%;
+  max-width:1400px;
+  display:flex; flex-direction:column;
+  align-items:stretch;
+}
+#canvasWrap{
+  position:relative;
+  width:100%;
+  flex:1 1 auto;
+  min-height:0;
+  display:flex; align-items:center; justify-content:center;
+  background:#000;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+}
+canvas#game{
+  width:100%; height:100%;
+  image-rendering:pixelated;
+  display:block;
+}
+
+/* ---------- HUD ---------- */
+#hud{
+  display:flex; align-items:center; gap:14px;
+  padding:8px 12px;
+  background:linear-gradient(180deg,#15111f,#0d0a16);
+  border-bottom:1px solid var(--line);
+  font-size:12px;
+  flex-shrink:0;
+}
+#hud .brand{
+  font-weight:800; letter-spacing:1px; color:var(--cyan);
+  font-size:13px; text-shadow:0 0 8px rgba(0,240,255,.5);
+  white-space:nowrap;
+}
+#hud .stat{ color:var(--muted); white-space:nowrap; }
+#hud .stat b{ color:var(--text); }
+#chaosBarWrap{
+  flex:1 1 auto; height:10px; background:#1c1730; border:1px solid var(--line);
+  border-radius:2px; overflow:hidden; position:relative; min-width:40px;
+}
+#chaosBarFill{
+  height:100%; width:0%;
+  background:linear-gradient(90deg, var(--magenta), var(--amber));
+  transition:width .05s linear;
+}
+#chaosLabel{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  font-size:8px; letter-spacing:1px; color:#000; font-weight:700; mix-blend-mode:screen;
+}
+.iconBtn{
+  background:#1c1730; border:1px solid var(--line); color:var(--text);
+  width:28px; height:28px; border-radius:4px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; font-size:13px;
+  flex-shrink:0;
+}
+.iconBtn:active{ background:var(--line); }
+
+/* ---------- Touch Controls ---------- */
+#touchControls{
+  position:absolute; bottom:0; left:0; right:0;
+  display:flex; justify-content:space-between; align-items:flex-end;
+  padding:16px; pointer-events:none;
+  z-index:5;
+}
+#touchControls.hidden{ display:none !important; }
+.tbtn{
+  pointer-events:auto;
+  width:64px; height:64px; border-radius:50%;
+  background:rgba(21,17,31,.75); border:2px solid var(--line);
+  color:var(--cyan); font-size:24px; font-weight:800;
+  display:flex; align-items:center; justify-content:center;
+  backdrop-filter:blur(2px);
+}
+.tbtn:active{ background:rgba(0,240,255,.25); border-color:var(--cyan); }
+#dpad{ display:flex; gap:10px; }
+#jumpBtn{ color:var(--magenta); border-color:var(--line); }
+#jumpBtn:active{ background:rgba(255,46,136,.25); border-color:var(--magenta); }
+
+/* ---------- Overlays ---------- */
+.overlay{
+  position:absolute; inset:0; z-index:20;
+  background:rgba(6,5,10,.92);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:16px; padding:24px; text-align:center;
+}
+.hidden{ display:none !important; }
+.title{
+  font-size:clamp(28px,7vw,46px); font-weight:800; letter-spacing:2px;
+  color:var(--cyan); text-shadow:0 0 18px rgba(0,240,255,.6), 0 0 2px #fff;
+  position:relative;
+}
+.title.glitchtext::before, .title.glitchtext::after{
+  content:attr(data-text); position:absolute; left:0; top:0; width:100%;
+  clip-path:inset(0 0 0 0);
+}
+.title.glitchtext::before{ color:var(--magenta); animation:glitch1 3.2s infinite linear; }
+.title.glitchtext::after{ color:var(--green); animation:glitch2 2.6s infinite linear; }
+@keyframes glitch1{
+  0%,90%,100%{ clip-path:inset(0 0 95% 0); transform:translate(0,0);}
+  92%{ clip-path:inset(10% 0 80% 0); transform:translate(-3px,0);}
+  94%{ clip-path:inset(60% 0 10% 0); transform:translate(3px,0);}
+  96%{ clip-path:inset(30% 0 50% 0); transform:translate(-2px,0);}
+}
+@keyframes glitch2{
+  0%,88%,100%{ clip-path:inset(0 0 95% 0); transform:translate(0,0);}
+  90%{ clip-path:inset(70% 0 5% 0); transform:translate(3px,0);}
+  93%{ clip-path:inset(15% 0 70% 0); transform:translate(-3px,0);}
+  95%{ clip-path:inset(45% 0 40% 0); transform:translate(2px,0);}
+}
+.subtitle{ color:var(--muted); font-size:13px; max-width:440px; line-height:1.6; }
+.subtitle b{ color:var(--amber); }
+.btn{
+  font-family:inherit; cursor:pointer; border:none; border-radius:4px;
+  padding:12px 26px; font-size:14px; font-weight:700; letter-spacing:1px;
+  background:var(--cyan); color:#04121a;
+  box-shadow:0 0 0 1px rgba(0,240,255,.4), 0 4px 0 rgba(0,150,170,.6);
+}
+.btn:active{ transform:translateY(2px); box-shadow:0 0 0 1px rgba(0,240,255,.4); }
+.btn.secondary{
+  background:transparent; color:var(--text); box-shadow:0 0 0 1px var(--line);
+}
+.btn.secondary:active{ background:var(--line); }
+.btn.magenta{ background:var(--magenta); color:#1a0410; box-shadow:0 0 0 1px rgba(255,46,136,.5), 0 4px 0 #8a1350; }
+.btnRow{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+
+#levelGrid{
+  display:grid; grid-template-columns:repeat(6,1fr); gap:8px;
+  max-width:420px; width:100%;
+}
+.lvlBtn{
+  aspect-ratio:1; border-radius:4px; border:1px solid var(--line);
+  background:#1c1730; color:var(--text); font-family:inherit; font-weight:700;
+  font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  position:relative;
+}
+.lvlBtn.locked{ color:var(--muted); background:#100d19; }
+.lvlBtn.done{ background:rgba(57,255,136,.12); border-color:var(--green); color:var(--green); }
+.lvlBtn.current{ border-color:var(--cyan); box-shadow:0 0 8px rgba(0,240,255,.5); }
+.lvlBtn.editing{ border-color:var(--amber); box-shadow:0 0 8px rgba(255,184,0,.5); }
+
+#deathCaption{
+  font-size:15px; color:var(--red); font-weight:700; letter-spacing:.5px;
+  min-height:20px;
+}
+.small{ font-size:11px; color:var(--muted); }
+
+/* screen flash / shake helpers applied to canvasWrap */
+.shake{ animation:shakeAnim .28s ease; }
+@keyframes shakeAnim{
+  0%{ transform:translate(0,0); } 20%{ transform:translate(-6px,3px);}
+  40%{ transform:translate(6px,-3px);} 60%{ transform:translate(-4px,-2px);}
+  80%{ transform:translate(4px,2px);} 100%{ transform:translate(0,0);}
+}
+footer.small{ text-align:center; padding:4px; color:var(--muted); font-size:10px;}
+
+/* ---------- Editor ---------- */
+#editorToolbar{
+  position:absolute; top:0; left:0; right:0; z-index:6;
+  display:flex; flex-wrap:wrap; gap:6px; padding:8px;
+  background:rgba(8,6,13,.9); border-bottom:1px solid var(--line);
+}
+#editorBottomBar{
+  position:absolute; bottom:0; left:0; right:0; z-index:6;
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  padding:8px; background:rgba(8,6,13,.9); border-top:1px solid var(--line);
+  flex-wrap:wrap;
+}
+.paletteBtn{
+  font-family:inherit; font-size:10px; font-weight:700; letter-spacing:.5px;
+  background:#1c1730; color:var(--text); border:1px solid var(--line);
+  border-radius:4px; padding:8px 10px; cursor:pointer;
+}
+.paletteBtn.active{ background:var(--cyan); color:#04121a; border-color:var(--cyan); }
+.editSmallBtn{
+  font-family:inherit; cursor:pointer; border:1px solid var(--line); border-radius:4px;
+  padding:8px 11px; font-size:10px; font-weight:700; letter-spacing:.5px;
+  background:transparent; color:var(--text);
+}
+.editSmallBtn.primary{ background:var(--cyan); color:#04121a; border-color:var(--cyan); }
+.editSmallBtn:disabled{ opacity:.35; cursor:not-allowed; }
+.editPanGroup{ display:flex; gap:6px; }
+.editActionGroup{ display:flex; gap:6px; flex-wrap:wrap; }
+
+/* ---------- Custom dialog (replaces window.prompt/alert, which get
+   silently blocked by iframes embedded without the 'allow-modals'
+   sandbox permission) ---------- */
+#customDialogOverlay{
+  position:fixed; inset:0; z-index:999;
+  background:rgba(6,5,10,.85);
+  display:none; align-items:center; justify-content:center;
+  padding:24px;
+}
+#customDialogOverlay.show{ display:flex; }
+.customDialogBox{
+  background:var(--panel); border:1px solid var(--line); border-radius:8px;
+  padding:22px; max-width:320px; width:100%; text-align:center;
+}
+.customDialogMsg{ font-size:13px; color:var(--text); margin-bottom:14px; line-height:1.5; white-space:pre-line; }
+.customDialogInput{
+  width:100%; padding:10px; margin-bottom:14px; box-sizing:border-box;
+  background:#0d0a16; border:1px solid var(--line); border-radius:4px;
+  color:var(--text); font-family:inherit; font-size:14px; text-align:center;
+}
+.customDialogInput:focus{ outline:none; border-color:var(--cyan); }
+.customDialogBtns{ display:flex; gap:8px; justify-content:center; }
+</style>
+</head>
+<body>
+<div class="rotate-wrapper">
+<div id="app">
+  <div id="stage">
+    <div id="hud">
+      <span class="brand" id="brandLogo">Impossible Master</span>
+      <span class="stat" id="hudLevel">LVL <b>1</b>/30</span>
+      <span class="stat" id="hudDeaths">DIED <b>0</b></span>
+      <div id="chaosBarWrap"><div id="chaosBarFill"></div><div id="chaosLabel">DANGER SCAN</div></div>
+      <button class="iconBtn" id="btnPause" title="Pause">II</button>
+      <button class="iconBtn" id="btnMute" title="Mute">♪</button>
+    </div>
+    <div id="canvasWrap">
+      <canvas id="game"></canvas>
+      <div id="touchControls">
+        <div id="dpad">
+          <button class="tbtn" id="btnLeft">◀</button>
+          <button class="tbtn" id="btnRight">▶</button>
+        </div>
+        <button class="tbtn" id="jumpBtn">⤒</button>
+      </div>
+
+      <!-- EDITOR UI (sits over the canvas, canvas stays visible/interactive) -->
+      <div id="editorToolbar" class="hidden">
+        <button class="paletteBtn active" data-tool="ground">GROUND</button>
+        <button class="paletteBtn" data-tool="trap">HIDDEN TRAP</button>
+        <button class="paletteBtn" data-tool="spike">SPIKE</button>
+        <button class="paletteBtn" data-tool="crumble">CRUMBLE</button>
+        <button class="paletteBtn" data-tool="bounce">BOUNCE</button>
+        <button class="paletteBtn" data-tool="roller">ROLLING BALL</button>
+        <button class="paletteBtn" data-tool="teleport">TELEPORT TRAP</button>
+        <button class="paletteBtn" data-tool="pushcube" title="Tap to place a hidden push cube. Tap it again to flip which way it slides.">PUSH CUBE</button>
+        <button class="paletteBtn" data-tool="pushbox">PUSH BOX</button>
+        <button class="paletteBtn" data-tool="pendulum">BLADE PENDULUM</button>
+        <button class="paletteBtn" data-tool="collapse">CEILING COLLAPSE</button>
+        <button class="paletteBtn" data-tool="crush" title="Tap to add. Tap again to cycle: both sides -&gt; left only -&gt; right only -&gt; remove.">CRUSHING WALLS</button>
+        <button class="paletteBtn" data-tool="arrow">ARROW SHOOTER</button>
+        <button class="paletteBtn" data-tool="empty">ERASE</button>
+        <button class="paletteBtn" data-tool="spawn">SET SPAWN</button>
+        <button class="paletteBtn" data-tool="finish">SET FINISH</button>
+      </div>
+      <div id="editorBottomBar" class="hidden">
+        <div class="editPanGroup">
+          <button class="tbtn" id="btnEditPanLeft" style="width:46px;height:46px;font-size:16px;">◀</button>
+          <button class="tbtn" id="btnEditPanRight" style="width:46px;height:46px;font-size:16px;">▶</button>
+        </div>
+        <div class="editPanGroup" id="editHistoryGroup">
+          <button class="editSmallBtn" id="btnEditUndo" title="Undo (Ctrl+Z)" disabled="">↶ UNDO</button>
+          <button class="editSmallBtn" id="btnEditRedo" title="Redo (Ctrl+Y)" disabled="">↷ REDO</button>
+        </div>
+        <div class="editActionGroup">
+          <button class="editSmallBtn" id="btnEditWidth">+10 COLS</button>
+          <button class="editSmallBtn" id="btnEditPlaytest">▶ TEST</button>
+          <button class="editSmallBtn" id="btnEditReset">↺ RESET</button>
+          <button class="editSmallBtn primary" id="btnEditSave">💾 SAVE</button>
+          <button class="editSmallBtn" id="btnEditExit">✕ EXIT</button>
+        </div>
+      </div>
+
+      <!-- MAIN MENU -->
+      <div class="overlay" id="menuScreen">
+        <div class="title glitchtext" data-text="Impossible Master">Impossible Master</div>
+        <div class="subtitle">A gremlin corrupted this world. Some floors are fake and look completely normal until you're <b>close</b> — then the ground itself cracks and spikes rise out of it. Watch the DANGER SCAN bar too. Reach the door at the end of each sector.</div>
+        <div class="btnRow">
+          <button class="btn" id="btnStart">▶ START RUN</button>
+          <button class="btn secondary" id="btnLevels">SELECT LEVEL</button>
+        </div>
+        <div class="small"> • keyboard (◀▶ / space) or touch controls • </div>
+      </div>
+
+      <!-- LEVEL SELECT -->
+      <div class="overlay hidden" id="levelSelectScreen">
+        <div class="title" style="font-size:22px;color:var(--amber);text-shadow:0 0 10px rgba(255,184,0,.5)">SELECT LEVEL</div>
+        <button class="btn secondary hidden" id="btnEditToggle">✎ EDIT MODE: OFF</button>
+        <div id="levelGrid"></div>
+        <div class="small" id="editHint" style="display:none;">Edit mode is on — tap any level (locked or not) to open it in the editor.</div>
+        <div class="btnRow" id="backupRow" style="display:none;">
+          <button class="btn magenta" id="btnAddLevel" style="padding:8px 14px;font-size:11px;">➕ ADD LEVEL</button>
+          <button class="btn secondary" id="btnExportLevels" style="padding:8px 14px;font-size:11px;">⬇ EXPORT BACKUP</button>
+          <button class="btn secondary" id="btnImportLevels" style="padding:8px 14px;font-size:11px;">⬆ IMPORT BACKUP</button>
+          <input type="file" id="importFileInput" accept="application/json" class="hidden">
+        </div>
+        <button class="btn secondary" id="btnBackMenu">◀ BACK</button>
+      </div>
+
+      <!-- PAUSE -->
+      <div class="overlay hidden" id="pauseScreen">
+        <div class="title" style="font-size:26px">PAUSED</div>
+        <div class="btnRow">
+          <button class="btn" id="btnResume">▶ RESUME</button>
+          <button class="btn secondary" id="btnRestartLevel">↻ RESTART LEVEL</button>
+          <button class="btn secondary" id="btnQuitMenu">☰ MENU</button>
+        </div>
+      </div>
+
+      <!-- DEATH (auto shows caption, disappears fast) -->
+      <div class="overlay hidden" id="deathScreen">
+        <div class="title" style="font-size:26px;color:var(--red);text-shadow:0 0 14px rgba(255,59,59,.6)">DELETED</div>
+        <div id="deathCaption">You believed the floor.</div>
+        <div class="small">respawning...</div>
+      </div>
+
+      <!-- LEVEL COMPLETE -->
+      <div class="overlay hidden" id="completeScreen">
+        <div class="title" style="font-size:26px;color:var(--green);text-shadow:0 0 14px rgba(57,255,136,.6)">LEVEL CLEAR</div>
+        <div class="subtitle" id="completeStats"></div>
+        <div class="btnRow">
+          <button class="btn" id="btnNextLevel">NEXT LEVEL ▶</button>
+          <button class="btn secondary" id="btnReplayLevel">↻ REPLAY</button>
+          <button class="btn secondary" id="btnCompleteMenu">☰ MENU</button>
+        </div>
+      </div>
+
+      <!-- GAME WON -->
+      <div class="overlay hidden" id="winScreen">
+        <div class="title glitchtext" data-text="YOU ESCAPED">YOU ESCAPED</div>
+        <div class="subtitle" id="winStats"></div>
+        <div class="btnRow">
+          <button class="btn" id="btnWinMenu">☰ MAIN MENU</button>
+        </div>
+      </div>
+    </div>
+    <footer class="small">Impossible Master — copyright@JethinProductions.</footer>
+  </div>
+
+  <div id="customDialogOverlay">
+    <div class="customDialogBox">
+      <div class="customDialogMsg" id="customDialogMsg"></div>
+      <input type="text" class="customDialogInput hidden" id="customDialogInput" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <div class="customDialogBtns">
+        <button class="btn secondary hidden" id="customDialogCancel">CANCEL</button>
+        <button class="btn" id="customDialogOk">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   CONSTANTS
+   ============================================================ */
+const TILE = 40;
+const ROWS = 13;
+// VIEW_W/VIEW_H set the camera's aspect ratio. The old 760x520 (1.46:1) was much
+// narrower than a real phone in landscape (commonly ~1.9-2.2:1), so resizeCanvas'
+// aspect-preserving scale() was height-limited and left big black bars on the
+// left/right - the play area rendered as a small centered rectangle instead of
+// filling the screen. 1000x520 (1.92:1) matches typical mobile landscape much
+// more closely, so the canvas now fills nearly the whole width on phones.
+let VIEW_W = 1000;
+const VIEW_H = Math.round(ROWS*TILE/1.42);
+const GRAVITY = 0.62;
+const MAX_FALL = 15;
+const MOVE_SPEED = 3.6;
+const JUMP_VEL = -12.6;
+const BOUNCE_VEL = -18.5;
+const COYOTE_MS = 110;
+const BUFFER_MS = 110;
+const REVEAL_RADIUS = 125; // px - hidden dangers only show once you're this close
+const SCAN_RADIUS = 420;   // px - range at which the HUD danger-scanner starts responding
+const PUSHCUBE_RADIUS = 70;     // px - how close you need to be before a push cube triggers
+const PUSHCUBE_SLIDE_TILES = 2; // how many tiles the cube itself slides when triggered
+const PUSHCUBE_SLIDE_MS = 380;  // how long the slide animation takes
+let TOTAL_LEVELS = 30;
+const NOMINAL_FRAME_MS = 1000/60; // reference frame length physics constants were tuned against
+
+const DEATH_LINES = [
+  "You believed the floor.","Rookie mistake.","The gremlin says hi.",
+  "That tile was never your friend.","Skill issue (the level's).","Trust nobody. Especially tile #7.",
+  "The floor filed a restraining order.","Achievement unlocked: Gravity.",
+  "That was a bit on the nose.","Deleted. Try again.","10/10, no notes.",
+  "The void appreciates your visit.","Should've glitch-checked first.",
+  "Physics won that round.","A trap? In THIS economy?","You AND the floor lost.",
+  "Respawning... judging you slightly.","The level remembers this.",
+  "That spike had your name on it.","Chaos: 1, You: 0."
+];
+
+/* ============================================================
+   SEEDED RNG
+   ============================================================ */
+function mulberry32(seed){
+  return function(){
+    seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = (t + Math.imul(t ^ t >>> 7, 61 | t)) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+/* ============================================================
+   LEVEL GENERATION
+   Cell types: 'empty','ground','spike','crumble','bounce'
+   trap[r][c] = true -> that ground tile is lethal (looks normal)
+   ============================================================ */
+function generateLevel(idx){
+  const rng = mulberry32(idx*7919 + 13);
+  const cols = Math.min(90, 22 + idx*2);
+  const grid = Array.from({length:ROWS}, ()=>Array(cols).fill('empty'));
+  const trap = Array.from({length:ROWS}, ()=>Array(cols).fill(false));
+
+  const maxGap   = idx<3?1: idx<8?2:3;
+  const trapChance   = Math.min(0.30, 0.05 + idx*0.009);
+  const spikeChance  = idx<2?0: Math.min(0.16, 0.03 + idx*0.006);
+  const crumbleOn = idx>=4, movingOn = idx>=6, bounceOn = idx>=8, windOn = idx>=10, bonusOn = idx>=3, rollersOn = idx>=13;
+  const bonusChance = bonusOn ? Math.min(0.22, 0.04 + idx*0.007) : 0;
+
+  const moving = [], wind = [], rollers = [];
+  const surfaceRow = new Array(cols).fill(-1);
+  let row = 8, col = 0, colsSinceHazard = 3, colsSinceGap = 10;
+
+  function fillGround(c, r, type, isTrap){
+    grid[r][c] = type;
+    trap[r][c] = !!isTrap;
+    surfaceRow[c] = r;
+    // filler tile directly beneath the surface (safe, always ground) so a crumble
+    // doesn't dump the player into an instant pit - only real gaps do that.
+    if (r+1 < ROWS) grid[r+1][c] = 'ground';
+  }
+
+  const spawn = {c:0, r:row-1};
+
+  while (col < cols){
+    if (col < 2){
+      fillGround(col, row, 'ground', false);
+      col++; continue;
+    }
+    if (col >= cols-2){
+      fillGround(col, row, 'ground', false);
+      col++; continue;
+    }
+
+    // occasionally shift floor height by 1 (gentle)
+    if (col>4 && colsSinceGap>2 && rng()<0.16){
+      const d = rng()<0.5?-1:1;
+      const nr = row + d;
+      if (nr>=4 && nr<=10) row = nr;
+    }
+
+    // maybe start a gap
+    if (colsSinceGap>3 && col<cols-6 && rng()<0.15){
+      let gapLen = 1+Math.floor(rng()*maxGap);
+      gapLen = Math.min(gapLen, cols-3-col);
+      const startC = col, endC = col+gapLen-1;
+      const useMoving = movingOn && gapLen>=2 && rng()<0.5;
+      const useWind = !useMoving && windOn && gapLen<=2 && rng()<0.4;
+      if (useMoving){
+        moving.push({
+          colStart:startC, colEnd:endC, row,
+          x0:startC*TILE-6, x1:(endC+1)*TILE-TILE+6,
+          w: TILE*0.9, h:12,
+          period: 2200+rng()*900, phase: rng()*1000
+        });
+      } else if (useWind){
+        const force = 0.32; // gentle assist, always forward
+        wind.push({c1:startC-1, c2:endC+1, row1:row-3, row2:row+2, force});
+      }
+      col += gapLen;
+      colsSinceGap = 0;
+      continue;
+    }
+    colsSinceGap++;
+
+    // surface tile decision
+    let type='ground', isTrap=false;
+    if (colsSinceHazard>2){
+      const r2 = rng();
+      if (crumbleOn && r2<0.11){ type='crumble'; colsSinceHazard=0; }
+      else if (r2<0.11+trapChance){ isTrap=true; colsSinceHazard=0; }
+      else if (bounceOn && r2<0.11+trapChance+0.05){ type='bounce'; colsSinceHazard=0; }
+      else colsSinceHazard++;
+    } else colsSinceHazard++;
+
+    fillGround(col, row, type, isTrap);
+
+    // spike sitting above a plain safe tile, forces a jump
+    if (type==='ground' && !isTrap && spikeChance>0 && col>5 && rng()<spikeChance && row-1>=1){
+      grid[row-1][col] = 'spike';
+    }
+
+    // floating bonus platform - optional detour above the main path, always SAFE
+    // (not a decoy trap - it's just a normal walkable box you can hop onto)
+    if (bonusChance>0 && rng()<bonusChance && row-3>=1){
+      grid[row-3][col] = 'ground';
+    }
+
+    col++;
+  }
+
+  // rolling ball hazards - patrol back and forth along flat stretches of floor.
+  // Found by scanning for runs of consecutive columns at the same surface height.
+  if (rollersOn){
+    let runStart = -1;
+    for(let c=0;c<=cols;c++){
+      const r = c<cols ? surfaceRow[c] : -999;
+      const prevR = c>0 ? surfaceRow[c-1] : -999;
+      if (runStart===-1){
+        if (r!==-1) runStart = c;
+      } else if (r!==prevR){
+        const runLen = c-runStart;
+        if (runLen>=7 && runStart>3 && c<cols-3 && rng()<0.45){
+          const margin = 2;
+          const x0 = (runStart+margin)*TILE+10;
+          const x1 = (c-margin)*TILE-10;
+          if (x1-x0>TILE*2.2){
+            rollers.push({
+              row: prevR, x0, x1,
+              x: x0 + rng()*(x1-x0),
+              dir: rng()<0.5?-1:1,
+              speed: 0.075+rng()*0.045,
+              radius: 15
+            });
+          }
+        }
+        runStart = (r!==-1) ? c : -1;
+      }
+    }
+  }
+
+  const finish = {c:cols-2, r:row-1};
+  return {
+    index: idx, cols, rows: ROWS, grid, trap, moving, wind, rollers,
+    pushboxes: [], pendulums: [], collapsers: [], crushers: [], arrows: [], pushcubeDir: {},
+    spawn, finish,
+    name: 'SECTOR '+String(idx).padStart(2,'0')
+  };
+}
+
+const LEVELS = [];
+for(let i=1;i<=TOTAL_LEVELS;i++) LEVELS.push(generateLevel(i));
+
+/* ============================================================
+   CUSTOM DIALOG (replaces window.prompt/alert)
+   Native prompt()/alert()/confirm() are blocked by browsers whenever a
+   page runs inside an <iframe> that doesn't have the 'allow-modals'
+   sandbox permission - which silently makes them return immediately as
+   if the user hit Cancel. Sites embedding this game (via srcdoc/src)
+   may not include that permission, so the admin-code prompt would
+   never actually appear. This is a self-contained substitute that
+   works regardless of how the page is embedded.
+   ============================================================ */
+const customDialogOverlay = document.getElementById('customDialogOverlay');
+const customDialogMsg = document.getElementById('customDialogMsg');
+const customDialogInput = document.getElementById('customDialogInput');
+const customDialogOk = document.getElementById('customDialogOk');
+const customDialogCancel = document.getElementById('customDialogCancel');
+let dialogResolver = null;
+
+function openDialog(message, isPrompt){
+  return new Promise(function(resolve){
+    dialogResolver = resolve;
+    customDialogMsg.textContent = message;
+    customDialogInput.classList.toggle('hidden', !isPrompt);
+    customDialogCancel.classList.toggle('hidden', !isPrompt);
+    customDialogInput.value = '';
+    customDialogInput.type = 'text';
+    customDialogOverlay.classList.add('show');
+    setTimeout(function(){ (isPrompt ? customDialogInput : customDialogOk).focus(); }, 30);
+  });
+}
+function closeDialog(result){
+  customDialogOverlay.classList.remove('show');
+  const r = dialogResolver;
+  dialogResolver = null;
+  if (r) r(result);
+}
+function gamePrompt(message){ return openDialog(message, true); }
+function gameAlert(message){ return openDialog(message, false); }
+
+customDialogOk.addEventListener('click', function(){
+  if (!customDialogInput.classList.contains('hidden')) closeDialog(customDialogInput.value);
+  else closeDialog(true);
+});
+customDialogCancel.addEventListener('click', function(){ closeDialog(null); });
+customDialogInput.addEventListener('keydown', function(e){
+  if (e.key==='Enter'){ e.preventDefault(); closeDialog(customDialogInput.value); }
+  if (e.key==='Escape'){ e.preventDefault(); closeDialog(null); }
+});
+customDialogOverlay.addEventListener('click', function(e){
+  if (e.target===customDialogOverlay && !customDialogCancel.classList.contains('hidden')) closeDialog(null);
+});
+
+/* ============================================================
+   STORAGE SHIM
+   window.storage is the Claude.ai artifact persistence API - it is only
+   injected when this file runs inside a Claude.ai artifact iframe. When
+   this game is embedded elsewhere (e.g. loaded via srcdoc/src into your
+   own website), window.storage does not exist, so every custom-level
+   save/load/list/delete would throw and get silently swallowed - which
+   is exactly why the editor's Save button did nothing there.
+   gameStorage uses window.storage when available (Claude.ai) and falls
+   back to localStorage (scoped to this page's origin) everywhere else,
+   so the level editor works both inside and outside Claude.ai.
+   ============================================================ */
+const gameStorage = (function(){
+  if (window.storage && typeof window.storage.get === 'function'){
+    return window.storage;
+  }
+  const LS_PREFIX = 'glitchwalker:';
+  function lsKey(key){ return LS_PREFIX+key; }
+  return {
+    async get(key, shared){
+      let raw;
+      try{ raw = localStorage.getItem(lsKey(key)); }
+      catch(e){ throw new Error('storage unavailable'); }
+      if (raw===null) throw new Error('not found');
+      return { key, value: raw, shared: !!shared };
+    },
+    async set(key, value, shared){
+      try{
+        localStorage.setItem(lsKey(key), value);
+        return { key, value, shared: !!shared };
+      }catch(e){ return null; }
+    },
+    async delete(key, shared){
+      try{
+        localStorage.removeItem(lsKey(key));
+        return { key, deleted:true, shared: !!shared };
+      }catch(e){ return null; }
+    },
+    async list(prefix, shared){
+      try{
+        const keys = [];
+        for(let i=0;i<localStorage.length;i++){
+          const k = localStorage.key(i);
+          if (k && k.indexOf(LS_PREFIX)===0){
+            const bare = k.slice(LS_PREFIX.length);
+            if (!prefix || bare.indexOf(prefix)===0) keys.push(bare);
+          }
+        }
+        return { keys, prefix, shared: !!shared };
+      }catch(e){ return { keys: [], prefix, shared: !!shared }; }
+    }
+  };
+})();
+
+/* ============================================================
+   CUSTOM (edited) LEVEL PERSISTENCE
+   Uses gameStorage (Claude.ai artifact storage when available, otherwise
+   a localStorage fallback) so edits survive reloads, scoped privately
+   to this user/browser (shared:false).
+   ============================================================ */
+async function loadAllCustomLevels(){
+  try{
+    const listRes = await gameStorage.list('customLevel:', false);
+    if (!listRes || !listRes.keys) return;
+    for (const key of listRes.keys){
+      try{
+        const res = await gameStorage.get(key, false);
+        if (!res || !res.value) continue;
+        const data = JSON.parse(res.value);
+        const idx = parseInt(key.split(':')[1], 10);
+        if (idx>=1 && data && data.grid){
+          if (idx>TOTAL_LEVELS) TOTAL_LEVELS = idx;
+          while (LEVELS.length<idx) LEVELS.push(generateLevel(LEVELS.length+1));
+          LEVELS[idx-1] = {
+            index: idx, cols: data.cols, rows: data.rows||ROWS,
+            grid: data.grid, trap: data.trap,
+            moving: data.moving||[], wind: data.wind||[], rollers: data.rollers||[],
+            pushboxes: data.pushboxes||[], pendulums: data.pendulums||[],
+            collapsers: data.collapsers||[], crushers: data.crushers||[], arrows: data.arrows||[],
+            pushcubeDir: data.pushcubeDir||{},
+            spawn: data.spawn||{c:0,r:8}, finish: data.finish||{c:(data.cols||22)-2,r:8},
+            name: 'SECTOR '+String(idx).padStart(2,'0'), custom:true
+          };
+          if (curLevelIdx===idx && curLevelData && !curLevelData.custom){
+            curLevelData = LEVELS[idx-1];
+          }
+        }
+      }catch(e){ /* skip a corrupted entry, keep the rest */ }
+    }
+    buildLevelGrid();
+  }catch(e){ /* storage unavailable - game still works with generated levels */ }
+}
+
+/* ============================================================
+   PLAYER PROGRESS PERSISTENCE
+   Saves how far the player has gotten (unlocked level, total deaths, and
+   when they last died) so closing the tab and coming back doesn't reset
+   progress to level 1. Uses the same gameStorage backend as custom
+   levels above (Claude.ai artifact storage, or localStorage fallback).
+   ============================================================ */
+async function saveProgress(){
+  try{
+    await gameStorage.set('playerProgress', JSON.stringify({
+      unlockedLevel, totalDeaths, lastDied: new Date().toISOString()
+    }), false);
+  }catch(e){ /* storage unavailable, ignore */ }
+}
+
+async function loadProgress(){
+  try{
+    const res = await gameStorage.get('playerProgress', false);
+    if (res && res.value){
+      const data = JSON.parse(res.value);
+      if (typeof data.unlockedLevel === 'number') unlockedLevel = Math.max(1, Math.min(TOTAL_LEVELS, data.unlockedLevel));
+      if (typeof data.totalDeaths === 'number') totalDeaths = data.totalDeaths;
+      lastDiedAt = data.lastDied || null;
+      updateHud();
+      buildLevelGrid();
+    }
+  }catch(e){ /* no saved progress yet */ }
+  updateStartButtonLabel();
+}
+
+function updateStartButtonLabel(){
+  const btn = document.getElementById('btnStart');
+  if (!btn) return;
+  if (unlockedLevel > 1){
+    btn.textContent = '▶ CONTINUE (LVL '+unlockedLevel+')';
+  } else {
+    btn.textContent = '▶ START RUN';
+  }
+}
+
+/* ============================================================
+   AUDIO (tiny synth, no assets)
+   ============================================================ */
+let audioCtx = null, muted = false;
+function ac(){ if(!audioCtx){ try{ audioCtx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } return audioCtx; }
+function beep(freq, dur, type, gain){
+  if (muted) return;
+  const c = ac(); if(!c) return;
+  const o = c.createOscillator(), g = c.createGain();
+  o.type = type||'square'; o.frequency.value = freq;
+  g.gain.value = gain!=null?gain:0.06;
+  o.connect(g); g.connect(c.destination);
+  const t0 = c.currentTime;
+  g.gain.setValueAtTime(g.gain.value, t0);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0+dur);
+  o.start(t0); o.stop(t0+dur);
+}
+function sndJump(){ beep(520,0.09,'square',0.05); }
+function sndDeath(){ beep(140,0.35,'sawtooth',0.07); beep(90,0.4,'square',0.05); }
+function sndBounce(){ beep(700,0.12,'sine',0.06); }
+function sndWin(){ [523,659,784,1046].forEach((f,i)=>setTimeout(()=>beep(f,0.18,'square',0.06), i*90)); }
+function sndReveal(){ beep(340,0.07,'triangle',0.025); }
+function sndTeleport(){ [900,650,420,260].forEach((f,i)=>setTimeout(()=>beep(f,0.08,'sine',0.04), i*45)); }
+function sndArrow(){ beep(220,0.05,'square',0.035); }
+function sndCollapse(){ beep(70,0.3,'sawtooth',0.06); }
+function sndPushCube(){ beep(180,0.14,'square',0.05); }
+
+/* ============================================================
+   DOM refs
+   ============================================================ */
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+const canvasWrap = document.getElementById('canvasWrap');
+const hudLevel = document.getElementById('hudLevel');
+const hudDeaths = document.getElementById('hudDeaths');
+const chaosBarFill = document.getElementById('chaosBarFill');
+const touchControlsEl = document.getElementById('touchControls');
+const editorToolbarEl = document.getElementById('editorToolbar');
+const editorBottomBarEl = document.getElementById('editorBottomBar');
+const screens = {
+  menu: document.getElementById('menuScreen'),
+  levels: document.getElementById('levelSelectScreen'),
+  pause: document.getElementById('pauseScreen'),
+  death: document.getElementById('deathScreen'),
+  complete: document.getElementById('completeScreen'),
+  win: document.getElementById('winScreen'),
+};
+function showOnly(name){
+  Object.keys(screens).forEach(k=>screens[k].classList.toggle('hidden', k!==name));
+}
+function hideAll(){ Object.values(screens).forEach(s=>s.classList.add('hidden')); }
+function setTouchControlsVisible(v){ touchControlsEl.classList.toggle('hidden', !v); }
+
+/* ============================================================
+   GAME STATE
+   ============================================================ */
+let state = 'menu'; // menu | levels | playing | paused | dead | complete | win | editor
+let unlockedLevel = 1;
+let totalDeaths = 0;
+let lastDiedAt = null;
+let curLevelData = null;
+let curLevelIdx = 1;
+let levelDeaths = 0;
+let player, camX = 0, camY = 0;
+let shakeT = 0;
+let keys = {left:false,right:false,jump:false};
+let lastTime = 0;
+let coyoteUntil = 0, bufferUntil = 0;
+let crumbleAlive = null; // map "r,c" -> {alive, timer}
+let collapseState = null; // map "r,c" -> {state, timer, y, vy}
+let particles = [];      // short-lived death-burst particles
+let revealedSet = new Set(); // trap tile keys currently within reveal radius (for blip-on-new-reveal)
+let nearestTrapDist = Infinity;
+
+function resetPlayer(){
+  player = {
+    x: curLevelData.spawn.c*TILE + 4,
+    y: curLevelData.spawn.r*TILE,
+    w: 26, h: 34,
+    vx:0, vy:0, grounded:false, facing:1, dead:false
+  };
+  camX = 0; camY = 0;
+}
+
+function rebuildCrumbleState(lvl){
+  crumbleAlive = {};
+  for(let r=0;r<lvl.rows;r++) for(let c=0;c<lvl.cols;c++){
+    if (lvl.grid[r][c]==='crumble') crumbleAlive[r+','+c] = {alive:true, timer:0};
+  }
+}
+
+function resetDynamicHazards(lvl){
+  collapseState = {};
+  (lvl.collapsers||[]).forEach(cp=>{ collapseState[cp.r+','+cp.c] = {state:'idle', timer:0, y:cp.r*TILE, vy:0}; });
+  (lvl.arrows||[]).forEach(tu=>{ tu.timer = tu.timer||0; tu.projectiles = []; });
+  // push cubes reset to idle/un-slid every time the level (re)starts
+  lvl.pushcubeState = {};
+}
+
+function loadLevel(idx){
+  tryLockLandscape();
+  curLevelIdx = idx;
+  curLevelData = LEVELS[idx-1];
+  levelDeaths = 0;
+  rebuildCrumbleState(curLevelData);
+  resetDynamicHazards(curLevelData);
+  resetPlayer();
+  particles = [];
+  revealedSet = new Set();
+  nearestTrapDist = Infinity;
+  updateHud();
+  state = 'playing';
+  hideAll();
+  editorToolbarEl.classList.add('hidden');
+  editorBottomBarEl.classList.add('hidden');
+  setTouchControlsVisible(true);
+}
+
+function updateHud(){
+  hudLevel.innerHTML = 'LVL <b>'+curLevelIdx+'</b>/'+TOTAL_LEVELS;
+  hudDeaths.innerHTML = 'DIED <b>'+levelDeaths+'</b> <span style="opacity:.5">('+totalDeaths+' total)</span>';
+}
+
+/* ============================================================
+   COLLISION HELPERS
+   ============================================================ */
+function rectsOverlap(a,b){
+  return a.x < b.x+b.w && a.x+a.w > b.x && a.y < b.y+b.h && a.y+a.h > b.y;
+}
+
+function movingPlatformRect(mp, tMs){
+  const p = ((tMs+mp.phase) % mp.period) / mp.period;
+  const tri = p<0.5 ? p*2 : (1-p)*2;
+  const x = mp.x0 + (mp.x1-mp.x0)*tri;
+  return {x, y: mp.row*TILE - mp.h, w: mp.w, h: mp.h};
+}
+
+function crusherRects(cr, tMs){
+  const p = ((tMs+(cr.phase||0)) % cr.period) / cr.period;
+  const tri = p<0.5 ? p*2 : (1-p)*2; // 0 -> open, 1 -> fully closed
+  const span = cr.x1-cr.x0;
+  const sides = cr.sides || 'both';
+  const top = cr.rowTop*TILE, h = (cr.rowBot-cr.rowTop+1)*TILE;
+  const out = { left:null, right:null, closeness: tri };
+  if (sides==='both'){
+    const travel = Math.max(0, (span/2 - cr.wallW) * tri);
+    out.left = {x:cr.x0, y:top, w:cr.wallW+travel, h};
+    out.right = {x:cr.x1-cr.wallW-travel, y:top, w:cr.wallW+travel, h};
+  } else if (sides==='left'){
+    // no wall on the other side, so this one travels the whole gap
+    const travel = Math.max(0, (span - cr.wallW) * tri);
+    out.left = {x:cr.x0, y:top, w:cr.wallW+travel, h};
+  } else if (sides==='right'){
+    const travel = Math.max(0, (span - cr.wallW) * tri);
+    out.right = {x:cr.x1-cr.wallW-travel, y:top, w:cr.wallW+travel, h};
+  }
+  return out;
+}
+
+/* Returns the current slide offset (px, along the cube's configured
+   direction) for a push cube at r,c - 0 if it hasn't been triggered yet. */
+function pushCubeOffset(lvl, r, c){
+  const cs = lvl.pushcubeState && lvl.pushcubeState[r+','+c];
+  return cs ? cs.offset : 0;
+}
+
+function updateDangerProximity(lvl){
+  const pcx = player.x+player.w/2, pcy = player.y+player.h/2;
+  const pcol = Math.floor(pcx/TILE);
+  const scanCols = Math.ceil(SCAN_RADIUS/TILE)+1;
+  const cA = Math.max(0, pcol-scanCols), cB = Math.min(lvl.cols-1, pcol+scanCols);
+  let minDist = Infinity;
+  const nowRevealed = new Set();
+  for(let r=0;r<lvl.rows;r++){
+    for(let c=cA;c<=cB;c++){
+      const isHiddenHazard = (lvl.grid[r][c]==='ground' && lvl.trap[r][c]) || lvl.grid[r][c]==='teleport' || lvl.grid[r][c]==='pushcube';
+      if (!isHiddenHazard) continue;
+      const tx = c*TILE+TILE/2, ty = r*TILE+TILE/2;
+      const d = Math.hypot(tx-pcx, ty-pcy);
+      if (d<minDist) minDist = d;
+      if (d<REVEAL_RADIUS){
+        const key = r+','+c;
+        nowRevealed.add(key);
+        if (!revealedSet.has(key)) sndReveal();
+      }
+    }
+  }
+  revealedSet = nowRevealed;
+  nearestTrapDist = minDist;
+  const t = Math.max(0, Math.min(1, 1 - minDist/SCAN_RADIUS));
+  chaosBarFill.style.width = (t*100)+'%';
+}
+
+/* ============================================================
+   UPDATE
+   ============================================================ */
+let onMovingPlatform = null;
+let elapsedMs = 0;
+
+function killPlayer(reason){
+  if (player.dead) return;
+  player.dead = true;
+  levelDeaths++; totalDeaths++;
+  updateHud();
+  saveProgress();
+  document.getElementById('deathCaption').textContent = reason || DEATH_LINES[Math.floor(Math.random()*DEATH_LINES.length)];
+  sndDeath();
+
+  const cx = player.x+player.w/2, cy = player.y+player.h/2;
+  for(let i=0;i<14;i++){
+    const ang = Math.random()*Math.PI*2, spd = 1.5+Math.random()*3.5;
+    particles.push({x:cx,y:cy, vx:Math.cos(ang)*spd, vy:Math.sin(ang)*spd-1.5, life:0, maxLife:420+Math.random()*200});
+  }
+
+  shakeT = 280;
+  canvasWrap.classList.add('shake');
+  setTimeout(()=>canvasWrap.classList.remove('shake'), 300);
+  state = 'dead';
+  showOnly('death');
+  setTimeout(()=>{
+    if (state!=='dead') return;
+    resetPlayer();
+    // reset crumble tiles + dynamic hazards
+    for(const k in crumbleAlive) crumbleAlive[k] = {alive:true, timer:0};
+    resetDynamicHazards(curLevelData);
+    state = 'playing';
+    hideAll();
+  }, 700);
+}
+
+function triggerTeleport(lvl){
+  sndTeleport();
+  const cx = player.x+player.w/2, cy = player.y+player.h/2;
+  for(let i=0;i<10;i++){
+    const ang = Math.random()*Math.PI*2, spd = 1+Math.random()*2.5;
+    particles.push({x:cx,y:cy, vx:Math.cos(ang)*spd, vy:Math.sin(ang)*spd, life:0, maxLife:300, teleport:true});
+  }
+  player.x = lvl.spawn.c*TILE+4;
+  player.y = lvl.spawn.r*TILE;
+  player.vx = 0; player.vy = 0;
+}
+
+function winLevel(){
+  if (state!=='playing') return;
+  state = 'complete';
+  if (curLevelIdx >= unlockedLevel && unlockedLevel <= TOTAL_LEVELS) unlockedLevel = Math.min(TOTAL_LEVELS, curLevelIdx+1);
+  saveProgress();
+  updateStartButtonLabel();
+  sndWin();
+  document.getElementById('completeStats').innerHTML =
+    'Sector '+String(curLevelIdx).padStart(2,'0')+' cleared.<br>Deaths this level: <b style="color:var(--amber)">'+levelDeaths+'</b>';
+  document.getElementById('btnNextLevel').style.display = curLevelIdx>=TOTAL_LEVELS ? 'none':'inline-block';
+  showOnly('complete');
+  if (curLevelIdx>=TOTAL_LEVELS){
+    setTimeout(()=>{
+      document.getElementById('winStats').innerHTML = 'You cleared all '+TOTAL_LEVELS+' sectors.<br>Total deaths: <b style="color:var(--magenta)">'+totalDeaths+'</b><br><span class="small">The gremlin is impressed. Mildly.</span>';
+      state='win'; showOnly('win');
+    }, 50);
+  }
+}
+
+function update(dt, tMs){
+  // ---- editor camera panning (no player physics while editing) ----
+  if (state==='editor'){
+    const lvl = curLevelData;
+    if (lvl){
+      const STEP = dt/NOMINAL_FRAME_MS;
+      camX += editorPanDir*7*STEP;
+      camX = Math.max(0, Math.min(Math.max(0,lvl.cols*TILE-VIEW_W), camX));
+    }
+    return;
+  }
+  if (state!=='playing') return;
+  const lvl = curLevelData;
+
+  // particles always tick (even mid-death) so the burst plays out
+  for(let i=particles.length-1;i>=0;i--){
+    const p = particles[i];
+    p.life += dt;
+    if (p.life>=p.maxLife){ particles.splice(i,1); continue; }
+    p.x += p.vx; p.y += p.vy; p.vy += 0.12; p.vx *= 0.97;
+  }
+
+  if (player.dead) return;
+
+  // proximity danger-scan: find nearest hidden trap tile near the player, and
+  // reveal any within REVEAL_RADIUS - this is the only way the player ever
+  // learns where a fake floor (or teleport trap / push cube) is, no global warning.
+  updateDangerProximity(lvl);
+
+  // input -> horizontal velocity
+  const dir = (keys.right?1:0) - (keys.left?1:0);
+  player.vx = dir*MOVE_SPEED;
+  if (dir!==0) player.facing = dir;
+
+  // jump buffer / coyote
+  if (keys.jumpPressed){ bufferUntil = tMs+BUFFER_MS; keys.jumpPressed=false; }
+  if (player.grounded) coyoteUntil = tMs+COYOTE_MS;
+  if (tMs < bufferUntil && tMs < coyoteUntil){
+    player.vy = JUMP_VEL; player.grounded=false; bufferUntil=0; coyoteUntil=0; sndJump();
+  }
+
+  // push cubes - hidden decoy cubes that look like normal ground. Once you're
+  // within PUSHCUBE_RADIUS the CUBE ITSELF slides PUSHCUBE_SLIDE_TILES tiles
+  // sideways (in whichever direction was set for it in the editor). It does not
+  // directly move the player - if the sliding cube runs into you, ordinary solid
+  // collision (see resolveAxis) shoves you along with it, same as any other solid
+  // obstacle pushing you.
+  if (lvl.pushcubeDir){
+    lvl.pushcubeState = lvl.pushcubeState || {};
+    const pcx2 = player.x+player.w/2, pcy2 = player.y+player.h/2;
+    for(const pkey in lvl.pushcubeDir){
+      const parts = pkey.split(',');
+      const pr = +parts[0], pc = +parts[1];
+      if (!lvl.grid[pr] || lvl.grid[pr][pc] !== 'pushcube') continue;
+      const cubeDir = lvl.pushcubeDir[pkey];
+      const cs = lvl.pushcubeState[pkey] || (lvl.pushcubeState[pkey] = {phase:'idle', t:0, offset:0});
+      const baseX = pc*TILE, baseY = pr*TILE;
+      if (cs.phase==='idle'){
+        const tx = baseX+cs.offset+TILE/2, ty = baseY+TILE/2;
+        const d = Math.hypot(tx-pcx2, ty-pcy2);
+        if (d < PUSHCUBE_RADIUS){ cs.phase = 'sliding'; cs.t = 0; sndPushCube(); }
+      }
+      if (cs.phase==='sliding'){
+        cs.t = Math.min(PUSHCUBE_SLIDE_MS, cs.t+dt);
+        const p = cs.t/PUSHCUBE_SLIDE_MS;
+        const eased = 1-Math.pow(1-p,2); // ease-out, so the slide settles smoothly
+        cs.offset = cubeDir * PUSHCUBE_SLIDE_TILES * TILE * eased;
+        if (p>=1) cs.phase = 'done';
+      }
+    }
+  }
+
+  // Frame-rate independent step factor. All the movement/gravity constants above
+  // (MOVE_SPEED, GRAVITY, JUMP_VEL...) were tuned assuming ~60fps. Without this,
+  // the whole game runs faster on 90/120/144Hz screens (and slower if a tab hitches),
+  // which is what made levels feel broken/glitchy depending on device.
+  const STEP = dt / NOMINAL_FRAME_MS;
+
+  // gravity
+  player.vy = Math.min(MAX_FALL, player.vy+GRAVITY*STEP);
+
+  // moving platform carry (compute delta before moving player)
+  let carryDX = 0;
+  if (onMovingPlatform){
+    const prevRect = movingPlatformRect(onMovingPlatform, tMs-dt);
+    const nowRect = movingPlatformRect(onMovingPlatform, tMs);
+    carryDX = nowRect.x - prevRect.x;
+  }
+
+  // ---- horizontal move + collide ----
+  player.x += player.vx*STEP + carryDX;
+  resolveAxis('x', lvl, tMs);
+
+  // ---- vertical move + collide ----
+  player.grounded = false;
+  onMovingPlatform = null;
+  player.y += player.vy*STEP;
+  resolveAxis('y', lvl, tMs);
+
+  // wind zones
+  for (const w of lvl.wind){
+    const wr = {x:w.c1*TILE, y:w.row1*TILE, w:(w.c2-w.c1+1)*TILE, h:(w.row2-w.row1)*TILE};
+    if (rectsOverlap(player, wr)) player.x += w.force*dt*0.06;
+  }
+
+  // rolling balls - patrol back and forth between x0/x1, kill on touch
+  if (lvl.rollers){
+    for (const rb of lvl.rollers){
+      rb.x += rb.dir*rb.speed*dt;
+      if (rb.x<=rb.x0){ rb.x=rb.x0; rb.dir=1; }
+      else if (rb.x>=rb.x1){ rb.x=rb.x1; rb.dir=-1; }
+      const cy = rb.row*TILE - rb.radius;
+      const closestX = Math.max(player.x, Math.min(rb.x, player.x+player.w));
+      const closestY = Math.max(player.y, Math.min(cy, player.y+player.h));
+      const dx = rb.x-closestX, dy = cy-closestY;
+      if (dx*dx+dy*dy < rb.radius*rb.radius){ killPlayer("Rolled right over you."); return; }
+    }
+  }
+
+  // push boxes - patrol back and forth, shove/crush on contact
+  if (lvl.pushboxes){
+    for (const pb of lvl.pushboxes){
+      pb.x += pb.dir*pb.speed*dt;
+      if (pb.x<=pb.x0){ pb.x=pb.x0; pb.dir=1; }
+      else if (pb.x>=pb.x1){ pb.x=pb.x1; pb.dir=-1; }
+      const boxRect = {x:pb.x-pb.size/2, y:pb.row*TILE-pb.size, w:pb.size, h:pb.size};
+      if (rectsOverlap(player, boxRect)){ killPlayer("Shoved into the wreckage."); return; }
+    }
+  }
+
+  // blade pendulums - swing on a chain, kill on touch
+  if (lvl.pendulums){
+    for (const pd of lvl.pendulums){
+      const ampRad = (pd.ampDeg||45)*Math.PI/180;
+      const angle = Math.sin(tMs/1000*pd.speed + (pd.phase||0)) * ampRad;
+      const bx = pd.anchorX + Math.sin(angle)*pd.length;
+      const by = pd.anchorY + Math.cos(angle)*pd.length;
+      const closestX = Math.max(player.x, Math.min(bx, player.x+player.w));
+      const closestY = Math.max(player.y, Math.min(by, player.y+player.h));
+      const dx = bx-closestX, dy = by-closestY;
+      if (dx*dx+dy*dy < pd.radius*pd.radius){ killPlayer("Swung right through you."); return; }
+    }
+  }
+
+  // crushing walls - one or two walls periodically slam together (or across), per editor config
+  if (lvl.crushers){
+    for (const cr of lvl.crushers){
+      const {left, right} = crusherRects(cr, tMs);
+      if ((left && rectsOverlap(player,left)) || (right && rectsOverlap(player,right))){ killPlayer("Crushed. Flat."); return; }
+    }
+  }
+
+  // ceiling collapse - triggers when player passes underneath, then drops
+  if (lvl.collapsers){
+    for (const cp of lvl.collapsers){
+      const cs = collapseState[cp.r+','+cp.c];
+      if (!cs) continue;
+      const pcol = Math.floor((player.x+player.w/2)/TILE);
+      if (cs.state==='idle'){
+        if (Math.abs(pcol-cp.c)<=1 && player.y > cp.r*TILE){
+          cs.state='shaking'; cs.timer=0;
+        }
+      } else if (cs.state==='shaking'){
+        cs.timer += dt;
+        if (cs.timer>480){ cs.state='falling'; cs.y = cp.r*TILE; cs.vy=0; sndCollapse(); }
+      } else if (cs.state==='falling'){
+        cs.vy = Math.min(MAX_FALL, cs.vy + GRAVITY*STEP*1.5);
+        cs.y += cs.vy*STEP;
+        const blockRect = {x:cp.c*TILE, y:cs.y, w:TILE, h:TILE};
+        if (rectsOverlap(player, blockRect)){ killPlayer("The ceiling had other plans."); return; }
+        let landRow = lvl.rows-1;
+        for(let r=cp.r+1;r<lvl.rows;r++){
+          if (lvl.grid[r][cp.c]==='ground'||lvl.grid[r][cp.c]==='crumble'||lvl.grid[r][cp.c]==='teleport'){ landRow = r-1; break; }
+        }
+        if (cs.y >= landRow*TILE){ cs.y = landRow*TILE; cs.state='down'; }
+      } else if (cs.state==='down'){
+        const blockRect = {x:cp.c*TILE, y:cs.y, w:TILE, h:TILE};
+        if (player.vy>0 && rectsOverlap({x:player.x,y:player.y+2,w:player.w,h:player.h}, blockRect)){
+          // acts as solid ground once landed
+        }
+      }
+    }
+  }
+
+  // arrow turrets - fire projectiles at intervals, kill on hit
+  if (lvl.arrows){
+    for (const tu of lvl.arrows){
+      tu.timer = (tu.timer||0) + dt;
+      if (tu.timer >= (tu.interval||1800)){
+        tu.timer = 0;
+        tu.projectiles = tu.projectiles||[];
+        const dir = tu.dir||-1;
+        tu.projectiles.push({x: tu.c*TILE + (dir>0?TILE:0), y: tu.r*TILE+TILE/2, vx: dir*6.5});
+        sndArrow();
+      }
+      if (tu.projectiles){
+        for(let i=tu.projectiles.length-1;i>=0;i--){
+          const pr = tu.projectiles[i];
+          pr.x += pr.vx*STEP;
+          if (pr.x<-40 || pr.x>lvl.cols*TILE+40){ tu.projectiles.splice(i,1); continue; }
+          const prRect = {x:pr.x-8,y:pr.y-2,w:16,h:4};
+          if (rectsOverlap(player, prRect)){ killPlayer("Didn't see that arrow coming."); return; }
+        }
+      }
+    }
+  }
+
+  // clamp to level bounds
+  if (player.x<0) player.x=0;
+
+  // pit fall / world bottom death
+  if (player.y > lvl.rows*TILE+80){ killPlayer("Gravity: undefeated."); return; }
+
+  // spike hazard check (non-solid, always visible)
+  const c0 = Math.floor(player.x/TILE), c1 = Math.floor((player.x+player.w)/TILE);
+  const r0 = Math.floor(player.y/TILE), r1 = Math.floor((player.y+player.h)/TILE);
+  for(let r=r0;r<=r1;r++) for(let c=c0;c<=c1;c++){
+    if (r<0||r>=lvl.rows||c<0||c>=lvl.cols) continue;
+    if (lvl.grid[r][c]==='spike'){
+      const sr = {x:c*TILE+8,y:r*TILE+14,w:TILE-16,h:TILE-14};
+      if (rectsOverlap(player,sr)){ killPlayer("Impaled by irony."); return; }
+    }
+  }
+
+  // trap ground check - only relevant when grounded on that exact tile
+  if (player.grounded && player.groundTile){
+    const {r,c} = player.groundTile;
+    if (lvl.trap[r] && lvl.trap[r][c]){ killPlayer(); return; }
+    if (lvl.grid[r][c]==='teleport'){ triggerTeleport(lvl); return; }
+  }
+
+  // hidden trap overlap check even if not "grounded" cleanly (edge case: touch from side/below)
+  for(let r=r0;r<=r1;r++) for(let c=c0;c<=c1;c++){
+    if (r<0||r>=lvl.rows||c<0||c>=lvl.cols) continue;
+    if (lvl.grid[r][c]==='ground' && lvl.trap[r][c]){
+      const tr = {x:c*TILE,y:r*TILE,w:TILE,h:TILE};
+      const feet = {x:player.x+3,y:player.y+player.h-4,w:player.w-6,h:6};
+      if (rectsOverlap(feet,tr)){ killPlayer(); return; }
+    }
+  }
+
+  // finish check (door)
+  const doorH = TILE*2.2;
+  const fr = {x:lvl.finish.c*TILE, y:(lvl.finish.r+1)*TILE-doorH, w:TILE, h:doorH};
+  if (rectsOverlap(player, fr)){ winLevel(); return; }
+
+  // crumble timers
+  for(const key in crumbleAlive){
+    const cs = crumbleAlive[key];
+    if (!cs.alive) continue;
+    if (player.groundTile && (player.groundTile.r+','+player.groundTile.c)===key){
+      cs.timer += dt;
+      if (cs.timer>340){ cs.alive=false; }
+    }
+  }
+
+  // camera — follow player; sit them lower so top bricks/NPC stay on screen
+  const targetCam = player.x - VIEW_W/2 + player.w/2;
+  camX += (targetCam-camX)*0.14;
+  camX = Math.max(0, Math.min(Math.max(0,lvl.cols*TILE-VIEW_W), camX));
+  const worldH = lvl.rows*TILE;
+  const targetCamY = player.y + player.h/2 - VIEW_H*0.62;
+  camY += (targetCamY-camY)*0.16;
+  camY = Math.max(0, Math.min(Math.max(0, worldH-VIEW_H), camY));
+}
+
+function resolveAxis(axis, lvl, tMs){
+  const bbox = ()=>({x:player.x,y:player.y,w:player.w,h:player.h});
+  const c0 = Math.floor(player.x/TILE)-1, c1 = Math.floor((player.x+player.w)/TILE)+1;
+  const r0 = Math.floor(player.y/TILE)-1, r1 = Math.floor((player.y+player.h)/TILE)+1;
+
+  const rects = [];
+  for(let r=r0;r<=r1;r++) for(let c=c0;c<=c1;c++){
+    if (r<0||r>=lvl.rows||c<0||c>=lvl.cols) continue;
+    const t = lvl.grid[r][c];
+    if (t==='ground' || t==='teleport'){
+      rects.push({x:c*TILE,y:r*TILE,w:TILE,h:TILE, r, c, kind: t==='teleport'?'teleport':'ground'});
+    } else if (t==='pushcube'){
+      const key = r+','+c;
+      const offset = pushCubeOffset(lvl, r, c);
+      const dir = (lvl.pushcubeDir && lvl.pushcubeDir[key]) || -1;
+      rects.push({x:c*TILE+offset, y:r*TILE, w:TILE, h:TILE, r, c, kind:'pushcube', dir});
+    } else if (t==='bounce'){
+      rects.push({x:c*TILE,y:r*TILE,w:TILE,h:TILE, r, c, kind:'bounce'});
+    } else if (t==='crumble'){
+      const cs = crumbleAlive[r+','+c];
+      if (!cs || cs.alive) rects.push({x:c*TILE,y:r*TILE,w:TILE,h:TILE, r, c, kind:'crumble'});
+    }
+  }
+  for (const mp of lvl.moving){
+    const rect = movingPlatformRect(mp, tMs);
+    rect.kind='moving'; rect.mp = mp;
+    rects.push(rect);
+  }
+  // landed ceiling-collapse blocks act as solid ground
+  if (lvl.collapsers){
+    for (const cp of lvl.collapsers){
+      const cs = collapseState[cp.r+','+cp.c];
+      if (cs && cs.state==='down'){
+        rects.push({x:cp.c*TILE, y:cs.y, w:TILE, h:TILE, r:cp.c, c:cp.c, kind:'ground'});
+      }
+    }
+  }
+
+  if (axis==='x'){
+    for (const rc of rects){
+      const b = bbox();
+      if (!rectsOverlap(b, rc)) continue;
+      if (player.vx>0) player.x = rc.x - player.w;
+      else if (player.vx<0) player.x = rc.x + rc.w;
+      else {
+        // moving platform or sliding push cube shoved into us while we weren't
+        // pressing a direction ourselves - move us along with it, not the other
+        // way around.
+        if (rc.kind==='moving') player.x = rc.x - player.w;
+        else if (rc.kind==='pushcube') player.x = rc.dir>0 ? rc.x - player.w : rc.x + rc.w;
+      }
+      player.vx = 0;
+    }
+  } else {
+    for (const rc of rects){
+      const b = bbox();
+      if (!rectsOverlap(b, rc)) continue;
+      if (player.vy>0){
+        player.y = rc.y - player.h;
+        player.vy = 0;
+        player.grounded = true;
+        player.groundTile = (rc.kind==='ground'||rc.kind==='crumble'||rc.kind==='teleport'||rc.kind==='pushcube') ? {r:rc.r,c:rc.c} : null;
+        if (rc.kind==='bounce'){ player.vy = BOUNCE_VEL; player.grounded=false; sndBounce(); }
+        if (rc.kind==='moving'){ onMovingPlatform = rc.mp; }
+      } else if (player.vy<0){
+        player.y = rc.y + rc.h;
+        player.vy = 0;
+      }
+    }
+  }
+}
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+let _lastCanvasSizeKey = '';
+function resizeCanvas(force){
+  const wrap = canvasWrap.getBoundingClientRect();
+  if (wrap.width<=0 || wrap.height<=0) return; // not laid out yet - a later observer/resize call will retry
+
+  // Instead of fitting a FIXED 1000x520 box into the container (which leaves
+  // black letterbox bars whenever the container's aspect ratio doesn't match
+  // 1000/520 - the case on most phones), we keep VIEW_H fixed and derive
+  // VIEW_W from the container's own aspect ratio every resize. That means
+  // the internal game-world view always exactly matches the screen shape,
+  // so the canvas fills the container edge-to-edge with no bars, on any device.
+  const aspect = wrap.width / wrap.height;
+  const newViewW = Math.round(VIEW_H * aspect);
+
+  const key = wrap.width.toFixed(1)+'x'+wrap.height.toFixed(1);
+  if (!force && key===_lastCanvasSizeKey) return; // already correctly sized for this container box
+  _lastCanvasSizeKey = key;
+
+  VIEW_W = Math.max(400, newViewW); // sane floor so very tall/narrow embeds don't collapse the view
+
+  if (canvas.width!==VIEW_W) canvas.width = VIEW_W;
+  if (canvas.height!==VIEW_H) canvas.height = VIEW_H;
+  canvas.style.width = wrap.width+'px';
+  canvas.style.height = wrap.height+'px';
+}
+
+/* ---- Rotate-wrapper sizing (JS-driven, robust replacement for relying
+   purely on CSS dvh/dvw) ----
+   dvh/dvw support and behaviour (especially combined with a 90deg
+   rotation) is inconsistent across mobile browsers, and was the root
+   cause of the game occasionally rendering into a tiny sliver of the
+   screen instead of filling it. We now explicitly set the rotate-wrapper's
+   pixel size from JS using the real visual viewport, which is far more
+   reliable, and re-run it on every resize/orientation change and on a
+   couple of short delays after load to catch the mobile browser chrome
+   (address bar) settling. */
+const rotateWrapperEl = document.querySelector('.rotate-wrapper');
+let _lastRotateWrapperKey = '';
+function applyRotateWrapperSize(){
+  if (!rotateWrapperEl) return;
+  rotateWrapperEl.style.width = '100%';
+  rotateWrapperEl.style.height = '100%';
+  rotateWrapperEl.style.transform = 'none';
+}
+
+// ---- Viewport stabilizer ----
+// Forces a reflow after the browser's address bar / chrome finishes
+// animating in or out, so the rotate-wrapper stays pixel-aligned with the
+// real viewport instead of drifting out of sync, then re-measures the
+// canvas against its (possibly rotated) wrapper.
+function forceReflow(){
+  applyRotateWrapperSize();
+  document.documentElement.style.display = 'none';
+  void document.documentElement.offsetHeight;
+  document.documentElement.style.display = '';
+  resizeCanvas();
+}
+window.addEventListener('resize', forceReflow);
+window.addEventListener('orientationchange', forceReflow);
+if (window.visualViewport){
+  window.visualViewport.addEventListener('resize', forceReflow);
+}
+// A couple of delayed retries right after load catch mobile browsers whose
+// address bar / safe-area settles a moment after the initial paint, which is
+// exactly the scenario that previously left the canvas stuck at a stale
+// (tiny) size with no further resize event ever firing.
+[50, 200, 600, 1200].forEach(ms=>setTimeout(forceReflow, ms));
+
+// Catch-all: whenever canvasWrap's actual on-screen box changes size for ANY
+// reason (rotation settling, keyboard showing/hiding, layout thrash, etc.)
+// resize the canvas to match. This is the most robust fix since it reacts to
+// the real box instead of guessing when a reflow might be needed.
+if (window.ResizeObserver){
+  new ResizeObserver(()=>resizeCanvas()).observe(canvasWrap);
+}
+
+// Best-effort native landscape lock (mainly effective in fullscreen/PWA
+// contexts). The CSS/JS rotate-wrapper above is the real fallback for
+// ordinary mobile browser tabs where the Orientation Lock API is refused.
+function tryLockLandscape(){
+  try{
+    if (screen.orientation && screen.orientation.lock){
+      screen.orientation.lock('landscape').catch(()=>{});
+    }
+  }catch(e){ /* ignore - CSS rotation fallback covers this */ }
+}
+
+// Draws a ground tile. At revealAmt 0 it's pixel-for-pixel identical to a normal
+// safe tile - a trap gives nothing away by colour. As revealAmt rises (player
+// approaching) a row of blocky pixel teeth pushes up out of the ground - solid,
+// clearly dangerous, stepped silhouette (not a fade, not camouflaged). Back away
+// and the teeth sink flush back into the tile until nothing is visible again.
+const SPIKE_PATTERN = [0,2,4,3,5,3,4,2,0]; // block-height units per sub-column, jagged like a row of teeth
+function drawGroundTile(x, y, revealAmt, tMs){
+  ctx.fillStyle = '#1c1730';
+  ctx.fillRect(x,y,TILE,TILE);
+  ctx.fillStyle = 'rgba(0,240,255,0.12)';
+  ctx.fillRect(x,y,TILE,4);
+  ctx.strokeStyle = 'rgba(0,240,255,0.18)';
+  ctx.lineWidth=1;
+  ctx.strokeRect(x+0.5,y+0.5,TILE-1,TILE-1);
+
+  if (revealAmt<=0.001) return;
+
+  const t = revealAmt;
+  const px = TILE/SPIKE_PATTERN.length;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(x, y-TILE, TILE, TILE*2);
+  ctx.clip();
+
+  // dark pit behind the teeth so they read as rising out of a gap in the floor
+  ctx.globalAlpha = Math.min(1, t*1.3);
+  ctx.fillStyle = '#150c10';
+  ctx.fillRect(x, y-TILE*0.62, TILE, TILE*0.62);
+
+  // blocky pixel teeth - amber/red, stepped edges, no rounding
+  ctx.globalAlpha = Math.min(1, t*1.4);
+  for(let i=0;i<SPIKE_PATTERN.length;i++){
+    const h = Math.round(SPIKE_PATTERN[i]*px*t);
+    if (h<=1) continue;
+    const tx = Math.round(x+i*px);
+    const ty = Math.round(y-h);
+    ctx.fillStyle = '#b5540f';
+    ctx.fillRect(tx, ty, Math.ceil(px), h);
+    ctx.fillStyle = '#ff8a1f';
+    ctx.fillRect(tx, ty, Math.ceil(px*0.55), h);
+  }
+  // hard pixel outline along the top edge of the tooth row
+  ctx.globalAlpha = Math.min(1, t*1.6);
+  ctx.strokeStyle = '#7a2a06';
+  ctx.lineWidth = 1;
+  for(let i=0;i<SPIKE_PATTERN.length;i++){
+    const h = Math.round(SPIKE_PATTERN[i]*px*t);
+    if (h<=1) continue;
+    ctx.strokeRect(Math.round(x+i*px)+0.5, Math.round(y-h)+0.5, Math.ceil(px)-1, h-1);
+  }
+  ctx.restore();
+
+  // danger glow once the teeth are mostly out
+  if (t>0.55){
+    ctx.save();
+    ctx.globalAlpha = (t-0.55)/0.45*0.3;
+    const g = ctx.createRadialGradient(x+TILE/2,y,2,x+TILE/2,y,TILE*0.75);
+    g.addColorStop(0,'rgba(255,138,31,0.65)');
+    g.addColorStop(1,'rgba(255,138,31,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(x-6,y-TILE*0.7,TILE+12,TILE*0.9);
+    ctx.restore();
+  }
+}
+
+// Draws a teleport-trap tile: identical to a normal safe tile until the player
+// gets close, then a faint magenta portal swirl fades in as a warning.
+function drawTeleportTile(x, y, revealAmt, tMs){
+  ctx.fillStyle = '#1c1730';
+  ctx.fillRect(x,y,TILE,TILE);
+  ctx.fillStyle = 'rgba(0,240,255,0.12)';
+  ctx.fillRect(x,y,TILE,4);
+  ctx.strokeStyle = 'rgba(0,240,255,0.18)';
+  ctx.lineWidth=1;
+  ctx.strokeRect(x+0.5,y+0.5,TILE-1,TILE-1);
+  if (revealAmt<=0.001) return;
+  ctx.save();
+  ctx.globalAlpha = Math.min(1, revealAmt*1.3);
+  const cx = x+TILE/2, cy = y+TILE/2;
+  for(let i=0;i<3;i++){
+    const rr = (TILE*0.42) * (1 - ((tMs/700 + i/3) % 1));
+    ctx.strokeStyle = 'rgba(255,46,136,'+(0.8*(rr/(TILE*0.42)))+')';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(cx,cy,Math.max(1,rr),0,Math.PI*2); ctx.stroke();
+  }
+  ctx.fillStyle = 'rgba(255,46,136,0.5)';
+  ctx.font='9px monospace'; ctx.textAlign='center';
+  ctx.fillText('?', cx, cy+3);
+  ctx.restore();
+}
+
+// Draws a push-cube trap tile: identical to a normal safe tile until the player
+// gets close, then an amber cube outline appears with an arrow showing which
+// way it will slide. `offset` shifts the drawn cube along with its actual
+// slide progress, so the rendered cube visually moves 1-2 tiles rather than
+// staying put while an invisible force acts on the player.
+function drawPushCubeTile(x, y, revealAmt, tMs, dir, offset){
+  ctx.fillStyle = '#1c1730';
+  ctx.fillRect(x,y,TILE,TILE);
+  ctx.fillStyle = 'rgba(0,240,255,0.12)';
+  ctx.fillRect(x,y,TILE,4);
+  ctx.strokeStyle = 'rgba(0,240,255,0.18)';
+  ctx.lineWidth=1;
+  ctx.strokeRect(x+0.5,y+0.5,TILE-1,TILE-1);
+  if (revealAmt<=0.001) return;
+  ctx.save();
+  ctx.globalAlpha = Math.min(1, revealAmt*1.3);
+  const ox = x+(offset||0);
+  const cx = ox+TILE/2, cy = y+TILE/2;
+  const bulge = Math.sin(tMs/180)*2;
+  ctx.fillStyle = 'rgba(255,184,0,0.28)';
+  ctx.fillRect(ox+6, y+6+bulge, TILE-12, TILE-12);
+  ctx.strokeStyle = '#ffb800'; ctx.lineWidth = 2;
+  ctx.strokeRect(ox+6, y+6+bulge, TILE-12, TILE-12);
+  ctx.fillStyle = '#ff2e88';
+  ctx.beginPath();
+  if (dir>0){
+    ctx.moveTo(cx-4,cy-7); ctx.lineTo(cx+7,cy); ctx.lineTo(cx-4,cy+7);
+  } else {
+    ctx.moveTo(cx+4,cy-7); ctx.lineTo(cx-7,cy); ctx.lineTo(cx+4,cy+7);
+  }
+  ctx.closePath(); ctx.fill();
+  ctx.restore();
+}
+
+function draw(tMs){
+  ctx.clearRect(0,0,VIEW_W,VIEW_H);
+  // bg grid
+  const grd = ctx.createLinearGradient(0,0,0,VIEW_H);
+  grd.addColorStop(0,'#0c0918'); grd.addColorStop(1,'#050409');
+  ctx.fillStyle = grd; ctx.fillRect(0,0,VIEW_W,VIEW_H);
+  ctx.strokeStyle = 'rgba(122,110,180,0.06)'; ctx.lineWidth=1;
+  for(let x=-(camX%TILE); x<VIEW_W; x+=TILE){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,VIEW_H); ctx.stroke(); }
+  for(let y=-(camY%TILE); y<VIEW_H; y+=TILE){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(VIEW_W,y); ctx.stroke(); }
+
+  if (state==='editor'){ drawEditorLevel(tMs); return; }
+
+  if (!curLevelData) return;
+  const lvl = curLevelData;
+  const c0 = Math.max(0, Math.floor(camX/TILE)-1);
+  const c1 = Math.min(lvl.cols-1, Math.ceil((camX+VIEW_W)/TILE)+1);
+
+  ctx.save();
+  ctx.translate(-camX, -camY);
+
+  const pushCubesToDraw = [];
+
+  for(let r=0;r<lvl.rows;r++){
+    for(let c=c0;c<=c1;c++){
+      const t = lvl.grid[r][c];
+      if (t==='empty') continue;
+      const x=c*TILE, y=r*TILE;
+      if (t==='ground'){
+        const isTrap = lvl.trap[r][c];
+        let reveal = 0;
+        if (isTrap && player){
+          const d = Math.hypot((x+TILE/2)-(player.x+player.w/2), (y+TILE/2)-(player.y+player.h/2));
+          reveal = Math.max(0, Math.min(1, 1 - d/REVEAL_RADIUS));
+        }
+        drawGroundTile(x, y, reveal, tMs);
+      } else if (t==='teleport'){
+        let reveal = 0;
+        if (player){
+          const d = Math.hypot((x+TILE/2)-(player.x+player.w/2), (y+TILE/2)-(player.y+player.h/2));
+          reveal = Math.max(0, Math.min(1, 1 - d/REVEAL_RADIUS));
+        }
+        drawTeleportTile(x, y, reveal, tMs);
+      } else if (t==='pushcube'){
+        // draw the tile's base square now (so it never overwrites a neighbour),
+        // but defer the actual cube (which can slide 1-2 tiles beyond this
+        // cell) to a second pass drawn AFTER every base tile, so it never gets
+        // painted over by an adjacent tile's background.
+        ctx.fillStyle = '#1c1730';
+        ctx.fillRect(x,y,TILE,TILE);
+        ctx.fillStyle = 'rgba(0,240,255,0.12)';
+        ctx.fillRect(x,y,TILE,4);
+        ctx.strokeStyle = 'rgba(0,240,255,0.18)';
+        ctx.lineWidth=1;
+        ctx.strokeRect(x+0.5,y+0.5,TILE-1,TILE-1);
+        let reveal = 0;
+        if (player){
+          const d = Math.hypot((x+TILE/2)-(player.x+player.w/2), (y+TILE/2)-(player.y+player.h/2));
+          reveal = Math.max(0, Math.min(1, 1 - d/REVEAL_RADIUS));
+        }
+        const dir = (lvl.pushcubeDir && lvl.pushcubeDir[r+','+c]) || -1;
+        const offset = pushCubeOffset(lvl, r, c);
+        if (reveal>0.001) pushCubesToDraw.push({x,y,reveal,dir,offset});
+      } else if (t==='spike'){
+        ctx.fillStyle = '#ffb800';
+        for(let i=0;i<2;i++){
+          ctx.beginPath();
+          const bx = x+i*TILE/2;
+          ctx.moveTo(bx, y+TILE);
+          ctx.lineTo(bx+TILE/4, y+TILE*0.25);
+          ctx.lineTo(bx+TILE/2, y+TILE);
+          ctx.closePath(); ctx.fill();
+        }
+        ctx.strokeStyle='#ff3b3b'; ctx.lineWidth=1; ctx.stroke();
+      } else if (t==='crumble'){
+        const cs = crumbleAlive[r+','+c];
+        if (cs && !cs.alive) continue;
+        const shake = cs && cs.timer>0 ? Math.sin(tMs/20)*2 : 0;
+        ctx.fillStyle = '#2a1f0f';
+        ctx.fillRect(x+shake,y,TILE,TILE);
+        ctx.strokeStyle = '#ffb800'; ctx.lineWidth=1;
+        ctx.setLineDash([4,3]);
+        ctx.strokeRect(x+1+shake,y+1,TILE-2,TILE-2);
+        ctx.setLineDash([]);
+      } else if (t==='bounce'){
+        ctx.fillStyle = '#3a0f2a';
+        ctx.fillRect(x,y+TILE*0.4,TILE,TILE*0.6);
+        ctx.strokeStyle = '#ff2e88'; ctx.lineWidth=2;
+        ctx.beginPath();
+        ctx.moveTo(x+4,y+TILE*0.4);
+        ctx.lineTo(x+TILE/2,y+TILE*0.15);
+        ctx.lineTo(x+TILE-4,y+TILE*0.4);
+        ctx.stroke();
+      }
+    }
+  }
+
+  // second pass: draw sliding push-cubes on top of everything drawn so far,
+  // so a cube that has slid 1-2 tiles away from its home cell is never
+  // painted over by that neighbouring tile's own background.
+  for (const pc of pushCubesToDraw){
+    drawPushCubeTile(pc.x, pc.y, pc.reveal, tMs, pc.dir, pc.offset);
+  }
+
+  // wind zones (visual)
+  for (const w of lvl.wind){
+    const wx=w.c1*TILE, wy=w.row1*TILE, ww=(w.c2-w.c1+1)*TILE, wh=(w.row2-w.row1)*TILE;
+    if (wx+ww<camX-40 || wx>camX+VIEW_W+40) continue;
+    ctx.strokeStyle='rgba(57,255,136,0.35)'; ctx.lineWidth=2;
+    for(let i=0;i<3;i++){
+      const yy = wy+10+i*(wh/3);
+      const off = (tMs/6 + i*30)%40;
+      for(let xx=wx+off; xx<wx+ww; xx+=40){
+        ctx.beginPath(); ctx.moveTo(xx,yy); ctx.lineTo(xx+16,yy); ctx.lineTo(xx+11,yy-5); ctx.moveTo(xx+16,yy); ctx.lineTo(xx+11,yy+5); ctx.stroke();
+      }
+    }
+  }
+
+  // rolling balls
+  if (lvl.rollers){
+    for (const rb of lvl.rollers){
+      const rx = rb.x, ry = rb.row*TILE - rb.radius;
+      if (rx+rb.radius<camX-40 || rx-rb.radius>camX+VIEW_W+40) continue;
+      ctx.save();
+      ctx.translate(rx, ry);
+      ctx.rotate(rb.x/rb.radius);
+      ctx.fillStyle = '#8a3a10';
+      ctx.beginPath(); ctx.arc(0,0,rb.radius,0,Math.PI*2); ctx.fill();
+      ctx.strokeStyle = '#ffb800'; ctx.lineWidth = 2; ctx.stroke();
+      ctx.strokeStyle = 'rgba(0,0,0,0.35)'; ctx.lineWidth = 2;
+      for(let i=0;i<4;i++){
+        const a = i*Math.PI/2;
+        ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(Math.cos(a)*rb.radius, Math.sin(a)*rb.radius); ctx.stroke();
+      }
+      ctx.restore();
+      // contact shadow
+      ctx.save();
+      ctx.globalAlpha = 0.35;
+      ctx.fillStyle = '#000';
+      ctx.beginPath(); ctx.ellipse(rx, rb.row*TILE+2, rb.radius*0.8, 4, 0, 0, Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  // push boxes
+  if (lvl.pushboxes){
+    for (const pb of lvl.pushboxes){
+      const bx = pb.x-pb.size/2, by = pb.row*TILE-pb.size;
+      if (bx+pb.size<camX-40 || bx>camX+VIEW_W+40) continue;
+      ctx.fillStyle = '#3a2410';
+      ctx.fillRect(bx,by,pb.size,pb.size);
+      ctx.strokeStyle = '#ffb800'; ctx.lineWidth=2;
+      ctx.strokeRect(bx+1,by+1,pb.size-2,pb.size-2);
+      ctx.fillStyle = '#ffb800'; ctx.font='16px monospace'; ctx.textAlign='center';
+      ctx.fillText(pb.dir>0?'▶':'◀', bx+pb.size/2, by+pb.size/2+5);
+    }
+  }
+
+  // blade pendulums
+  if (lvl.pendulums){
+    for (const pd of lvl.pendulums){
+      const ampRad = (pd.ampDeg||45)*Math.PI/180;
+      const angle = Math.sin(tMs/1000*pd.speed + (pd.phase||0)) * ampRad;
+      const bx = pd.anchorX + Math.sin(angle)*pd.length;
+      const by = pd.anchorY + Math.cos(angle)*pd.length;
+      if (bx<camX-60 || bx>camX+VIEW_W+60) continue;
+      ctx.strokeStyle = 'rgba(200,190,220,0.6)'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(pd.anchorX,pd.anchorY); ctx.lineTo(bx,by); ctx.stroke();
+      ctx.fillStyle = '#3a0f2a';
+      ctx.beginPath(); ctx.arc(pd.anchorX,pd.anchorY,4,0,Math.PI*2); ctx.fill();
+      // blade
+      ctx.save();
+      ctx.translate(bx,by);
+      ctx.rotate(angle);
+      ctx.fillStyle = '#ff2e88';
+      ctx.beginPath();
+      ctx.moveTo(0,-pd.radius*1.4); ctx.lineTo(pd.radius,pd.radius*0.6); ctx.lineTo(-pd.radius,pd.radius*0.6);
+      ctx.closePath(); ctx.fill();
+      ctx.strokeStyle='#fff'; ctx.lineWidth=1; ctx.stroke();
+      ctx.restore();
+    }
+  }
+
+  // crushing walls
+  if (lvl.crushers){
+    for (const cr of lvl.crushers){
+      const {left, right} = crusherRects(cr, tMs);
+      [left,right].forEach(w=>{
+        if (!w) return;
+        if (w.x+w.w<camX-40 || w.x>camX+VIEW_W+40) return;
+        ctx.fillStyle='#3a1010';
+        ctx.fillRect(w.x,w.y,w.w,w.h);
+        ctx.strokeStyle='#ff3b3b'; ctx.lineWidth=2;
+        ctx.strokeRect(w.x+1,w.y+1,w.w-2,w.h-2);
+        for(let yy=w.y+8; yy<w.y+w.h; yy+=16){
+          ctx.strokeStyle='rgba(255,184,0,0.4)'; ctx.lineWidth=3;
+          ctx.beginPath(); ctx.moveTo(w.x+3,yy); ctx.lineTo(w.x+w.w-3,yy); ctx.stroke();
+        }
+      });
+    }
+  }
+
+  // ceiling collapse blocks
+  if (lvl.collapsers){
+    for (const cp of lvl.collapsers){
+      const cs = collapseState[cp.r+','+cp.c];
+      if (!cs) continue;
+      const x = cp.c*TILE;
+      if (x+TILE<camX-40 || x>camX+VIEW_W+40) continue;
+      if (cs.state==='idle') continue; // invisible until triggered - surprise factor
+      const shakeOff = cs.state==='shaking' ? Math.sin(tMs/18)*2 : 0;
+      const y = cs.state==='shaking' ? cp.r*TILE : cs.y;
+      ctx.fillStyle = '#4a1414';
+      ctx.fillRect(x+shakeOff,y,TILE,TILE);
+      ctx.strokeStyle = '#ff3b3b'; ctx.lineWidth=1;
+      ctx.strokeRect(x+shakeOff+1,y+1,TILE-2,TILE-2);
+      if (cs.state==='shaking'){
+        ctx.fillStyle='rgba(255,184,0,0.7)'; ctx.font='9px monospace'; ctx.textAlign='center';
+        ctx.fillText('!', x+TILE/2, y-4);
+      }
+    }
+  }
+
+  // arrow turrets + projectiles
+  if (lvl.arrows){
+    for (const tu of lvl.arrows){
+      const tx = tu.c*TILE, ty = tu.r*TILE;
+      if (tx+TILE<camX-40 || tx>camX+VIEW_W+40) continue;
+      ctx.fillStyle = '#2a1730';
+      ctx.fillRect(tx,ty,TILE,TILE);
+      ctx.strokeStyle = '#ff2e88'; ctx.lineWidth=2;
+      ctx.strokeRect(tx+2,ty+2,TILE-4,TILE-4);
+      ctx.fillStyle = '#ff2e88'; ctx.font='14px monospace'; ctx.textAlign='center';
+      ctx.fillText((tu.dir||-1)>0?'▶':'◀', tx+TILE/2, ty+TILE/2+5);
+      if (tu.projectiles){
+        for (const pr of tu.projectiles){
+          if (pr.x<camX-40 || pr.x>camX+VIEW_W+40) continue;
+          ctx.fillStyle = '#ffb800';
+          ctx.save();
+          ctx.translate(pr.x, pr.y);
+          if (pr.vx<0) ctx.scale(-1,1);
+          ctx.beginPath(); ctx.moveTo(-8,-2); ctx.lineTo(6,-2); ctx.lineTo(10,0); ctx.lineTo(6,2); ctx.lineTo(-8,2);
+          ctx.closePath(); ctx.fill();
+          ctx.restore();
+        }
+      }
+    }
+  }
+
+  // moving platforms
+  for (const mp of lvl.moving){
+    const rect = movingPlatformRect(mp, tMs);
+    if (rect.x+rect.w<camX-40 || rect.x>camX+VIEW_W+40) continue;
+    ctx.fillStyle = '#241a3a';
+    ctx.fillRect(rect.x,rect.y,rect.w,rect.h);
+    ctx.strokeStyle = '#00f0ff'; ctx.lineWidth=2;
+    ctx.strokeRect(rect.x,rect.y,rect.w,rect.h);
+  }
+
+  // exit door
+  const fx = lvl.finish.c*TILE, doorH = TILE*2.2, fy = (lvl.finish.r+1)*TILE - doorH;
+  const doorGlow = 6+Math.sin(tMs/260)*3;
+  ctx.save();
+  ctx.shadowColor='#39ff88'; ctx.shadowBlur = doorGlow;
+  ctx.fillStyle = '#0d2419';
+  ctx.fillRect(fx, fy, TILE, doorH);
+  ctx.strokeStyle = '#39ff88'; ctx.lineWidth = 3;
+  ctx.strokeRect(fx+2, fy+2, TILE-4, doorH-4);
+  ctx.shadowBlur = 0;
+  ctx.strokeStyle = 'rgba(57,255,136,0.5)'; ctx.lineWidth=1;
+  ctx.strokeRect(fx+7, fy+7, TILE-14, doorH-14);
+  ctx.fillStyle = '#39ff88';
+  ctx.beginPath(); ctx.arc(fx+TILE-11, fy+doorH/2, 2.6, 0, Math.PI*2); ctx.fill();
+  ctx.restore();
+
+  // particle burst on death / teleport
+  for (const p of particles){
+    const a = 1 - p.life/p.maxLife;
+    ctx.fillStyle = p.teleport ? 'rgba(255,46,136,'+(a*0.9)+')' : 'rgba(255,59,59,'+(a*0.9)+')';
+    ctx.fillRect(p.x-2, p.y-2, 4, 4);
+  }
+
+  // matchstick player - built from wooden-figure-style limbs: a blocky head,
+  // a thin trunk/spine, and jointed stick limbs (elbows + knees bend), echoing
+  // a carved wooden matchstick figurine rather than a plain stick figure.
+  if (player){
+    ctx.save();
+    const cx = player.x+player.w/2;
+    const headH = 11, headW = 9;
+    const headTopY = player.y;
+    const neckY = headTopY+headH;
+    const hipY = player.y+player.h*0.58;
+    const feetY = player.y+player.h;
+    const shoulderY = neckY+3;
+    const woodDark = player.dead ? '#5a4a55' : '#6b4226';
+    const woodLight = player.dead ? '#7a6a75' : '#a3703f';
+
+    ctx.lineCap='round'; ctx.lineJoin='round';
+    ctx.shadowColor = player.dead ? 'transparent' : 'rgba(0,0,0,0.35)'; ctx.shadowBlur = 3;
+
+    // blocky wooden head (rectangle, like the carved figure)
+    ctx.fillStyle = woodLight;
+    ctx.fillRect(cx-headW/2, headTopY, headW, headH);
+    ctx.strokeStyle = woodDark; ctx.lineWidth=1;
+    ctx.strokeRect(cx-headW/2+0.5, headTopY+0.5, headW-1, headH-1);
+
+    // trunk (slightly tapered stick, drawn as a filled sliver instead of a bare line)
+    ctx.fillStyle = woodLight;
+    ctx.beginPath();
+    ctx.moveTo(cx-2.2, neckY);
+    ctx.lineTo(cx+2.2, neckY);
+    ctx.lineTo(cx+1.6, hipY);
+    ctx.lineTo(cx-1.6, hipY);
+    ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = woodDark; ctx.lineWidth=1; ctx.stroke();
+
+    const moving = Math.abs(player.vx)>0.1 && player.grounded;
+    const cyc = tMs/90;
+
+    function stickLimb(x0,y0,x1,y1,x2,y2){
+      ctx.strokeStyle = woodDark; ctx.lineWidth=4;
+      ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+      ctx.strokeStyle = woodLight; ctx.lineWidth=2.4;
+      ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+    }
+
+    // legs (with a knee bend, like jointed wooden limbs)
+    if (!player.grounded){
+      stickLimb(cx,hipY, cx-6,hipY+ (feetY-hipY)*0.55, cx-8,feetY-2);
+      stickLimb(cx,hipY, cx+6,hipY+ (feetY-hipY)*0.5, cx+9,feetY-6);
+    } else if (moving){
+      const sw = Math.sin(cyc)*9, kneeBend = 5;
+      stickLimb(cx,hipY, cx+sw*0.5,hipY+(feetY-hipY)*0.55+kneeBend*Math.abs(Math.cos(cyc)), cx+sw,feetY);
+      stickLimb(cx,hipY, cx-sw*0.5,hipY+(feetY-hipY)*0.55+kneeBend*Math.abs(Math.cos(cyc+Math.PI)), cx-sw,feetY);
+    } else {
+      stickLimb(cx,hipY, cx-2.5,hipY+(feetY-hipY)*0.55, cx-5,feetY);
+      stickLimb(cx,hipY, cx+2.5,hipY+(feetY-hipY)*0.55, cx+5,feetY);
+    }
+
+    // arms (with an elbow bend)
+    if (!player.grounded){
+      stickLimb(cx,shoulderY, cx-7,shoulderY-4, cx-10,shoulderY-8);
+      stickLimb(cx,shoulderY, cx+7,shoulderY-4, cx+10,shoulderY-8);
+    } else if (moving){
+      const sw = Math.sin(cyc+Math.PI)*7;
+      stickLimb(cx,shoulderY, cx+sw*0.5,shoulderY+6, cx+sw,shoulderY+11);
+      stickLimb(cx,shoulderY, cx-sw*0.5,shoulderY+6, cx-sw,shoulderY+11);
+    } else {
+      stickLimb(cx,shoulderY, cx-4,shoulderY+5, cx-7,shoulderY+10);
+      stickLimb(cx,shoulderY, cx+4,shoulderY+5, cx+7,shoulderY+10);
+    }
+    ctx.shadowBlur = 0;
+
+    // wood-grain accent line on the head (echoes the carved-figure texture)
+    ctx.strokeStyle = 'rgba(0,0,0,0.18)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(cx-headW/2+2, headTopY+headH*0.35); ctx.lineTo(cx+headW/2-2, headTopY+headH*0.35); ctx.stroke();
+
+    // face dot (facing direction)
+    ctx.fillStyle = '#0a0612';
+    ctx.beginPath(); ctx.arc(cx+(player.facing>0?2.4:-2.4), headTopY+headH*0.55, 1.1, 0, Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+
+  ctx.restore();
+
+  // soft red vignette when a hidden danger is very close - the only global warning you get
+  if (nearestTrapDist < REVEAL_RADIUS*1){
+    const t = Math.max(0, 1 - nearestTrapDist/(REVEAL_RADIUS*1));
+    ctx.save();
+    const g = ctx.createRadialGradient(VIEW_W/2,VIEW_H/2,VIEW_H*0.25,VIEW_W/2,VIEW_H/2,VIEW_H*0.72);
+    g.addColorStop(0,'rgba(255,59,59,0)');
+    g.addColorStop(1,'rgba(255,59,59,'+(t*0.28)+')');
+    ctx.fillStyle = g;
+    ctx.fillRect(0,0,VIEW_W,VIEW_H);
+    ctx.restore();
+  }
+}
+
+/* ============================================================
+   LEVEL EDITOR
+   ============================================================ */
+let editorLevelIdx = 1;
+let editorTool = 'ground';
+let editorPanDir = 0;
+let editorPainting = false;
+
+// ---- undo / redo history (per editing session, cleared when entering a level) ----
+let editorUndoStack = [];
+let editorRedoStack = [];
+const EDITOR_HISTORY_LIMIT = 60;
+
+function snapshotLevel(lvl){
+  return JSON.stringify({
+    cols: lvl.cols, rows: lvl.rows, grid: lvl.grid, trap: lvl.trap,
+    spawn: lvl.spawn, finish: lvl.finish, moving: lvl.moving||[], wind: lvl.wind||[],
+    rollers: lvl.rollers||[], pushboxes: lvl.pushboxes||[], pendulums: lvl.pendulums||[],
+    collapsers: lvl.collapsers||[], crushers: lvl.crushers||[],
+    arrows: (lvl.arrows||[]).map(a=>({r:a.r,c:a.c,dir:a.dir,interval:a.interval})),
+    pushcubeDir: lvl.pushcubeDir||{}
+  });
+}
+
+function restoreSnapshot(json){
+  const d = JSON.parse(json);
+  const lvl = curLevelData;
+  if (!lvl) return;
+  lvl.cols = d.cols; lvl.rows = d.rows; lvl.grid = d.grid; lvl.trap = d.trap;
+  lvl.spawn = d.spawn; lvl.finish = d.finish;
+  lvl.moving = d.moving; lvl.wind = d.wind; lvl.rollers = d.rollers;
+  lvl.pushboxes = d.pushboxes; lvl.pendulums = d.pendulums;
+  lvl.collapsers = d.collapsers; lvl.crushers = d.crushers;
+  lvl.arrows = d.arrows.map(a=>Object.assign({timer:0, projectiles:[]}, a));
+  lvl.pushcubeDir = d.pushcubeDir||{};
+  rebuildCrumbleState(lvl);
+  resetDynamicHazards(lvl);
+}
+
+function updateUndoRedoButtons(){
+  const u = document.getElementById('btnEditUndo');
+  const r = document.getElementById('btnEditRedo');
+  if (u) u.disabled = editorUndoStack.length===0;
+  if (r) r.disabled = editorRedoStack.length===0;
+}
+
+// Call this right before any editor mutation so it can be undone later.
+function pushUndoSnapshot(){
+  if (!curLevelData || state!=='editor') return;
+  editorUndoStack.push(snapshotLevel(curLevelData));
+  if (editorUndoStack.length>EDITOR_HISTORY_LIMIT) editorUndoStack.shift();
+  editorRedoStack = [];
+  updateUndoRedoButtons();
+}
+
+function editorUndo(){
+  if (editorUndoStack.length===0 || !curLevelData) return;
+  const cur = snapshotLevel(curLevelData);
+  const prev = editorUndoStack.pop();
+  editorRedoStack.push(cur);
+  restoreSnapshot(prev);
+  updateUndoRedoButtons();
+}
+
+function editorRedo(){
+  if (editorRedoStack.length===0 || !curLevelData) return;
+  const cur = snapshotLevel(curLevelData);
+  const next = editorRedoStack.pop();
+  editorUndoStack.push(cur);
+  restoreSnapshot(next);
+  updateUndoRedoButtons();
+}
+
+function drawEditorLevel(tMs){
+  const lvl = curLevelData;
+  if (!lvl) return;
+  const c0 = Math.max(0, Math.floor(camX/TILE)-1);
+  const c1 = Math.min(lvl.cols-1, Math.ceil((camX+VIEW_W)/TILE)+1);
+  ctx.save();
+  ctx.translate(-camX,-camY);
+  for(let r=0;r<lvl.rows;r++){
+    for(let c=c0;c<=c1;c++){
+      const t = lvl.grid[r][c];
+      const x=c*TILE, y=r*TILE;
+      if (t==='empty'){
+        ctx.strokeStyle='rgba(122,110,180,0.08)'; ctx.lineWidth=1;
+        ctx.strokeRect(x+0.5,y+0.5,TILE-1,TILE-1);
+        continue;
+      }
+      if (t==='ground'){
+        const isTrap = lvl.trap[r][c];
+        ctx.fillStyle = isTrap ? '#3a0f16' : '#1c1730';
+        ctx.fillRect(x,y,TILE,TILE);
+        ctx.strokeStyle = isTrap ? '#ff3b3b' : 'rgba(0,240,255,0.3)';
+        ctx.lineWidth=1;
+        ctx.strokeRect(x+0.5,y+0.5,TILE-1,TILE-1);
+        if (isTrap){
+          ctx.fillStyle='#ff8080'; ctx.font='11px monospace'; ctx.textAlign='center';
+          ctx.fillText('T', x+TILE/2, y+TILE/2+4);
+        }
+      } else if (t==='teleport'){
+        ctx.fillStyle = '#3a0f36';
+        ctx.fillRect(x,y,TILE,TILE);
+        ctx.strokeStyle = '#ff2e88'; ctx.lineWidth=1;
+        ctx.strokeRect(x+0.5,y+0.5,TILE-1,TILE-1);
+        ctx.fillStyle='#ff8ac6'; ctx.font='10px monospace'; ctx.textAlign='center';
+        ctx.fillText('TP', x+TILE/2, y+TILE/2+3);
+      } else if (t==='pushcube'){
+        const dir = (lvl.pushcubeDir && lvl.pushcubeDir[r+','+c]) || -1;
+        ctx.fillStyle = '#3a2a10';
+        ctx.fillRect(x,y,TILE,TILE);
+        ctx.strokeStyle = '#ffb800'; ctx.lineWidth=1;
+        ctx.strokeRect(x+0.5,y+0.5,TILE-1,TILE-1);
+        ctx.fillStyle='#ffb800'; ctx.font='9px monospace'; ctx.textAlign='center';
+        ctx.fillText(dir>0?'PUSH>':'<PUSH', x+TILE/2, y+TILE/2+3);
+      } else if (t==='spike'){
+        ctx.fillStyle='#ffb800'; ctx.fillRect(x+5,y+5,TILE-10,TILE-10);
+        ctx.strokeStyle='#ff3b3b'; ctx.strokeRect(x+5,y+5,TILE-10,TILE-10);
+      } else if (t==='crumble'){
+        ctx.fillStyle='#2a1f0f'; ctx.fillRect(x,y,TILE,TILE);
+        ctx.strokeStyle='#ffb800'; ctx.setLineDash([4,3]); ctx.strokeRect(x+1,y+1,TILE-2,TILE-2); ctx.setLineDash([]);
+      } else if (t==='bounce'){
+        ctx.fillStyle='#3a0f2a'; ctx.fillRect(x,y,TILE,TILE);
+        ctx.strokeStyle='#ff2e88'; ctx.strokeRect(x+1,y+1,TILE-2,TILE-2);
+      }
+    }
+  }
+  if (lvl.rollers){
+    for (const rb of lvl.rollers){
+      const ry = rb.row*TILE - rb.radius;
+      ctx.strokeStyle='rgba(255,184,0,0.5)'; ctx.lineWidth=2; ctx.setLineDash([5,4]);
+      ctx.beginPath(); ctx.moveTo(rb.x0,ry); ctx.lineTo(rb.x1,ry); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle='#8a3a10';
+      ctx.beginPath(); ctx.arc(rb.x,ry,rb.radius,0,Math.PI*2); ctx.fill();
+      ctx.strokeStyle='#ffb800'; ctx.lineWidth=2; ctx.stroke();
+      ctx.fillStyle='#ffb800'; ctx.font='9px monospace'; ctx.textAlign='center';
+      ctx.fillText('BALL', rb.x, ry-rb.radius-4);
+    }
+  }
+  if (lvl.pushboxes){
+    for (const pb of lvl.pushboxes){
+      const by = pb.row*TILE-pb.size;
+      ctx.strokeStyle='rgba(255,184,0,0.4)'; ctx.lineWidth=2; ctx.setLineDash([5,4]);
+      ctx.beginPath(); ctx.moveTo(pb.x0,by+pb.size/2); ctx.lineTo(pb.x1,by+pb.size/2); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle='#3a2410'; ctx.fillRect(pb.x-pb.size/2,by,pb.size,pb.size);
+      ctx.strokeStyle='#ffb800'; ctx.lineWidth=2; ctx.strokeRect(pb.x-pb.size/2,by,pb.size,pb.size);
+      ctx.fillStyle='#ffb800'; ctx.font='9px monospace'; ctx.textAlign='center';
+      ctx.fillText('PUSH', pb.x, by-4);
+    }
+  }
+  if (lvl.pendulums){
+    for (const pd of lvl.pendulums){
+      ctx.fillStyle='#3a0f2a';
+      ctx.beginPath(); ctx.arc(pd.anchorX,pd.anchorY,4,0,Math.PI*2); ctx.fill();
+      ctx.strokeStyle='rgba(255,46,136,0.6)'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(pd.anchorX,pd.anchorY); ctx.lineTo(pd.anchorX,pd.anchorY+pd.length); ctx.stroke();
+      ctx.fillStyle='#ff2e88'; ctx.font='9px monospace'; ctx.textAlign='center';
+      ctx.fillText('PENDULUM', pd.anchorX, pd.anchorY-6);
+    }
+  }
+  if (lvl.crushers){
+    for (const cr of lvl.crushers){
+      const top = cr.rowTop*TILE, h=(cr.rowBot-cr.rowTop+1)*TILE;
+      ctx.strokeStyle='rgba(255,59,59,0.5)'; ctx.lineWidth=2; ctx.setLineDash([5,4]);
+      ctx.strokeRect(cr.x0,top,cr.x1-cr.x0,h);
+      ctx.setLineDash([]);
+      ctx.fillStyle='#ff3b3b'; ctx.font='9px monospace'; ctx.textAlign='center';
+      const sides = cr.sides||'both';
+      const label = sides==='left' ? 'CRUSH \u00AB' : sides==='right' ? '\u00BB CRUSH' : 'CRUSH \u00AB\u00BB';
+      ctx.fillText(label, (cr.x0+cr.x1)/2, top-4);
+    }
+  }
+  if (lvl.collapsers){
+    for (const cp of lvl.collapsers){
+      const x=cp.c*TILE, y=cp.r*TILE;
+      ctx.fillStyle='#4a1414'; ctx.fillRect(x,y,TILE,TILE);
+      ctx.strokeStyle='#ff3b3b'; ctx.lineWidth=1; ctx.strokeRect(x+0.5,y+0.5,TILE-1,TILE-1);
+      ctx.fillStyle='#ffb800'; ctx.font='9px monospace'; ctx.textAlign='center';
+      ctx.fillText('FALL', x+TILE/2, y+TILE/2+3);
+    }
+  }
+  if (lvl.arrows){
+    for (const tu of lvl.arrows){
+      const x=tu.c*TILE, y=tu.r*TILE;
+      ctx.fillStyle='#2a1730'; ctx.fillRect(x,y,TILE,TILE);
+      ctx.strokeStyle='#ff2e88'; ctx.lineWidth=1; ctx.strokeRect(x+0.5,y+0.5,TILE-1,TILE-1);
+      ctx.fillStyle='#ff2e88'; ctx.font='9px monospace'; ctx.textAlign='center';
+      ctx.fillText((tu.dir||-1)>0?'ARR>':'<ARR', x+TILE/2, y+TILE/2+3);
+    }
+  }
+  if (lvl.spawn){
+    const sx=lvl.spawn.c*TILE, sy=lvl.spawn.r*TILE;
+    ctx.strokeStyle='#39ff88'; ctx.lineWidth=2; ctx.strokeRect(sx+2,sy+2,TILE-4,TILE*2-4);
+    ctx.fillStyle='#39ff88'; ctx.font='10px monospace'; ctx.textAlign='center';
+    ctx.fillText('SPAWN', sx+TILE/2, sy-4);
+  }
+  if (lvl.finish){
+    const fx=lvl.finish.c*TILE, fy=(lvl.finish.r+1)*TILE-TILE*2.2;
+    ctx.strokeStyle='#00f0ff'; ctx.lineWidth=2; ctx.strokeRect(fx+2,fy+2,TILE-4,TILE*2.2-4);
+    ctx.fillStyle='#00f0ff'; ctx.font='10px monospace'; ctx.textAlign='center';
+    ctx.fillText('FINISH', fx+TILE/2, fy-4);
+  }
+  ctx.restore();
+  ctx.fillStyle='rgba(232,230,240,0.45)'; ctx.font='9px monospace'; ctx.textAlign='left';
+  for(let c=c0;c<=c1;c+=5){ ctx.fillText(''+c, c*TILE-camX+3, 12); }
+}
+
+function applyEditorTool(r,c){
+  const lvl = curLevelData;
+  if (!lvl || r<0 || r>=lvl.rows || c<0 || c>=lvl.cols) return;
+  const key = r+','+c;
+  switch(editorTool){
+    case 'empty':
+      lvl.grid[r][c]='empty'; lvl.trap[r][c]=false;
+      if (lvl.pushcubeDir) delete lvl.pushcubeDir[key];
+      break;
+    case 'ground':
+      lvl.grid[r][c]='ground'; lvl.trap[r][c]=false;
+      if (lvl.pushcubeDir) delete lvl.pushcubeDir[key];
+      break;
+    case 'trap':
+      lvl.grid[r][c]='ground'; lvl.trap[r][c]=true;
+      if (lvl.pushcubeDir) delete lvl.pushcubeDir[key];
+      break;
+    case 'spike':
+      lvl.grid[r][c]='spike';
+      if (lvl.pushcubeDir) delete lvl.pushcubeDir[key];
+      break;
+    case 'crumble':
+      lvl.grid[r][c]='crumble'; lvl.trap[r][c]=false;
+      crumbleAlive[key] = {alive:true, timer:0};
+      if (lvl.pushcubeDir) delete lvl.pushcubeDir[key];
+      break;
+    case 'bounce':
+      lvl.grid[r][c]='bounce'; lvl.trap[r][c]=false;
+      if (lvl.pushcubeDir) delete lvl.pushcubeDir[key];
+      break;
+    case 'teleport':
+      lvl.grid[r][c]='teleport'; lvl.trap[r][c]=false;
+      if (lvl.pushcubeDir) delete lvl.pushcubeDir[key];
+      break;
+    case 'pushcube':
+      lvl.pushcubeDir = lvl.pushcubeDir || {};
+      if (lvl.grid[r][c]==='pushcube'){
+        // already a push cube here - tap again to flip which way it slides
+        lvl.pushcubeDir[key] = (lvl.pushcubeDir[key]===1) ? -1 : 1;
+      } else {
+        lvl.grid[r][c]='pushcube'; lvl.trap[r][c]=false;
+        lvl.pushcubeDir[key] = -1; // default: slide left
+      }
+      break;
+    case 'roller': toggleEditorRoller(lvl, r, c); break;
+    case 'pushbox': toggleEditorPushbox(lvl, r, c); break;
+    case 'pendulum': toggleEditorPendulum(lvl, r, c); break;
+    case 'crush': toggleEditorCrusher(lvl, r, c); break;
+    case 'collapse': toggleEditorCollapser(lvl, r, c); break;
+    case 'arrow': toggleEditorArrow(lvl, r, c); break;
+    case 'spawn': lvl.spawn = {c,r}; break;
+    case 'finish': lvl.finish = {c,r}; break;
+  }
+}
+
+function toggleEditorRoller(lvl, r, c){
+  lvl.rollers = lvl.rollers || [];
+  const clickX = c*TILE + TILE/2;
+  const existingIdx = lvl.rollers.findIndex(rb => rb.row===r && Math.abs(rb.x-clickX) < TILE*1.5);
+  if (existingIdx>=0){
+    lvl.rollers.splice(existingIdx,1);
+    return;
+  }
+  const rangeTiles = 3;
+  const x0 = Math.max(TILE, (c-rangeTiles)*TILE+10);
+  const x1 = Math.min((lvl.cols-1)*TILE-10, (c+rangeTiles)*TILE+TILE-10);
+  lvl.rollers.push({
+    row: r, x0, x1, x: clickX,
+    dir: Math.random()<0.5?-1:1,
+    speed: 0.1, radius: 15
+  });
+}
+
+function toggleEditorPushbox(lvl, r, c){
+  lvl.pushboxes = lvl.pushboxes || [];
+  const clickX = c*TILE + TILE/2;
+  const existingIdx = lvl.pushboxes.findIndex(pb => pb.row===r && Math.abs(pb.x-clickX) < TILE*1.5);
+  if (existingIdx>=0){ lvl.pushboxes.splice(existingIdx,1); return; }
+  const rangeTiles = 3;
+  const x0 = Math.max(TILE, (c-rangeTiles)*TILE+10);
+  const x1 = Math.min((lvl.cols-1)*TILE-10, (c+rangeTiles)*TILE+TILE-10);
+  lvl.pushboxes.push({ row:r, x0, x1, x:clickX, dir: Math.random()<0.5?-1:1, speed:0.09, size:30 });
+}
+
+function toggleEditorPendulum(lvl, r, c){
+  lvl.pendulums = lvl.pendulums || [];
+  const ax = c*TILE+TILE/2, ay = r*TILE;
+  const existingIdx = lvl.pendulums.findIndex(pd => Math.abs(pd.anchorX-ax)<TILE*0.6 && Math.abs(pd.anchorY-ay)<TILE*0.6);
+  if (existingIdx>=0){ lvl.pendulums.splice(existingIdx,1); return; }
+  lvl.pendulums.push({ anchorX:ax, anchorY:ay, length:TILE*3, ampDeg:45, speed:1.1, phase:Math.random()*6, radius:14 });
+}
+
+function toggleEditorCrusher(lvl, r, c){
+  lvl.crushers = lvl.crushers || [];
+  const existingIdx = lvl.crushers.findIndex(cr => r>=cr.rowTop-1 && r<=cr.rowBot+1 && c*TILE>=cr.x0-TILE && c*TILE<=cr.x1+TILE);
+  if (existingIdx>=0){
+    // cycle: both sides -> left only -> right only -> remove
+    const cr = lvl.crushers[existingIdx];
+    const order = ['both','left','right'];
+    const nextIdx = order.indexOf(cr.sides||'both')+1;
+    if (nextIdx < order.length){
+      cr.sides = order[nextIdx];
+    } else {
+      lvl.crushers.splice(existingIdx,1);
+    }
+    return;
+  }
+  const span = 3;
+  lvl.crushers.push({
+    x0: Math.max(0,(c-span)*TILE), x1: Math.min(lvl.cols*TILE,(c+span)*TILE),
+    rowTop: Math.max(0,r-1), rowBot: Math.min(lvl.rows-1,r+1),
+    wallW: TILE*0.8, period: 2600, phase: Math.random()*1000, sides:'both'
+  });
+}
+
+function toggleEditorCollapser(lvl, r, c){
+  lvl.collapsers = lvl.collapsers || [];
+  const existingIdx = lvl.collapsers.findIndex(cp => cp.r===r && cp.c===c);
+  if (existingIdx>=0){
+    lvl.collapsers.splice(existingIdx,1);
+    delete collapseState[r+','+c];
+    return;
+  }
+  lvl.collapsers.push({r,c});
+  collapseState[r+','+c] = {state:'idle', timer:0, y:r*TILE, vy:0};
+}
+
+function toggleEditorArrow(lvl, r, c){
+  lvl.arrows = lvl.arrows || [];
+  const existingIdx = lvl.arrows.findIndex(tu => tu.r===r && tu.c===c);
+  if (existingIdx>=0){ lvl.arrows.splice(existingIdx,1); return; }
+  lvl.arrows.push({r,c, dir:-1, interval:1800, timer:0, projectiles:[]});
+}
+
+function canvasEventToTile(e){
+  const rect = canvas.getBoundingClientRect();
+  const cx = e.touches ? e.touches[0].clientX : e.clientX;
+  const cy = e.touches ? e.touches[0].clientY : e.clientY;
+  const relX = (cx-rect.left)/rect.width*VIEW_W;
+  const relY = (cy-rect.top)/rect.height*VIEW_H;
+  const worldX = relX+camX;
+  return { r: Math.floor(relY/TILE), c: Math.floor(worldX/TILE) };
+}
+
+function flashButtonText(btn, text, revertText, ms){
+  const old = revertText!==undefined ? revertText : btn.textContent;
+  btn.textContent = text;
+  setTimeout(()=>{ btn.textContent = old; }, ms||1100);
+}
+
+function enterEditor(idx){
+  if (!isAdmin) return;
+  editorLevelIdx = idx;
+  curLevelData = LEVELS[idx-1];
+  if (!curLevelData.pushcubeDir) curLevelData.pushcubeDir = {};
+  if (!curLevelData.crushers) curLevelData.crushers = [];
+  rebuildCrumbleState(curLevelData);
+  resetDynamicHazards(curLevelData);
+  camX = 0; camY = 0;
+  state = 'editor';
+  hideAll();
+  setTouchControlsVisible(false);
+  editorToolbarEl.classList.remove('hidden');
+  editorBottomBarEl.classList.remove('hidden');
+  editorUndoStack = [];
+  editorRedoStack = [];
+  updateUndoRedoButtons();
+}
+
+function exitEditor(){
+  editorToolbarEl.classList.add('hidden');
+  editorBottomBarEl.classList.add('hidden');
+  buildLevelGrid();
+  showOnly('levels');
+  state = 'levels';
+}
+
+function extendLevelWidth(){
+  const lvl = curLevelData;
+  if (!lvl) return;
+  pushUndoSnapshot();
+  for(let r=0;r<lvl.rows;r++){
+    for(let i=0;i<10;i++){ lvl.grid[r].push('empty'); lvl.trap[r].push(false); }
+  }
+  lvl.cols += 10;
+}
+
+function addNewLevel(){
+  TOTAL_LEVELS++;
+  const idx = TOTAL_LEVELS;
+  LEVELS.push(generateLevel(idx));
+  updateHud();
+  buildLevelGrid();
+  return idx;
+}
+
+async function saveEditorLevel(){
+  const btn = document.getElementById('btnEditSave');
+  const lvl = curLevelData;
+  if (!lvl) return;
+  const data = {
+    cols: lvl.cols, rows: lvl.rows, grid: lvl.grid, trap: lvl.trap,
+    spawn: lvl.spawn, finish: lvl.finish, moving: lvl.moving||[], wind: lvl.wind||[], rollers: lvl.rollers||[],
+    pushboxes: lvl.pushboxes||[], pendulums: lvl.pendulums||[], collapsers: lvl.collapsers||[],
+    crushers: lvl.crushers||[], arrows: (lvl.arrows||[]).map(a=>({r:a.r,c:a.c,dir:a.dir,interval:a.interval})),
+    pushcubeDir: lvl.pushcubeDir||{}
+  };
+  try{
+    const saved = await gameStorage.set('customLevel:'+editorLevelIdx, JSON.stringify(data), false);
+    if (!saved) throw new Error('save failed');
+    LEVELS[editorLevelIdx-1] = Object.assign({index:editorLevelIdx, name:'SECTOR '+String(editorLevelIdx).padStart(2,'0'), custom:true}, data);
+    LEVELS[editorLevelIdx-1].arrows.forEach(a=>{ a.timer=0; a.projectiles=[]; });
+    curLevelData = LEVELS[editorLevelIdx-1];
+    flashButtonText(btn, 'SAVED ✓', '💾 SAVE');
+  }catch(err){
+    flashButtonText(btn, 'SAVE FAILED', '💾 SAVE');
+  }
+}
+
+async function resetEditorLevel(){
+  const btn = document.getElementById('btnEditReset');
+  pushUndoSnapshot();
+  LEVELS[editorLevelIdx-1] = generateLevel(editorLevelIdx);
+  curLevelData = LEVELS[editorLevelIdx-1];
+  rebuildCrumbleState(curLevelData);
+  resetDynamicHazards(curLevelData);
+  camX = 0; camY = 0;
+  try{ await gameStorage.delete('customLevel:'+editorLevelIdx, false); }catch(e){}
+  flashButtonText(btn, 'RESET ✓', '↺ RESET');
+}
+
+canvas.addEventListener('mousedown', e=>{
+  if (state!=='editor') return;
+  editorPainting = editorTool!=='roller' && editorTool!=='pushbox' && editorTool!=='pendulum' && editorTool!=='crush' && editorTool!=='collapse' && editorTool!=='arrow';
+  pushUndoSnapshot();
+  const {r,c} = canvasEventToTile(e);
+  applyEditorTool(r,c);
+});
+canvas.addEventListener('mousemove', e=>{
+  if (state!=='editor' || !editorPainting) return;
+  const {r,c} = canvasEventToTile(e);
+  applyEditorTool(r,c);
+});
+window.addEventListener('mouseup', ()=>{ editorPainting=false; });
+canvas.addEventListener('touchstart', e=>{
+  if (state!=='editor') return;
+  e.preventDefault();
+  editorPainting = editorTool!=='roller' && editorTool!=='pushbox' && editorTool!=='pendulum' && editorTool!=='crush' && editorTool!=='collapse' && editorTool!=='arrow';
+  pushUndoSnapshot();
+  const {r,c} = canvasEventToTile(e);
+  applyEditorTool(r,c);
+}, {passive:false});
+canvas.addEventListener('touchmove', e=>{
+  if (state!=='editor' || !editorPainting) return;
+  e.preventDefault();
+  const {r,c} = canvasEventToTile(e);
+  applyEditorTool(r,c);
+}, {passive:false});
+canvas.addEventListener('touchend', e=>{ e.preventDefault(); editorPainting=false; }, {passive:false});
+
+document.querySelectorAll('.paletteBtn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    editorTool = btn.dataset.tool;
+    document.querySelectorAll('.paletteBtn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+/* ============================================================
+   MAIN LOOP
+   ============================================================ */
+function loop(t){
+  if (!lastTime) lastTime=t;
+  const dt = Math.min(40, t-lastTime);
+  lastTime = t;
+  elapsedMs += dt;
+  // Cheap every-frame self-check: if the canvas's on-screen container box
+  // has changed size (or was wrong to begin with - e.g. measured before the
+  // embedding page/iframe finished settling), fix it immediately. This is
+  // far more reliable than depending on resize/orientationchange events,
+  // which don't always fire when this game is embedded in another site.
+  applyRotateWrapperSize();
+  resizeCanvas();
+  update(dt, elapsedMs);
+  draw(elapsedMs);
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+/* ============================================================
+   INPUT
+   ============================================================ */
+window.addEventListener('keydown', e=>{
+  if (['ArrowLeft','a','A'].includes(e.key)) keys.left=true;
+  if (['ArrowRight','d','D'].includes(e.key)) keys.right=true;
+  if ([' ','ArrowUp','w','W'].includes(e.key)){
+    if (!keys.jump) keys.jumpPressed=true;
+    keys.jump=true;
+    e.preventDefault();
+  }
+  if (e.key==='p'||e.key==='P'||e.key==='Escape') togglePause();
+  if (e.key==='r'||e.key==='R') { if(state==='playing'||state==='dead') restartLevel(); }
+  if (state==='editor' && (e.ctrlKey||e.metaKey) && (e.key==='z'||e.key==='Z')){
+    e.preventDefault();
+    if (e.shiftKey) editorRedo(); else editorUndo();
+  }
+  if (state==='editor' && (e.ctrlKey||e.metaKey) && (e.key==='y'||e.key==='Y')){
+    e.preventDefault();
+    editorRedo();
+  }
+});
+window.addEventListener('keyup', e=>{
+  if (['ArrowLeft','a','A'].includes(e.key)) keys.left=false;
+  if (['ArrowRight','d','D'].includes(e.key)) keys.right=false;
+  if ([' ','ArrowUp','w','W'].includes(e.key)) keys.jump=false;
+});
+
+function bindHold(el, onDown, onUp){
+  el.addEventListener('touchstart', e=>{e.preventDefault(); onDown();}, {passive:false});
+  el.addEventListener('touchend', e=>{e.preventDefault(); onUp();}, {passive:false});
+  el.addEventListener('mousedown', e=>{e.preventDefault(); onDown();});
+  el.addEventListener('mouseup', e=>{e.preventDefault(); onUp();});
+  el.addEventListener('mouseleave', ()=>onUp());
+}
+bindHold(document.getElementById('btnLeft'), ()=>keys.left=true, ()=>keys.left=false);
+bindHold(document.getElementById('btnRight'), ()=>keys.right=true, ()=>keys.right=false);
+bindHold(document.getElementById('jumpBtn'),
+  ()=>{ if(!keys.jump) keys.jumpPressed=true; keys.jump=true; },
+  ()=>keys.jump=false);
+bindHold(document.getElementById('btnEditPanLeft'), ()=>editorPanDir=-1, ()=>{ if(editorPanDir===-1) editorPanDir=0; });
+bindHold(document.getElementById('btnEditPanRight'), ()=>editorPanDir=1, ()=>{ if(editorPanDir===1) editorPanDir=0; });
+
+/* ============================================================
+   ADMIN GATE
+   Level editing is hidden from regular players. Tap the "GLITCH//WALKER"
+   logo 5 times quickly (or press Ctrl+Shift+E) to be prompted for the
+   admin code. This only hides the feature from casual players in the UI -
+   it is not real security, since anyone who inspects this file's source
+   can read ADMIN_CODE. For real access control this would need a server
+   and a login, not a client-side password.
+   ============================================================ */
+let isAdmin = false;
+const ADMIN_CODE = '2006'; // change this to whatever code you want
+
+async function tryUnlockAdmin(){
+  if (isAdmin){ return; }
+  const code = await gamePrompt('Admin code:');
+  if (code === null) return;
+  if (code === ADMIN_CODE){
+    isAdmin = true;
+    document.getElementById('btnEditToggle').classList.remove('hidden');
+    await gameAlert('Admin mode unlocked. "EDIT MODE" is now visible on the level select screen.');
+  } else {
+    await gameAlert('Incorrect code.');
+  }
+}
+
+(function setupAdminTapGate(){
+  const brand = document.getElementById('brandLogo');
+  let taps = 0, resetTimer = null;
+  brand.addEventListener('click', ()=>{
+    taps++;
+    clearTimeout(resetTimer);
+    resetTimer = setTimeout(()=>{ taps = 0; }, 2200);
+    if (taps>=5){
+      taps = 0;
+      tryUnlockAdmin();
+    }
+  });
+})();
+window.addEventListener('keydown', e=>{
+  if (e.ctrlKey && e.shiftKey && (e.key==='E'||e.key==='e')){
+    e.preventDefault();
+    tryUnlockAdmin();
+  }
+});
+
+/* ============================================================
+   UI WIRING
+   ============================================================ */
+let levelSelectEditMode = false;
+
+function buildLevelGrid(){
+  const g = document.getElementById('levelGrid');
+  g.innerHTML='';
+  for(let i=1;i<=TOTAL_LEVELS;i++){
+    const b = document.createElement('button');
+    const locked = i>unlockedLevel && !levelSelectEditMode;
+    const isCustom = LEVELS[i-1] && LEVELS[i-1].custom;
+    b.className = 'lvlBtn'
+      +(locked?' locked':'')
+      +(!locked && i<unlockedLevel?' done':'')
+      +(i===curLevelIdx?' current':'')
+      +(levelSelectEditMode?' editing':'');
+    b.textContent = locked ? '🔒' : (isCustom ? i+'✎' : i);
+    b.disabled = locked;
+    b.addEventListener('click', ()=>{
+      if (levelSelectEditMode) enterEditor(i);
+      else loadLevel(i);
+    });
+    g.appendChild(b);
+  }
+}
+
+function togglePause(){
+  if (state==='playing'){ state='paused'; showOnly('pause'); setTouchControlsVisible(false); }
+  else if (state==='paused'){ state='playing'; hideAll(); setTouchControlsVisible(true); }
+}
+function restartLevel(){ loadLevel(curLevelIdx); }
+
+document.getElementById('btnStart').onclick = ()=>{ loadLevel(unlockedLevel); };
+document.getElementById('btnLevels').onclick = ()=>{ tryLockLandscape(); setTouchControlsVisible(false); buildLevelGrid(); showOnly('levels'); state='levels'; };
+document.getElementById('btnBackMenu').onclick = ()=>{ showOnly('menu'); state='menu'; };
+document.getElementById('btnPause').onclick = togglePause;
+document.getElementById('btnResume').onclick = togglePause;
+document.getElementById('btnRestartLevel').onclick = ()=>{ restartLevel(); };
+document.getElementById('btnQuitMenu').onclick = ()=>{ showOnly('menu'); state='menu'; setTouchControlsVisible(false); };
+document.getElementById('btnNextLevel').onclick = ()=>{ loadLevel(Math.min(TOTAL_LEVELS,curLevelIdx+1)); };
+document.getElementById('btnReplayLevel').onclick = ()=>{ restartLevel(); };
+document.getElementById('btnCompleteMenu').onclick = ()=>{ showOnly('menu'); state='menu'; setTouchControlsVisible(false); updateStartButtonLabel(); };
+document.getElementById('btnWinMenu').onclick = ()=>{ showOnly('menu'); state='menu'; setTouchControlsVisible(false); updateStartButtonLabel(); };
+document.getElementById('btnMute').onclick = (e)=>{ muted=!muted; e.target.textContent = muted?'🔇':'♪'; };
+
+document.getElementById('btnEditToggle').onclick = (e)=>{
+  levelSelectEditMode = !levelSelectEditMode;
+  e.target.textContent = '✎ EDIT MODE: '+(levelSelectEditMode?'ON':'OFF');
+  document.getElementById('editHint').style.display = levelSelectEditMode ? 'block':'none';
+  document.getElementById('backupRow').style.display = levelSelectEditMode ? 'flex':'none';
+  buildLevelGrid();
+};
+
+/* ============================================================
+   BACKUP: export/import all custom levels as a JSON file, independent
+   of gameStorage - so custom levels survive being moved, storage being
+   cleared, or new levels being added later.
+   ============================================================ */
+function exportAllCustomLevels(){
+  const out = {};
+  for(let i=1;i<=TOTAL_LEVELS;i++){
+    const lvl = LEVELS[i-1];
+    if (lvl && lvl.custom){
+      out['customLevel:'+i] = {
+        cols: lvl.cols, rows: lvl.rows, grid: lvl.grid, trap: lvl.trap,
+        spawn: lvl.spawn, finish: lvl.finish, moving: lvl.moving||[], wind: lvl.wind||[], rollers: lvl.rollers||[],
+        pushboxes: lvl.pushboxes||[], pendulums: lvl.pendulums||[], collapsers: lvl.collapsers||[],
+        crushers: lvl.crushers||[], arrows: (lvl.arrows||[]).map(a=>({r:a.r,c:a.c,dir:a.dir,interval:a.interval})),
+        pushcubeDir: lvl.pushcubeDir||{}
+      };
+    }
+  }
+  if (Object.keys(out).length===0){ gameAlert('No custom levels to export yet.'); return; }
+  const blob = new Blob([JSON.stringify(out, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'glitchwalker-levels-backup.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+async function importCustomLevelsFromFile(file){
+  try{
+    const text = await file.text();
+    const data = JSON.parse(text);
+    let count = 0;
+    for(const key in data){
+      const idx = parseInt(key.split(':')[1], 10);
+      if (!(idx>=1)) continue;
+      const d = data[key];
+      if (!d || !d.grid) continue;
+      if (idx>TOTAL_LEVELS) TOTAL_LEVELS = idx;
+      while (LEVELS.length<idx) LEVELS.push(generateLevel(LEVELS.length+1));
+      LEVELS[idx-1] = Object.assign(
+        {index:idx, name:'SECTOR '+String(idx).padStart(2,'0'), custom:true},
+        {cols:d.cols, rows:d.rows||ROWS, grid:d.grid, trap:d.trap, spawn:d.spawn, finish:d.finish,
+         moving:d.moving||[], wind:d.wind||[], rollers:d.rollers||[],
+         pushboxes:d.pushboxes||[], pendulums:d.pendulums||[], collapsers:d.collapsers||[],
+         crushers:d.crushers||[], arrows:(d.arrows||[]).map(a=>({r:a.r,c:a.c,dir:a.dir,interval:a.interval,timer:0,projectiles:[]})),
+         pushcubeDir:d.pushcubeDir||{}}
+      );
+      try{ await gameStorage.set(key, JSON.stringify(d), false); }catch(e){}
+      count++;
+    }
+    updateHud();
+    await gameAlert('Imported '+count+' level(s).');
+    buildLevelGrid();
+  }catch(err){
+    await gameAlert('Import failed - not a valid backup file.');
+  }
+}
+
+document.getElementById('btnExportLevels').onclick = exportAllCustomLevels;
+document.getElementById('btnImportLevels').onclick = ()=>{ document.getElementById('importFileInput').click(); };
+document.getElementById('importFileInput').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if (file) importCustomLevelsFromFile(file);
+  e.target.value = '';
+});
+document.getElementById('btnEditWidth').onclick = extendLevelWidth;
+document.getElementById('btnAddLevel').onclick = ()=>{ const idx=addNewLevel(); gameAlert('Added SECTOR '+String(idx).padStart(2,'0')+'. Tap it below to open it in the editor.'); };
+document.getElementById('btnEditPlaytest').onclick = ()=>{ loadLevel(editorLevelIdx); };
+document.getElementById('btnEditReset').onclick = resetEditorLevel;
+document.getElementById('btnEditSave').onclick = saveEditorLevel;
+document.getElementById('btnEditExit').onclick = exitEditor;
+document.getElementById('btnEditUndo').onclick = editorUndo;
+document.getElementById('btnEditRedo').onclick = editorRedo;
+
+applyRotateWrapperSize();
+resizeCanvas();
+setTouchControlsVisible(false);
+showOnly('menu');
+loadAllCustomLevels();
+loadProgress();
+})();
+</script>
+
+</body></html>

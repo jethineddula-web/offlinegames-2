@@ -1,0 +1,48 @@
+PIANO WORLD - SAME-FOLDER BACKGROUND MUSIC
+
+Place these six MP3 files in the SAME folder as piano-world.js and
+piano-world.html (or index.html). Do not create an audio/ subfolder.
+
+  ordinary.mp3    -> Sunny Meadows
+  midnight.mp3    -> Midnight City
+  tokyo.mp3       -> Neon Tokyo
+  phonk-gym.mp3   -> Inferno Gym
+  villain.mp3     -> Villain Castle
+  showtime.mp3    -> Showtime Streets
+
+Suggested folder layout:
+
+  piano-world.html
+  piano-world.css
+  piano-world.js
+  sw.js
+  ordinary.mp3
+  midnight.mp3
+  tokyo.mp3
+  phonk-gym.mp3
+  villain.mp3
+  showtime.mp3
+  images/
+
+In this source project, put the MP3s directly in public/.
+
+Use the exact lower-case filenames, including .mp3. Changing a file's
+extension does not convert it to MP3. If your files use M4A, OGG or WAV,
+change CONFIG.audioSources in piano-world.js and the SONGS list in sw.js.
+
+The music plays at normal speed and loops throughout each endless run.
+The tiles move faster, not the audio. There are no generated substitutes.
+Missing files can be added later; the game also offers Play without music.
+
+Tiles fall at double speed. Missing a tile or tapping a lane with no tile
+costs a heart (after the first 10 seconds). A run continues until all 3 rhythm hearts are lost,
+and allows unlimited free new runs. There is no song-length timeout or
+five-play energy limit. A rewarded ad may revive the current run, but is
+not required to start a new one.
+
+Hosted offline playback requires one online visit and successful caching
+of the game and actual MP3 files. Browser storage limits can affect caching.
+Ads require an internet connection. Local audio selection in Settings
+also works without the network, but only lasts for that session.
+
+The recordings are not included. Add audio you own or have permission to use.

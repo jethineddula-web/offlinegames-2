@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<!-- ===================== SEO META TAGS ===================== -->
+<title>Puzzle Break – 50 Free Online Jigsaw Puzzles | Offline Games</title>
+<meta name="description" content="Play Puzzle Break free online — memorize the picture, then rebuild it piece by piece across 50 jigsaw levels. No download, no signup, play instantly in your browser.">
+<meta name="keywords" content="puzzle break, jigsaw puzzle game, free online jigsaw, memory puzzle game, free online game, browser game, offline games, offlinegames.art, no download game, brain game">
+<meta name="author" content="Offline Games">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://offlinegames.art/games/puzzle-break/">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Offline Games">
+<meta property="og:title" content="Puzzle Break – 50 Free Online Jigsaw Puzzles">
+<meta property="og:description" content="Memorize the picture, then rebuild it piece by piece across 50 jigsaw levels. Fast-loading, no download or signup required.">
+<meta property="og:url" content="https://offlinegames.art/games/puzzle-break/">
+<meta property="og:image" content="https://offlinegames.art/assets/puzzle-break/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Puzzle Break – 50 Free Online Jigsaw Puzzles">
+<meta name="twitter:description" content="Memorize the picture, then rebuild it piece by piece across 50 jigsaw levels. Play instantly in your browser.">
+<meta name="twitter:image" content="https://offlinegames.art/assets/puzzle-break/og-image.png">
+
+<!-- Structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "Puzzle Break",
+  "url": "https://offlinegames.art/games/puzzle-break/",
+  "description": "Memorize a picture, then rebuild it piece by piece across 50 jigsaw puzzle levels.",
+  "applicationCategory": "Game",
+  "genre": ["Puzzle", "Brain", "Casual"],
+  "operatingSystem": "Any (Web Browser)",
+  "publisher": { "@type": "Organization", "name": "Offline Games", "url": "https://offlinegames.art" },
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
+<!-- =================== END SEO META TAGS =================== -->
+
+<meta name="theme-color" content="#14161c">
+<meta name="application-name" content="Puzzle Break">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧩</text></svg>">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="bg"></div>
+
+<!-- =================== TITLE SCREEN =================== -->
+<section id="screen-title" class="screen active">
+  <div id="float-layer"></div>
+  <div class="title-box">
+    <div class="logo"><span class="logo-emoji">🧩</span><div class="logo-text"><h1>PUZZLE&nbsp;BREAK</h1><p>50 jigsaw adventures</p></div></div>
+    <button id="btn-play" class="btn btn-primary big">▶&nbsp; Play</button>
+    <button id="btn-levels" class="btn big">🗺&nbsp; Level Select</button>
+    <button id="btn-sound-title" class="btn">🔊&nbsp; Sound: On</button>
+    <p class="tip">👀 Watch the picture for 2 seconds — then it shatters!<br>Rebuild it piece by piece 🧩✨</p>
+  </div>
+</section>
+
+<!-- =================== LEVEL SELECT =================== -->
+<section id="screen-levels" class="screen">
+  <div class="panel">
+    <div class="panel-head">
+      <button id="btn-back-title" class="btn small">◀ Back</button>
+      <h2>Level Select</h2>
+      <div class="stars-total" id="stars-total"></div>
+    </div>
+    <div id="level-grid" class="level-grid"></div>
+    <div id="ad-slot-levels" class="ad-slot"></div>
+  </div>
+</section>
+
+<!-- =================== GAME =================== -->
+<section id="screen-game" class="screen">
+  <div class="hud">
+    <div class="hud-left">
+      <button id="btn-back-levels" class="btn tiny" title="Back to levels">◀</button>
+      <div class="chip big">Lv <b id="hud-level">1</b></div>
+      <div class="chip" id="hud-theme"></div>
+    </div>
+    <div class="hud-center">
+      <div class="chip">🎯 <b id="hud-moves">0</b></div>
+      <div class="chip">⏱ <b id="hud-time">0:00</b></div>
+      <div class="chip" id="hud-progress">🧩 0/4</div>
+    </div>
+    <div class="hud-right">
+      <button id="btn-ref" class="btn tiny" title="Guide picture">🖼</button>
+      <button id="btn-hint" class="btn tiny" title="Hint (1 per level)">💡</button>
+      <button id="btn-sound-game" class="btn tiny" title="Sound">🔊</button>
+    </div>
+  </div>
+
+  <div id="game">
+    <div id="spacer"></div>
+
+    <div id="tray">
+      <div class="tray-title">Your Pieces <span id="tray-count">· 0/4</span></div>
+      <div id="tray-area"></div>
+    </div>
+
+    <div id="board-frame">
+      <div id="slots-layer"></div>
+      <div id="flash"></div>
+    </div>
+
+    <div id="peek-img"></div>
+    <div id="ref-img"></div>
+    <div id="memorize-label">👀 Memorize!</div>
+    <div id="memorize-bar"><div></div></div>
+    <div id="pieces-layer"></div>
+  </div>
+
+  <div id="complete-panel" class="overlay">
+    <div class="panel pop">
+      <div class="big-emoji">🎉</div>
+      <h2 id="complete-title">Level Complete!</h2>
+      <div class="stars" id="complete-stars"></div>
+      <div class="stats">
+        <div class="stat"><span>🎯 Moves</span><b id="stat-moves">0</b></div>
+        <div class="stat"><span>⏱ Time</span><b id="stat-time">0:00</b></div>
+        <div class="stat"><span>🧩 Pieces</span><b id="stat-pieces">0</b></div>
+      </div>
+      <div id="new-best" class="new-best">⭐ NEW BEST! ⭐</div>
+      <div class="btns">
+        <button id="btn-replay" class="btn">🔁 Replay</button>
+        <button id="btn-next" class="btn btn-primary">▶ Next Level</button>
+      </div>
+      <button id="btn-to-levels" class="btn small ghost">🗺 All Levels</button>
+    </div>
+  </div>
+</section>
+
+<canvas id="fx"></canvas>
+
+<script src="images.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

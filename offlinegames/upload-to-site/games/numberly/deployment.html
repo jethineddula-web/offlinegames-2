@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#f7f8f2">
+  <title>Numberly | HTML, CSS &amp; JavaScript Deployment</title>
+  <link rel="stylesheet" href="./styles.css">
+  <style>
+    .guide { max-width: 820px; margin: 0 auto; padding: 52px 24px 70px; }
+    .guide h1 { font-family: var(--font-display); font-size: clamp(34px, 7vw, 48px); letter-spacing: -1.8px; line-height: 1.12; margin: 25px 0 15px; }
+    .guide h2 { font-family: var(--font-display); font-size: 24px; font-weight: 550; margin: 35px 0 12px; letter-spacing: -.5px; }
+    .guide p, .guide li { font-size: 14px; line-height: 1.85; color: #6f7d63; }
+    .guide ul, .guide ol { padding-left: 20px; }
+    .guide li { margin: 8px 0; }
+    .guide code { background: #eaf0e2; border-radius: 4px; padding: 3px 5px; color: #4f683e; overflow-wrap: anywhere; font-size: 12px; }
+    .guide pre { padding: 15px 18px; background: #edf2e6; overflow-x: auto; border-radius: 9px; }
+    .guide a { text-decoration: underline; text-underline-offset: 3px; }
+    .guide .eyebrow { justify-content: start; }
+    .file-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px 24px; padding: 16px 0; }
+    .file-list a { padding: 10px 0; border-bottom: 1px solid #dce4d2; font-size: 13px; color: #617c4b; }
+    .guide aside { padding: 15px 0; border-top: 1px solid #dce4d2; border-bottom: 1px solid #dce4d2; margin: 24px 0; }
+  </style>
+</head>
+<body>
+  <main class="guide">
+    <div class="eyebrow">NUMBERLY / DEPLOYMENT</div>
+    <h1>Just HTML, CSS<br>and JavaScript.</h1>
+    <p>The complete game in this folder is standalone. There is no React, JSX, TypeScript, package manifest, dependency installation, or build step required to publish it.</p>
+    <p><a href="./index.html">Play Numberly</a> &nbsp; / &nbsp; <a href="./tests.html">Open the regression checks</a></p>
+
+    <h2>Publish The Game</h2>
+    <ol>
+      <li>Upload this folder's contents to <code>https://offlinegames.art/numberly/</code>. Keep the relative file names together.</li>
+      <li>Open <code>index.html</code>. You can also open it directly from your computer for basic play. HTTPS or localhost is needed for service workers and portrait/fullscreen APIs.</li>
+      <li>Serve <code>.js</code> as <code>text/javascript</code> and <code>.css</code> as <code>text/css</code>. Your host normally does this automatically.</li>
+      <li>If you use a different URL, update the canonical and sharing URLs in <code>index.html</code> and your website's sitemap.</li>
+      <li>For future updates, bump <code>VERSION</code> in <code>resources.js</code> so the service worker installs a fresh offline cache.</li>
+    </ol>
+    <aside><p><strong>Preview-only files:</strong> The surrounding development workspace still has the React/Vite entry and configuration required by its preview environment, including <code>src/App.tsx</code> and <code>package.json</code>. Do not upload that scaffold. Upload only this standalone folder, which contains exclusively <code>.html</code>, <code>.css</code>, and <code>.js</code> files.</p></aside>
+
+    <h2>Files</h2>
+    <div class="file-list">
+      <a href="./index.html" download>index.html / Complete page</a>
+      <a href="./styles.css" download>styles.css / All styling</a>
+      <a href="./game.js" download>game.js / Game controller</a>
+      <a href="./levels.js" download>levels.js / 200 puzzles</a>
+      <a href="./board.js" download>board.js / Touch and drawing</a>
+      <a href="./ui.js" download>ui.js / Dialogs and icons</a>
+      <a href="./clock.js" download>clock.js / Pause-safe timer</a>
+      <a href="./storage.js" download>storage.js / Saved progress</a>
+      <a href="./audio.js" download>audio.js / Music and effects</a>
+      <a href="./ads.js" download>ads.js / Ad placements</a>
+      <a href="./platform.js" download>platform.js / Mobile support</a>
+      <a href="./resources.js" download>resources.js / Embedded metadata</a>
+      <a href="./sw.js" download>sw.js / Offline caching</a>
+      <a href="./server.js" download>server.js / Optional local server</a>
+      <a href="./tests.html" download>tests.html / Test page</a>
+      <a href="./tests.js" download>tests.js / Regression tests</a>
+      <a href="./deployment.html" download>deployment.html / This guide</a>
+    </div>
+
+    <h2>Ads And Required URLs</h2>
+    <p>The ad client is <code>ca-pub-4203857211510947</code> and the web banner slot is <code>7417753724</code>. Interstitials are requested after every two completed rounds, with a two-minute cooldown and provider frequency limits. Ads are never simulated. Bonus gems are awarded only from the provider's completed-view callback and at most once per round.</p>
+    <p><strong>Persistent bottom banner:</strong> The dark ad area stays at the bottom during play, pause, and level transitions. The game scrolls in a separate area above it, so the board, controls, dialogs, and notifications do not sit beneath the banner. Preview and offline modes show clearly labeled placeholder text, never a simulated paid ad.</p>
+    <p>Live bottom ads use Google's official anchor format. The loader in <code>ads.js</code> sets <code>data-overlays="collapsed-bottom"</code>, Google's documented option for regular bottom-only anchors on desktop and mobile. The normal banner slot remains in configuration for non-sticky placements; it is not forced into a sticky mobile container or requested alongside the anchor. Anchors use the publisher account rather than a slot ID.</p>
+    <p>Publish <code>index.html</code> directly as the game page, not inside another site's iframe, for Auto ads eligibility. Confirm the site is approved in AdSense and review <strong>Ads &gt; By site &gt; Edit &gt; Overlay formats &gt; Anchor ads</strong>. Use the hosting site's required consent configuration before loading Google ads. Google's own ad controls, dismissal, and frequency decisions remain intact.</p>
+    <p>The dock remains visible, but uninterrupted live inventory, autoplay video, or a new ad every few seconds cannot be guaranteed. There are no timer-driven banner refreshes and no automatic re-requests on restart or level changes. Google's creative controls any animation; the game does not fabricate playback. See <a href="https://support.google.com/adsense/answer/7478225" target="_blank" rel="noreferrer">Google's bottom-anchor documentation</a> and <a href="https://support.google.com/adsense/answer/1346295" target="_blank" rel="noreferrer">ad placement policies</a>.</p>
+    <p>Ads request live inventory only on <code>offlinegames.art</code> or its subdomains. The domain and account need Google approval and H5 Games Ads access. Ads may be unavailable. Use your website's Google-certified CMP wherever legally required; an informational game dialog does not replace consent collection.</p>
+    <p><strong>Important:</strong> Google's authorized-seller endpoint must still be named <code>/ads.txt</code>. Renaming it to <code>ads.html</code> would break its purpose. No physical TXT file is included here. Add this line to your site's existing root ads.txt, or use a server route returning this plain-text content:</p>
+    <pre><code>google.com, pub-4203857211510947, DIRECT, f08c47fec0942fa0</code></pre>
+    <p>The optional <code>server.js</code> provides that URL dynamically from JavaScript without a TXT file. Do not overwrite an existing website's seller list. A browser service worker alone cannot provide ads.txt to Google's crawler.</p>
+    <p>Opening the game in a phone browser uses web ads. Native AdMob requires an actual app wrapper with a configured Google Mobile Ads SDK, app IDs, web-view integration, and consent handling. The native interstitial ID supplied was <code>ca-app-pub-4203857211510947/3025427580</code>, and the native banner ID was <code>ca-app-pub-4203857211510947/8086182570</code>. They are not web ad slots and cannot be activated by changing a file extension.</p>
+
+    <h2>Offline And Portrait Mode</h2>
+    <p>The game caches its HTML, CSS, and JavaScript after the first successful online visit. The PWA manifest is generated by the service worker; icons are drawn and cached from JavaScript. This avoids physical JSON, WEBMANIFEST, SVG, and PNG files. Installability still depends on your browser and its service-worker support.</p>
+    <p>The original fonts are optional CDN resources referenced from CSS. If the CDN is unreachable, system fonts are used. Music, effects, puzzles, and game logic work without external libraries. Ads need an internet connection.</p>
+    <p>Portrait fullscreen is requested on the phone's start gesture. The browser and OS can refuse rotation locking, especially on iOS Safari. The responsive landscape fallback remains available. A web game cannot force the device's orientation against all OS and browser restrictions.</p>
+
+    <h2>Progress And Game Rules</h2>
+    <p>The original <code>numberly.progress.v1</code> storage key is preserved, so gems, completed levels, preferences, and local high scores remain available on the same browser origin. Moving to another domain or port, clearing browser data, or blocking storage affects access to saves.</p>
+    <p>Connect all numbers in order. Reach the final number to win; empty squares are allowed. All 200 generated puzzles keep a valid reference solution. Undo is free, hints cost 5 gems, and timed mode adds a countdown and 20% score bonus.</p>
+
+    <h2>Local Server And Checks</h2>
+    <p>The optional Node.js server uses built-in modules only. No packages are required.</p>
+    <pre><code>node server.js</code></pre>
+    <p>Open <code>http://localhost:8080/</code>. To run the pure JavaScript regression checks with Node.js instead of the browser:</p>
+    <pre><code>node tests.js</code></pre>
+    <p>The checks replay all 200 solutions, validate shorter paths, checkpoint ordering, backtracking, boundaries, and pause/resume timing. The separate browser smoke checks exercise real buttons and pointer input. Live ads, browser installation, orientation locking, and real-device frame rates need testing in their actual environments.</p>
+  </main>
+</body>
+</html>

@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>  Guess the Country</title>
+<meta name="description" content="Guess the Countries with emojis.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500..900&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<!-- ============================================================
+     ADSENSE — placeholder banner creative only.
+     Swap AD_CLIENT / AD_SLOT below if they change.
+     NOTE: a real "watch an ad to unlock a hint" flow needs a proper
+     REWARDED ad unit (AdMob rewarded for a wrapped app, or an
+     AdSense/ad-network rewarded web unit) — this page shows the
+     supplied banner creative during the hint pause as a stand-in.
+     Swap revealHint()'s ad-overlay logic for a real rewarded
+     callback before shipping to production.
+     ============================================================ -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4203857211510947" crossorigin="anonymous"></script>
+
+<style>
+  :root{
+    --navy-deep:#0B1526;
+    --navy:#13233F;
+    --paper:#F6EFDD;
+    --paper-line:#D9C9A0;
+    --ink:#1C2333;
+    --ink-soft:#5B6478;
+    --gold:#E4B343;
+    --gold-deep:#B9862A;
+    --coral:#E05263;
+    --teal:#2E9C93;
+    --teal-deep:#1F6E68;
+    --radius:16px;
+    --safe-t:env(safe-area-inset-top);
+    --safe-b:env(safe-area-inset-bottom);
+  }
+
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{
+    height:100%;
+    margin:0;
+    overflow:hidden;
+    position:fixed;
+    inset:0;
+    width:100%;
+    background:var(--navy-deep);
+  }
+  body{
+    font-family:'Space Grotesk',system-ui,sans-serif;
+    color:var(--ink);
+    -webkit-user-select:none;user-select:none;
+  }
+  input{-webkit-user-select:text;user-select:text;}
+
+  #app{
+    position:absolute;inset:0;
+    display:flex;
+    align-items:stretch;justify-content:center;
+    background:
+      radial-gradient(1.5px 1.5px at 10% 20%, rgba(228,179,67,.35) 50%, transparent 51%),
+      radial-gradient(1.5px 1.5px at 80% 15%, rgba(228,179,67,.25) 50%, transparent 51%),
+      radial-gradient(1.5px 1.5px at 30% 70%, rgba(46,156,147,.3) 50%, transparent 51%),
+      radial-gradient(1.5px 1.5px at 65% 85%, rgba(228,179,67,.2) 50%, transparent 51%),
+      radial-gradient(1.5px 1.5px at 90% 60%, rgba(46,156,147,.25) 50%, transparent 51%),
+      radial-gradient(1.5px 1.5px at 45% 40%, rgba(228,179,67,.3) 50%, transparent 51%),
+      linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
+  }
+
+  .screen{
+    position:absolute;inset:0;
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    padding:calc(20px + var(--safe-t)) 18px calc(18px + var(--safe-b));
+    overflow:hidden;
+  }
+  .screen.active{display:flex;}
+
+  .stage{
+    width:100%;
+    max-width:460px;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    min-height:0;
+  }
+
+  /* ---------- shared card ---------- */
+  .card{
+    background:var(--paper);
+    border-radius:var(--radius);
+    box-shadow:0 18px 40px rgba(0,0,0,.35);
+    position:relative;
+  }
+  .card::before{
+    content:"";
+    position:absolute;left:14px;right:14px;top:0;
+    border-top:2px dashed var(--paper-line);
+  }
+
+  .btn{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:16px;
+    border:none;
+    border-radius:999px;
+    padding:15px 26px;
+    cursor:pointer;
+    text-align:center;
+    letter-spacing:.2px;
+    transition:transform .12s ease;
+  }
+  .btn:active{transform:scale(.96);}
+  .btn-primary{background:var(--gold);color:#3A2705;box-shadow:0 8px 18px rgba(228,179,67,.35);}
+  .btn-secondary{background:transparent;color:var(--paper);border:1.5px solid rgba(246,239,221,.5);}
+  .btn:focus-visible{outline:3px solid var(--teal);outline-offset:2px;}
+
+  .icon-btn{
+    width:42px;height:42px;border-radius:50%;
+    background:rgba(246,239,221,.12);
+    border:1px solid rgba(246,239,221,.25);
+    color:var(--paper);
+    display:flex;align-items:center;justify-content:center;
+    font-size:18px;cursor:pointer;
+    flex:0 0 auto;
+  }
+  .icon-btn:focus-visible{outline:3px solid var(--teal);outline-offset:2px;}
+
+  /* ================= START SCREEN ================= */
+  #screen-start .stage{justify-content:center;align-items:center;text-align:center;gap:22px;}
+  .stamp-mark{
+    font-size:46px;
+    width:88px;height:88px;
+    border:3px solid var(--gold);
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--gold);
+    transform:rotate(-8deg);
+  }
+  .brand{
+    font-family:'Fraunces',serif;
+    font-weight:800;
+    font-size:clamp(34px,9vw,50px);
+    color:var(--paper);
+    line-height:1.02;
+    margin:0;
+  }
+  .tagline{
+    font-size:15px;
+    color:rgba(246,239,221,.72);
+    max-width:280px;
+    margin:0;
+    line-height:1.5;
+  }
+  .start-actions{display:flex;flex-direction:column;gap:12px;width:100%;max-width:280px;}
+  .stat-strip{
+    display:flex;gap:18px;
+    font-family:'Space Mono',monospace;
+    font-size:12px;
+    color:rgba(246,239,221,.55);
+  }
+
+  /* ================= INSTRUCTIONS ================= */
+  #screen-instructions .stage{gap:16px;min-height:0;}
+  .panel-head{display:flex;align-items:center;gap:12px;color:var(--paper);}
+  .panel-head h2{font-family:'Fraunces',serif;font-size:26px;margin:0;font-weight:700;}
+  .instr-card{
+    padding:20px 20px 22px;
+    overflow-y:auto;
+    flex:1;
+    min-height:0;
+  }
+  .instr-card::before{display:none;}
+  .instr-item{
+    display:flex;gap:12px;
+    padding:12px 0;
+    border-bottom:1px solid rgba(28,35,51,.08);
+    align-items:flex-start;
+  }
+  .instr-item:last-child{border-bottom:none;}
+  .instr-icon{font-size:20px;flex:0 0 auto;width:28px;text-align:center;}
+  .instr-text{font-size:14.5px;line-height:1.5;color:var(--ink);}
+  .instr-text b{color:var(--teal-deep);}
+  .instr-example{
+    display:flex;align-items:center;justify-content:center;gap:6px;
+    background:var(--navy);
+    border-radius:10px;
+    padding:10px;
+    margin-top:6px;
+    flex-wrap:wrap;
+  }
+
+  /* ================= GAME SCREEN ================= */
+  #screen-game .stage{gap:12px;min-height:0;}
+  .game-head{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+  }
+  .head-readout{
+    font-family:'Space Mono',monospace;
+    color:var(--paper);
+    font-size:13px;
+    text-align:right;
+    line-height:1.4;
+  }
+  .head-readout .lvl{opacity:.65;}
+  .head-readout .score{font-size:15px;font-weight:700;color:var(--gold);}
+
+  .timerbar-track{
+    width:100%;height:10px;
+    background:rgba(246,239,221,.15);
+    border-radius:999px;
+    overflow:hidden;
+  }
+  .timerbar-fill{
+    height:100%;width:100%;
+    background:var(--teal);
+    border-radius:999px;
+    transition:width 1s linear, background-color .3s ease;
+  }
+  .timerbar-fill.mid{background:var(--gold);}
+  .timerbar-fill.low{background:var(--coral);}
+
+  .puzzle-card{
+    flex:1;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:22px 16px;
+    gap:16px;
+    position:relative;
+  }
+  .puzzle-card.urgent{animation:cardPulse 1s ease-in-out infinite;}
+  @keyframes cardPulse{
+    0%,100%{box-shadow:0 18px 40px rgba(0,0,0,.35), 0 0 0 0 rgba(224,82,99,0);}
+    50%{box-shadow:0 18px 40px rgba(0,0,0,.35), 0 0 0 8px rgba(224,82,99,.28);}
+  }
+
+  .clue-eyebrow{
+    font-family:'Space Mono',monospace;
+    font-size:11px;
+    letter-spacing:1px;
+    color:var(--ink-soft);
+  }
+
+  .tiles-row{
+    display:flex;flex-wrap:wrap;
+    align-items:center;justify-content:center;
+    gap:4px;
+    max-width:100%;
+  }
+  .tile{
+    display:flex;align-items:center;justify-content:center;
+    background:#fff;
+    border:2px solid var(--teal);
+    border-radius:8px;
+    min-width:40px;height:48px;
+    padding:0 8px;
+    font-family:'Fraunces',serif;
+    font-weight:700;
+    font-size:18px;
+    color:var(--ink);
+    transform:rotate(var(--rot,0deg));
+  }
+  .tile-emoji{font-size:28px;border-color:var(--gold-deep);background:#FFFBF1;}
+  .tile-connector{
+    font-family:'Space Mono',monospace;
+    color:var(--paper-line);
+    font-size:18px;
+    width:14px;height:48px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .tile-text{
+    font-size:14px;
+    text-transform:lowercase;
+    padding:0 10px;
+    letter-spacing:.3px;
+  }
+  .letter-word{display:flex;gap:3px;margin:0 6px;}
+  .tile-letter{
+    min-width:26px;height:38px;
+    font-size:16px;
+    border-width:1.5px;
+    border-color:rgba(46,156,147,.55);
+  }
+  .tile-blank{color:transparent;border-style:dashed;background:#FBF6E8;}
+
+  .options-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    width:100%;
+  }
+  .option-btn{
+    background:#fff;
+    border:2px solid rgba(28,35,51,.12);
+    border-radius:12px;
+    padding:10px 8px;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:13.5px;
+    color:var(--ink);
+    cursor:pointer;
+    line-height:1.2;
+    min-height:46px;
+    display:flex;align-items:center;justify-content:center;
+    text-align:center;
+    transition:transform .1s ease, border-color .15s ease, background .15s ease;
+  }
+  .option-btn:active{transform:scale(.97);}
+  .option-btn:focus-visible{outline:3px solid var(--teal);outline-offset:2px;}
+  .option-btn.eliminated{opacity:.28;pointer-events:none;text-decoration:line-through;}
+  .option-btn.is-correct{background:var(--teal);border-color:var(--teal-deep);color:#fff;}
+  .option-btn.is-wrong{background:var(--coral);border-color:#a9313f;color:#fff;}
+  .option-btn.locked{pointer-events:none;}
+
+  .below-row{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .hint-btn{
+    display:flex;align-items:center;gap:8px;
+    background:var(--navy);
+    border:1px solid rgba(255,255,255,.12);
+    color:var(--paper);
+    border-radius:999px;
+    padding:9px 16px 9px 12px;
+    font-family:'Space Grotesk',sans-serif;
+    font-size:13px;font-weight:600;
+    cursor:pointer;
+  }
+  .hint-btn .bulb{font-size:17px;}
+  .hint-btn.glow{
+    animation:hintGlow 1s ease-in-out infinite;
+    border-color:var(--gold);
+  }
+  @keyframes hintGlow{
+    0%,100%{box-shadow:0 0 0 0 rgba(228,179,67,.55);}
+    50%{box-shadow:0 0 0 9px rgba(228,179,67,0);}
+  }
+  .hint-btn[disabled]{opacity:.35;cursor:default;animation:none;}
+  .progress-readout{
+    font-family:'Space Mono',monospace;
+    font-size:12px;color:var(--ink-soft);
+  }
+
+  /* ---------- flash overlay ---------- */
+  .flash-overlay{
+    position:absolute;inset:0;
+    border-radius:var(--radius);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:6px;
+    text-align:center;
+    padding:20px;
+    opacity:0;pointer-events:none;
+    transition:opacity .18s ease;
+  }
+  .flash-overlay.show{opacity:1;pointer-events:auto;}
+  .flash-overlay.win{background:rgba(46,156,147,.97);}
+  .flash-overlay.lose{background:rgba(224,82,99,.97);}
+  .flash-title{font-family:'Fraunces',serif;font-weight:700;font-size:24px;color:#fff;}
+  .flash-sub{font-family:'Space Grotesk',sans-serif;font-size:14px;color:rgba(255,255,255,.9);}
+  .flash-points{font-family:'Space Mono',monospace;font-size:13px;color:#fff;opacity:.85;}
+
+  /* ---------- ad overlay (hint) ---------- */
+  .ad-overlay{
+    position:absolute;inset:0;
+    background:rgba(11,21,38,.94);
+    border-radius:var(--radius);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:10px;
+    opacity:0;pointer-events:none;
+    transition:opacity .15s ease;
+    padding:16px;
+  }
+  .ad-overlay.show{opacity:1;pointer-events:auto;}
+  .ad-label{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:1px;color:rgba(246,239,221,.6);}
+  .ad-slot{width:100%;max-width:320px;min-height:90px;display:flex;align-items:center;justify-content:center;}
+
+  .footer-ad{
+    width:100%;max-width:320px;
+    display:flex;align-items:center;justify-content:center;
+    min-height:50px;
+    opacity:.9;
+  }
+
+  /* ================= COMPLETE SCREEN ================= */
+  #screen-complete .stage{justify-content:center;align-items:center;text-align:center;gap:16px;}
+  .complete-card{padding:30px 24px;display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;}
+  .complete-card::before{display:none;}
+  .complete-title{font-family:'Fraunces',serif;font-weight:800;font-size:28px;margin:0;}
+  .complete-score{font-family:'Space Mono',monospace;font-size:15px;color:var(--teal-deep);}
+  .complete-actions{display:flex;flex-direction:column;gap:10px;width:100%;max-width:260px;margin-top:8px;}
+  .complete-actions .btn-primary{color:#3A2705;}
+  .complete-actions .btn-secondary{background:transparent;color:var(--ink);border:1.5px solid rgba(28,35,51,.25);}
+
+  @media (prefers-reduced-motion: reduce){
+    .puzzle-card.urgent, .hint-btn.glow{animation:none;}
+    .btn, .option-btn{transition:none;}
+  }
+
+  @media (max-height: 620px){
+    .brand{font-size:32px;}
+    .stamp-mark{width:70px;height:70px;font-size:36px;}
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ============ START ============ -->
+  <section id="screen-start" class="screen active">
+    <div class="stage">
+      <div class="stamp-mark" aria-hidden="true">🌍</div>
+      <h1 class="brand">Guess The &nbsp;Country</h1>
+      <p class="tagline">All countries. Only a few seconds each. Crack the emoji clue before your gate closes.</p>
+      <div class="start-actions">
+        <button class="btn btn-primary" id="btn-start">Start game</button>
+        <button class="btn btn-secondary" id="btn-howto">How to play</button>
+      </div>
+      <div class="stat-strip"><span id="best-score-strip"></span></div>
+      <div class="footer-ad">
+        <ins class="adsbygoogle"
+             id="ad-start"
+             style="display:inline-block;width:300px;height:50px"
+             data-ad-client="ca-pub-4203857211510947"
+             data-ad-slot="7417753724"></ins>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ INSTRUCTIONS ============ -->
+  <section id="screen-instructions" class="screen">
+    <div class="stage">
+      <div class="panel-head">
+        <button class="icon-btn" id="btn-instr-back" aria-label="Back">←</button>
+        <h2>How to play</h2>
+      </div>
+      <div class="card instr-card">
+        <div class="instr-item">
+          <div class="instr-icon">🧩</div>
+          <div class="instr-text">Every clue mixes <b>pictures and small letters</b> that sound out a country's name.
+            <div class="instr-example">
+              <div class="tile tile-emoji" style="min-width:44px;">🐮</div>
+              <div class="tile tile-text">coast</div>
+              <div class="tile tile-emoji" style="min-width:44px;">💰</div>
+            </div>
+          </div>
+        </div>
+        <div class="instr-item">
+          <div class="instr-icon">⏱️</div>
+          <div class="instr-text">You get a <b>very short timer</b> for each clue. Tap the country name you think matches before the bar runs out.</div>
+        </div>
+        <div class="instr-item">
+          <div class="instr-icon">💡</div>
+          <div class="instr-text">Running low on time? The <b>Hint button glows</b> — tap it to knock out two wrong answers. One hint per clue.</div>
+        </div>
+        <div class="instr-item">
+          <div class="instr-icon">➡️</div>
+          <div class="instr-text">Answer, get it wrong, or run out of time — either way, the <b>next clue loads automatically</b>. There's no pausing mid-clue.</div>
+        </div>
+        <div class="instr-item">
+          <div class="instr-icon">🏠</div>
+          <div class="instr-text">Want out? Tap the <b>home icon</b> in the corner any time to end your run and return here.</div>
+        </div>
+        <div class="instr-item">
+          <div class="instr-icon">🛂</div>
+          <div class="instr-text">Clear all <b>100 clues</b> to stamp a full passport and see your final score.</div>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="btn-instr-play" style="margin-top:14px;">Let's go</button>
+    </div>
+  </section>
+
+  <!-- ============ GAME ============ -->
+  <section id="screen-game" class="screen">
+    <div class="stage">
+      <div class="game-head">
+        <button class="icon-btn" id="btn-home" aria-label="Back to start">🏠</button>
+        <div class="head-readout">
+          <div class="lvl" id="hud-level">Clue 1 / 100</div>
+          <div class="score" id="hud-score">★ 0</div>
+        </div>
+      </div>
+
+      <div class="timerbar-track"><div class="timerbar-fill" id="timer-fill"></div></div>
+
+      <div class="puzzle-card card" id="puzzle-card">
+        <div class="clue-eyebrow">guess the country</div>
+        <div class="tiles-row" id="tiles-row"></div>
+
+        <div class="options-grid" id="options-grid"></div>
+
+        <div class="below-row">
+          <button class="hint-btn" id="btn-hint">
+            <span class="bulb">💡</span><span>Hint</span>
+          </button>
+          <div class="progress-readout" id="time-readout">0:05</div>
+        </div>
+
+        <div class="flash-overlay" id="flash-overlay">
+          <div class="flash-title" id="flash-title"></div>
+          <div class="flash-sub" id="flash-sub"></div>
+          <div class="flash-points" id="flash-points"></div>
+        </div>
+
+        <div class="ad-overlay" id="ad-overlay">
+          <div class="ad-label">Sponsored — unlocking hint</div>
+          <div class="ad-slot">
+            <ins class="adsbygoogle"
+                 id="ad-hint"
+                 style="display:inline-block;width:300px;height:90px"
+                 data-ad-client="ca-pub-4203857211510947"
+                 data-ad-slot="7417753724"></ins>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COMPLETE ============ -->
+  <section id="screen-complete" class="screen">
+    <div class="stage">
+      <div class="card complete-card">
+        <div style="font-size:40px;">🛂</div>
+        <h2 class="complete-title" id="complete-title">Passport complete!</h2>
+        <div class="complete-score" id="complete-score">Score: 0</div>
+        <div class="complete-score" id="complete-accuracy">Correct: 0 / 100</div>
+        <div class="complete-actions">
+          <button class="btn btn-primary" id="btn-play-again">Play again</button>
+          <button class="btn btn-secondary" id="btn-complete-home">Back to start</button>
+        </div>
+      </div>
+      <div class="footer-ad">
+        <ins class="adsbygoogle"
+             id="ad-complete"
+             style="display:inline-block;width:300px;height:50px"
+             data-ad-client="ca-pub-4203857211510947"
+             data-ad-slot="7417753724"></ins>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ============================================================
+     CONFIG — tuned for a harder run
+     ============================================================ */
+  var TIME_LIMIT       = 9;   // seconds per clue
+  var HINT_THRESHOLD   = 2;   // seconds remaining before the hint stamp glows
+  var TOTAL_LEVELS     = 100;
+  var NUM_OPTIONS       = 6;   // more decoys than before
+  var BASE_SCORE        = 10;
+  var HINT_SCORE        = 4;  // flat, reduced score if a hint was used
+  var AD_HINT_DELAY_MS  = 1300; // how long the "ad" overlay shows before the hint resolves
+
+  /* ============================================================
+     HELPERS
+     ============================================================ */
+  function E(v){ return {t:'e', v:v}; }
+  function W(v){ return {t:'w', v:v}; }
+
+  function flagEmoji(code){
+    return code.toUpperCase().replace(/./g, function(c){
+      return String.fromCodePoint(127397 + c.charCodeAt(0));
+    });
+  }
+  function shuffle(arr){
+    var a = arr.slice();
+    for(var i=a.length-1;i>0;i--){
+      var j = Math.floor(Math.random()*(i+1));
+      var tmp=a[i]; a[i]=a[j]; a[j]=tmp;
+    }
+    return a;
+  }
+  function pick(arr,n,excludeIdx){
+    var pool=[]; for(var i=0;i<arr.length;i++){ if(i!==excludeIdx) pool.push(i); }
+    return shuffle(pool).slice(0,n);
+  }
+  function $(id){ return document.getElementById(id); }
+
+  /* ============================================================
+     COUNTRY DATA — 100 countries.
+     "rebus" = emoji + small-letter clue tiles. Every entry has one
+     (no blank-letter guessing puzzles).
+     ============================================================ */
+  var COUNTRIES = [
+    {name:"Egypt", code:"EG", rebus:[E('🔺'),E('🐫')]},
+    {name:"Nigeria", code:"NG", rebus:[E('🛢️'),W('IA')]},
+    {name:"Kenya", code:"KE", rebus:[W('KEN'),E('👍')]},
+    {name:"Morocco", code:"MA", rebus:[W('MO'),E('🎸'),W('O')]},
+    {name:"South Africa", code:"ZA", rebus:[E('⬇️'),E('🌍')]},
+    {name:"Ghana", code:"GH", rebus:[E('🍫')]},
+    {name:"Ethiopia", code:"ET", rebus:[E('☕'),W('PIA')]},
+    {name:"Tanzania", code:"TZ", rebus:[E('🟤'),W('ZAN'),W('IA')]},
+    {name:"Algeria", code:"DZ", rebus:[W('AL'),E('⚙️'),W('IA')]},
+    {name:"Sudan", code:"SD", rebus:[E('🪡'),W('DAN')]},
+    {name:"Uganda", code:"UG", rebus:[W('U'),E('🐼')]},
+    {name:"Zimbabwe", code:"ZW", rebus:[E('🐘'),W('BABWE')]},
+    {name:"Senegal", code:"SN", rebus:[E('🦁')]},
+    {name:"Mali", code:"ML", rebus:[E('🏜️'),W('LEE')]},
+    {name:"Chad", code:"TD", rebus:[E('🏜️')]},
+    {name:"Somalia", code:"SO", rebus:[E('🐫'),W('MAL'),W('IA')]},
+    {name:"Libya", code:"LY", rebus:[E('🏜️'),W('YA')]},
+    {name:"Tunisia", code:"TN", rebus:[E('🎵'),W('IS'),W('IA')]},
+    {name:"Zambia", code:"ZM", rebus:[E('💦')]},
+    {name:"Namibia", code:"NA", rebus:[E('🏜️')]},
+    {name:"France", code:"FR", rebus:[E('🥖')]},
+    {name:"Germany", code:"DE", rebus:[E('🦠'),W('ANY')]},
+    {name:"Italy", code:"IT", rebus:[E('👁️'),W('TALY')]},
+    {name:"Spain", code:"ES", rebus:[W('S'),E('🩹')]},
+    {name:"Portugal", code:"PT", rebus:[E('⚓'),W('U'),E('👧')]},
+    {name:"United Kingdom", code:"GB", rebus:[E('🤝'),E('👑'),W('DOM')]},
+    {name:"Ireland", code:"IE", rebus:[E('👁️'),W('R'),W('LAND')]},
+    {name:"Netherlands", code:"NL", rebus:[E('🌷'),W('LANDS')]},
+    {name:"Belgium", code:"BE", rebus:[E('🔔'),W('GIUM')]},
+    {name:"Switzerland", code:"CH", rebus:[E('🔀'),W('ER'),W('LAND')]},
+    {name:"Austria", code:"AT", rebus:[E('🎼'),W('TRIA')]},
+    {name:"Poland", code:"PL", rebus:[E('🎣'),W('AND')]},
+    {name:"Sweden", code:"SE", rebus:[E('😅'),W('EN')]},
+    {name:"Norway", code:"NO", rebus:[W('NOR'),E('🛣️')]},
+    {name:"Denmark", code:"DK", rebus:[W('DEN'),E('✅')]},
+    {name:"Finland", code:"FI", rebus:[E('🦈'),W('LAND')]},
+    {name:"Iceland", code:"IS", rebus:[E('🧊'),W('LAND')]},
+    {name:"Greece", code:"GR", rebus:[E('🛢️')]},
+    {name:"Russia", code:"RU", rebus:[E('🏃'),W('A')]},
+    {name:"Ukraine", code:"UA", rebus:[E('🌻')]},
+    {name:"Hungary", code:"HU", rebus:[E('🍔')]},
+    {name:"Romania", code:"RO", rebus:[E('🦇')]},
+    {name:"Czechia", code:"CZ", rebus:[E('✅'),W('IA')]},
+    {name:"Croatia", code:"HR", rebus:[E('🏁')]},
+    {name:"China", code:"CN", rebus:[E('🤔'),W('A')]},
+    {name:"Japan", code:"JP", rebus:[E('🫙'),E('🍳')]},
+    {name:"India", code:"IN", rebus:[E('🕌'),W('DIA')]},
+    {name:"South Korea", code:"KR", rebus:[E('⬇️'),W('KOR'),W('EA')]},
+    {name:"Thailand", code:"TH", rebus:[E('👔'),W('LAND')]},
+    {name:"Vietnam", code:"VN", rebus:[E('🍜')]},
+    {name:"Indonesia", code:"ID", rebus:[E('🦎')]},
+    {name:"Philippines", code:"PH", rebus:[E('🥭')]},
+    {name:"Malaysia", code:"MY", rebus:[E('🏙️'),W('SIA')]},
+    {name:"Singapore", code:"SG", rebus:[E('🎤'),W('A'),E('🚪')]},
+    {name:"Pakistan", code:"PK", rebus:[E('🏏'),W('STAN')]},
+    {name:"Bangladesh", code:"BD", rebus:[E('🐯')]},
+    {name:"Sri Lanka", code:"LK", rebus:[E('🐘'),E('🍵')]},
+    {name:"Nepal", code:"NP", rebus:[E('🏔️')]},
+    {name:"Saudi Arabia", code:"SA", rebus:[E('🐪'),E('🛢️')]},
+    {name:"United Arab Emirates", code:"AE", rebus:[E('🐪'),E('🏙️')]},
+    {name:"Israel", code:"IL", rebus:[W('IS'),E('☀️'),W('EL')]},
+    {name:"Turkey", code:"TR", rebus:[E('🦃')]},
+    {name:"Iran", code:"IR", rebus:[E('👂'),W('AN')]},
+    {name:"Iraq", code:"IQ", rebus:[E('👂'),W('AQ')]},
+    {name:"Afghanistan", code:"AF", rebus:[E('🪁'),W('STAN')]},
+    {name:"Mongolia", code:"MN", rebus:[E('🐎')]},
+    {name:"Cambodia", code:"KH", rebus:[E('🛕')]},
+    {name:"Myanmar", code:"MM", rebus:[E('🎈')]},
+    {name:"United States", code:"US", alt:["usa","america","unitedstatesofamerica"], rebus:[E('🦅'),E('⭐')]},
+    {name:"Canada", code:"CA", rebus:[E('🥫'),W('A'),W('DA')]},
+    {name:"Mexico", code:"MX", rebus:[E('🌮')]},
+    {name:"Brazil", code:"BR", rebus:[E('⚽')]},
+    {name:"Argentina", code:"AR", rebus:[E('🥩'),W('TINA')]},
+    {name:"Chile", code:"CL", rebus:[E('🌶️')]},
+    {name:"Peru", code:"PE", rebus:[E('🍐'),W('U')]},
+    {name:"Colombia", code:"CO", rebus:[E('💎'),W('BIA')]},
+    {name:"Venezuela", code:"VE", rebus:[E('👑'),W('ZUELA')]},
+    {name:"Ecuador", code:"EC", rebus:[W('ECU'),E('🚪')]},
+    {name:"Cuba", code:"CU", rebus:[E('🎱'),W('BA')]},
+    {name:"Jamaica", code:"JM", rebus:[E('🍓'),W('AI'),W('CA')]},
+    {name:"Panama", code:"PA", rebus:[E('🍳'),W('A'),W('MA')]},
+    {name:"Costa Rica", code:"CR", rebus:[E('🏖️'),W('A'),E('💰'),W('A')]},
+    {name:"Bolivia", code:"BO", rebus:[E('🧂'),W('IA')]},
+    {name:"Uruguay", code:"UY", rebus:[E('🧉')]},
+    {name:"Paraguay", code:"PY", rebus:[E('🪂'),W('GUAY')]},
+    {name:"Guatemala", code:"GT", rebus:[E('🌋'),W('MALA')]},
+    {name:"Honduras", code:"HN", rebus:[E('🍯'),W('DURAS')]},
+    {name:"Dominican Republic", code:"DO", rebus:[E('⚾'),E('🏝️')]},
+    {name:"Australia", code:"AU", rebus:[E('🦘')]},
+    {name:"New Zealand", code:"NZ", rebus:[W('NEW'),E('🦭'),W('AND')]},
+    {name:"Fiji", code:"FJ", rebus:[E('🌴')]},
+    {name:"Papua New Guinea", code:"PG", rebus:[E('🦜'),E('🏝️')]},
+    {name:"Qatar", code:"QA", rebus:[E('🏙️'),W('TAR')]},
+    {name:"Kuwait", code:"KW", rebus:[W('KU'),E('⏳')]},
+    {name:"Jordan", code:"JO", rebus:[E('🏀')]},
+    {name:"Lebanon", code:"LB", rebus:[E('🌲'),W('NON')]},
+    {name:"Cyprus", code:"CY", rebus:[E('🍊')]},
+    {name:"Malta", code:"MT", rebus:[E('🏰')]},
+    {name:"Luxembourg", code:"LU", rebus:[E('💰'),W('BOURG')]},
+    {name:"Monaco", code:"MC", rebus:[E('🖼️'),W('CO')]}
+  ];
+
+  /* ============================================================
+     AUDIO — tiny WebAudio SFX, no external files
+     ============================================================ */
+  var actx = null;
+  function audio(){
+    if(!actx){
+      try{ actx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ actx=null; }
+    }
+    return actx;
+  }
+  function beep(freq,dur,type,vol){
+    var ctx = audio();
+    if(!ctx) return;
+    var o = ctx.createOscillator();
+    var g = ctx.createGain();
+    o.type = type||'sine';
+    o.frequency.value = freq;
+    g.gain.value = vol||0.06;
+    o.connect(g); g.connect(ctx.destination);
+    var now = ctx.currentTime;
+    g.gain.setValueAtTime(g.gain.value, now);
+    g.gain.exponentialRampToValueAtTime(0.0001, now+dur);
+    o.start(now);
+    o.stop(now+dur);
+  }
+  function tick(urgency){
+    beep(440 + urgency*90, 0.09, 'square', 0.05);
+  }
+  function sfxSuccess(){
+    beep(523,0.11,'triangle',0.07);
+    setTimeout(function(){ beep(784,0.16,'triangle',0.07); },90);
+  }
+  function sfxFail(){
+    beep(220,0.28,'sawtooth',0.05);
+  }
+  function sfxTap(){
+    beep(660,0.05,'square',0.03);
+  }
+
+  /* ============================================================
+     STATE
+     ============================================================ */
+  var state = {
+    order: [],
+    idx: 0,
+    score: 0,
+    correctCount: 0,
+    timeLeft: TIME_LIMIT,
+    timerId: null,
+    hintUsed: false,
+    answered: false,
+    current: null
+  };
+
+  // Bumped every time a run starts or the player goes home, so that any
+  // in-flight setTimeout/setInterval callbacks from a previous run know
+  // to stop instead of quietly continuing in the background.
+  var session = 0;
+
+  var bestScore = 0;
+  function updateBestStrip(){
+    $('best-score-strip').textContent = bestScore>0 ? ('Best score: '+bestScore) : '';
+  }
+  updateBestStrip();
+
+  /* ============================================================
+     ADS — banner placeholders. Each <ins> slot can only be pushed
+     once, so we track which ids have already been requested.
+     ============================================================ */
+  var adsPushed = {};
+  function pushAd(id){
+    if(adsPushed[id]) return;
+    var el = $(id);
+    if(!el) return;
+    try{
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+      adsPushed[id] = true;
+    }catch(e){ /* ad blocked, not approved on this domain, or sandboxed preview — fine for dev */ }
+  }
+
+  /* ============================================================
+     SCREEN NAV
+     ============================================================ */
+  function showScreen(id){
+    var screens = document.querySelectorAll('.screen');
+    for(var i=0;i<screens.length;i++){ screens[i].classList.remove('active'); }
+    $(id).classList.add('active');
+    if(id==='screen-start') pushAd('ad-start');
+    if(id==='screen-complete') pushAd('ad-complete');
+  }
+
+  /* ============================================================
+     CLUE BUILDING
+     ============================================================ */
+  function buildFallbackTiles(name){
+    // Safety net only — small lowercase word tiles, never a blank/guessing puzzle.
+    var frag = document.createDocumentFragment();
+    name.split(' ').forEach(function(word, wi){
+      if(wi>0){
+        var sp = document.createElement('div');
+        sp.style.width = '8px';
+        frag.appendChild(sp);
+      }
+      var el = document.createElement('div');
+      el.className = 'tile tile-text';
+      el.textContent = word;
+      frag.appendChild(el);
+    });
+    return frag;
+  }
+
+  function renderTiles(country){
+    var row = $('tiles-row');
+    row.innerHTML = '';
+    if(country.rebus && country.rebus.length){
+      country.rebus.forEach(function(part, i){
+        if(i>0){
+          var plus = document.createElement('div');
+          plus.className = 'tile-connector';
+          plus.textContent = '+';
+          row.appendChild(plus);
+        }
+        var el = document.createElement('div');
+        var rot = (i%2===0 ? -2 : 2);
+        el.style.setProperty('--rot', rot+'deg');
+        if(part.t === 'e'){
+          el.className = 'tile tile-emoji';
+          el.textContent = part.v;
+        } else {
+          el.className = 'tile tile-text';
+          el.textContent = part.v;
+        }
+        row.appendChild(el);
+      });
+    } else {
+      row.appendChild(buildFallbackTiles(country.name));
+    }
+  }
+
+  function renderOptions(country, correctIdx){
+    var grid = $('options-grid');
+    grid.innerHTML = '';
+    var distractorIdxs = pick(COUNTRIES, NUM_OPTIONS-1, correctIdx);
+    var options = [correctIdx].concat(distractorIdxs);
+    options = shuffle(options);
+    options.forEach(function(cIdx){
+      var btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.type = 'button';
+      btn.textContent = COUNTRIES[cIdx].name;
+      btn.dataset.idx = cIdx;
+      btn.addEventListener('click', function(){ onOptionTap(cIdx, correctIdx, btn); });
+      grid.appendChild(btn);
+    });
+  }
+
+  /* ============================================================
+     LEVEL FLOW
+     ============================================================ */
+  function loadLevel(i){
+    if(i >= TOTAL_LEVELS){ return endGame(); }
+    state.idx = i;
+    state.hintUsed = false;
+    state.answered = false;
+    var countryIdx = state.order[i];
+    state.current = countryIdx;
+
+    $('hud-level').textContent = 'Clue ' + (i+1) + ' / ' + TOTAL_LEVELS;
+    $('hud-score').textContent = '★ ' + state.score;
+
+    renderTiles(COUNTRIES[countryIdx]);
+    renderOptions(COUNTRIES[countryIdx], countryIdx);
+
+    $('flash-overlay').classList.remove('show','win','lose');
+    $('ad-overlay').classList.remove('show');
+    $('puzzle-card').classList.remove('urgent');
+
+    var hintBtn = $('btn-hint');
+    hintBtn.disabled = false;
+    hintBtn.classList.remove('glow');
+
+    startTimer();
+  }
+
+  function startTimer(){
+    clearInterval(state.timerId);
+    state.timeLeft = TIME_LIMIT;
+    renderTimer();
+    var mySession = session;
+    state.timerId = setInterval(function(){
+      if(session !== mySession){ clearInterval(state.timerId); return; }
+      state.timeLeft -= 1;
+      renderTimer();
+      if(state.timeLeft <= HINT_THRESHOLD && state.timeLeft > 0){
+        tick(HINT_THRESHOLD - state.timeLeft);
+      }
+      if(state.timeLeft <= 0){
+        clearInterval(state.timerId);
+        handleTimeout();
+      }
+    }, 1000);
+  }
+
+  function renderTimer(){
+    var pct = Math.max(0, (state.timeLeft / TIME_LIMIT) * 100);
+    var fill = $('timer-fill');
+    fill.style.width = pct + '%';
+    fill.classList.remove('mid','low');
+    if(state.timeLeft <= HINT_THRESHOLD){
+      fill.classList.add('low');
+      $('puzzle-card').classList.add('urgent');
+      if(!state.hintUsed){
+        $('btn-hint').classList.add('glow');
+      }
+    } else if(pct <= 55){
+      fill.classList.add('mid');
+    }
+    var secs = Math.max(0,state.timeLeft);
+    $('time-readout').textContent = '0:' + (secs < 10 ? '0' + secs : secs);
+  }
+
+  function onOptionTap(tappedIdx, correctIdx, btnEl){
+    if(state.answered) return;
+    state.answered = true;
+    clearInterval(state.timerId);
+    sfxTap();
+
+    var allBtns = document.querySelectorAll('.option-btn');
+    allBtns.forEach(function(b){ b.classList.add('locked'); });
+
+    if(tappedIdx === correctIdx){
+      btnEl.classList.add('is-correct');
+      handleCorrect();
+    } else {
+      btnEl.classList.add('is-wrong');
+      handleWrong();
+    }
+  }
+
+  function flashResult(kind, title, sub, points){
+    var overlay = $('flash-overlay');
+    $('flash-title').textContent = title;
+    $('flash-sub').textContent = sub;
+    $('flash-points').textContent = points;
+    overlay.classList.remove('win','lose');
+    overlay.classList.add(kind, 'show');
+    var mySession = session;
+    setTimeout(function(){
+      if(session !== mySession) return; // player backed out — don't keep advancing
+      overlay.classList.remove('show');
+      loadLevel(state.idx + 1);
+    }, kind==='win' ? 1100 : 1400);
+  }
+
+  function handleCorrect(){
+    sfxSuccess();
+    var pts = state.hintUsed ? HINT_SCORE : (BASE_SCORE + Math.max(0,state.timeLeft));
+    state.score += pts;
+    state.correctCount += 1;
+    var country = COUNTRIES[state.current];
+    $('hud-score').textContent = '★ ' + state.score;
+    flashResult('win', flagEmoji(country.code) + ' ' + country.name + '!', 'Nice catch.', '+' + pts);
+  }
+
+  function handleWrong(){
+    sfxFail();
+    flashResult('lose', 'Not quite', 'On to the next one.', '+0');
+  }
+
+  function handleTimeout(){
+    if(state.answered) return;
+    state.answered = true;
+    sfxFail();
+    var allBtns = document.querySelectorAll('.option-btn');
+    allBtns.forEach(function(b){ b.classList.add('locked'); });
+    flashResult('lose', "Time's up", 'On to the next one.', '+0');
+  }
+
+  function revealHint(){
+    if(state.hintUsed || state.answered) return;
+    state.hintUsed = true;
+    clearInterval(state.timerId); // pause the clock while the "ad" is up
+    $('btn-hint').disabled = true;
+    $('btn-hint').classList.remove('glow');
+
+    var overlay = $('ad-overlay');
+    overlay.classList.add('show');
+    pushAd('ad-hint');
+
+    var mySession = session;
+    setTimeout(function(){
+      overlay.classList.remove('show');
+      if(session !== mySession) return; // player backed out during the ad — stop here
+      if(state.answered) return;
+
+      // eliminate two wrong options, then resume the countdown
+      var wrongBtns = [];
+      document.querySelectorAll('.option-btn').forEach(function(b){
+        if(parseInt(b.dataset.idx,10) !== state.current) wrongBtns.push(b);
+      });
+      shuffle(wrongBtns).slice(0,2).forEach(function(b){ b.classList.add('eliminated'); });
+
+      state.timeLeft = TIME_LIMIT;
+      renderTimer();
+      var resumedSession = session;
+      state.timerId = setInterval(function(){
+        if(session !== resumedSession){ clearInterval(state.timerId); return; }
+        state.timeLeft -= 1;
+        renderTimer();
+        if(state.timeLeft <= HINT_THRESHOLD && state.timeLeft > 0){ tick(HINT_THRESHOLD - state.timeLeft); }
+        if(state.timeLeft <= 0){ clearInterval(state.timerId); handleTimeout(); }
+      }, 1000);
+    }, AD_HINT_DELAY_MS);
+  }
+
+  /* ============================================================
+     GAME START / END
+     ============================================================ */
+  function startGame(){
+    session++; // invalidate any leftover callbacks from a previous run
+    audio(); // unlock WebAudio on this user gesture
+    state.order = shuffle(COUNTRIES.map(function(_,i){ return i; }));
+    state.idx = 0;
+    state.score = 0;
+    state.correctCount = 0;
+    showScreen('screen-game');
+    loadLevel(0);
+  }
+
+  function endGame(){
+    clearInterval(state.timerId);
+    if(state.score > bestScore){ bestScore = state.score; updateBestStrip(); }
+    $('complete-score').textContent = 'Score: ' + state.score;
+    $('complete-accuracy').textContent = 'Correct: ' + state.correctCount + ' / ' + TOTAL_LEVELS;
+    showScreen('screen-complete');
+  }
+
+  function goHome(){
+    session++; // stops the running timer / any pending "load next clue" callback for good
+    clearInterval(state.timerId);
+    showScreen('screen-start');
+  }
+
+  /* ============================================================
+     WIRE UP
+     ============================================================ */
+  $('btn-start').addEventListener('click', startGame);
+  $('btn-howto').addEventListener('click', function(){ showScreen('screen-instructions'); });
+  $('btn-instr-back').addEventListener('click', function(){ showScreen('screen-start'); });
+  $('btn-instr-play').addEventListener('click', startGame);
+  $('btn-home').addEventListener('click', goHome);
+  $('btn-hint').addEventListener('click', revealHint);
+  $('btn-play-again').addEventListener('click', startGame);
+  $('btn-complete-home').addEventListener('click', goHome);
+
+  // prevent iOS double-tap zoom / rubber-band scroll inside the locked shell
+  document.addEventListener('touchmove', function(e){ e.preventDefault(); }, {passive:false});
+
+  showScreen('screen-start');
+})();
+</script>
+</body>
+</html>

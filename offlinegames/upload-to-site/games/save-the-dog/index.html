@@ -1,0 +1,2180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#ffc53d">
+<title>Save My Dog — Bee Rescue | Free Online Puzzle Game</title>
+<meta name="description" content="Draw walls to shield the puppy from swarming bees, marching ants, lava and water across 100 free levels. Plays instantly in your browser on phone or PC, no download and no sign-up.">
+<link rel="canonical" href="https://offlinegames.art/save-my-dog/">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="keywords" content="save my dog, save the dog game, save my pets, bee game, draw line puzzle, offline games, free online games, html5 game, brain puzzle, physics puzzle">
+<meta name="author" content="offlinegames.art">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Save My Dog">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="offlinegames.art">
+<meta property="og:url" content="https://offlinegames.art/save-my-dog/">
+<meta property="og:title" content="Save My Dog — Bee Rescue">
+<meta property="og:description" content="Draw walls, block the swarm, keep the puppy safe. 100 free physics-puzzle levels with bees, ants, lava and water.">
+<meta property="og:image" content="https://offlinegames.art/save-my-dog/cover.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Save My Dog — Bee Rescue">
+<meta name="twitter:description" content="Draw walls, block the swarm, keep the puppy safe. 100 free levels, phone and PC.">
+<meta name="twitter:image" content="https://offlinegames.art/save-my-dog/cover.jpg">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"VideoGame",
+"name":"Save My Dog — Bee Rescue",
+"url":"https://offlinegames.art/save-my-dog/",
+"description":"Draw walls to shield the puppy from swarming bees, marching ants, lava and water across 100 free levels.",
+"image":"https://offlinegames.art/save-my-dog/cover.jpg",
+"genre":["Puzzle","Physics","Casual"],
+"gamePlatform":["Web browser","Android","iOS","PC"],
+"playMode":"SinglePlayer",
+"applicationCategory":"Game",
+"operatingSystem":"Any",
+"inLanguage":"en",
+"numberOfLevels":100,
+"isAccessibleForFree":true,
+"publisher":{"@type":"Organization","name":"offlinegames.art","url":"https://offlinegames.art/"},
+"offers":{"@type":"Offer","price":"0","priceCurrency":"USD","availability":"https://schema.org/InStock"}}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4203857211510947" crossorigin="anonymous"></script>
+<style>
+:root{
+  --honey:#ffc53d; --honey-hi:#ffe08a; --honey-lo:#e08900;
+  --bark:#5b3a1a; --bark-lo:#3d2510;
+  --cream:#fff4d6; --sky:#8fd8ff; --leaf:#5fbe45;
+  --ink:#2f6fed; --danger:#e2513f;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:#10202b;
+  font-family:'Fredoka',ui-rounded,'Trebuchet MS',system-ui,sans-serif;
+  -webkit-user-select:none;user-select:none;touch-action:none;overscroll-behavior:none}
+#app{position:fixed;left:0;top:0;transform-origin:0 0;overflow:hidden;background:#8fd8ff}
+#cv{position:absolute;left:0;top:0;width:100%;height:100%;display:block}
+.hidden{display:none!important}
+
+/* ---------- shared chrome ---------- */
+.btn{
+  font:inherit;font-weight:700;font-size:26px;letter-spacing:.4px;color:var(--bark);
+  padding:13px 34px;border:3px solid var(--bark);border-radius:20px;cursor:pointer;
+  background:linear-gradient(#ffe08a,#ffb31f);
+  box-shadow:0 6px 0 #b06a00,0 10px 16px rgba(0,0,0,.28);
+  text-shadow:0 1px 0 rgba(255,255,255,.55);transition:transform .06s,box-shadow .06s}
+.btn:active{transform:translateY(5px);box-shadow:0 1px 0 #b06a00,0 4px 8px rgba(0,0,0,.28)}
+.btn.calm{background:linear-gradient(#cfeaff,#87c6f5);box-shadow:0 6px 0 #3f7ba8,0 10px 16px rgba(0,0,0,.28)}
+.btn.leafy{background:linear-gradient(#b5f08e,#59c13c);box-shadow:0 6px 0 #2f7d1f,0 10px 16px rgba(0,0,0,.28)}
+.btn.small{font-size:19px;padding:9px 20px;border-radius:15px;box-shadow:0 5px 0 #b06a00,0 8px 12px rgba(0,0,0,.25)}
+.btn:disabled{filter:grayscale(.65) brightness(.9);cursor:default}
+.btn:focus-visible{outline:4px solid #fff;outline-offset:3px}
+
+.screen{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+  padding:18px;background:rgba(24,15,4,.62);backdrop-filter:blur(3px);overflow-y:auto}
+.screen.on{display:flex}
+.panel{background:linear-gradient(#fff8e4,#ffe6ad);border:5px solid var(--bark);border-radius:28px;
+  padding:22px 30px;box-shadow:0 14px 0 rgba(70,40,10,.45),0 22px 44px rgba(0,0,0,.4);
+  display:flex;flex-direction:column;align-items:center;gap:14px;max-width:640px;
+  max-height:calc(100% - 4px);overflow-y:auto}
+.panel h2{font-size:38px;color:var(--bark);line-height:1}
+.panel p{font-size:19px;color:#7a5326;text-align:center;max-width:46ch;line-height:1.35}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:center}
+
+/* ---------- start screen ---------- */
+#scStart{background:
+  radial-gradient(circle at 18% 22%,rgba(255,255,255,.16) 0 8px,transparent 9px) 0 0/54px 46px,
+  linear-gradient(#ffd463,#f2a10e)}
+.brand{display:flex;flex-direction:column;align-items:center;gap:2px;margin-top:6px}
+.brand .l1{font-size:34px;font-weight:600;color:#fff;letter-spacing:2px;
+  text-shadow:0 3px 0 #b96a00,0 6px 10px rgba(0,0,0,.3)}
+.brand .l2{font-size:76px;font-weight:700;line-height:.92;color:#fff;
+  -webkit-text-stroke:7px var(--bark);paint-order:stroke fill;
+  text-shadow:0 8px 0 var(--bark),0 12px 18px rgba(0,0,0,.35)}
+.brand .l3{margin-top:8px;font-size:17px;color:#6b4a17;background:#fff3cf;
+  padding:5px 16px;border-radius:999px;border:2px solid #c99b46}
+#scStart .row{margin-top:4px}
+.tog{width:54px;height:54px;font-size:24px;display:grid;place-items:center;padding:0;border-radius:16px}
+.tog.off{filter:grayscale(1) brightness(.85)}
+
+/* ---------- HUD ---------- */
+#hud{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;gap:10px;padding:10px 12px}
+.chip{background:rgba(38,22,6,.62);color:#fff6de;border:2px solid rgba(255,255,255,.25);
+  border-radius:999px;padding:6px 15px;font-size:19px;font-weight:600;white-space:nowrap}
+.icon{width:46px;height:46px;padding:0;font-size:20px;display:grid;place-items:center;border-radius:14px}
+.inkwrap{display:flex;align-items:center;gap:8px;flex:1;max-width:330px}
+.inkbar{flex:1;height:20px;background:rgba(38,22,6,.62);border:2px solid rgba(255,255,255,.25);
+  border-radius:999px;overflow:hidden}
+.inkbar i{display:block;height:100%;width:100%;border-radius:999px;
+  background:linear-gradient(90deg,#7fb2ff,#2f6fed);transition:width .08s linear}
+.inkbar.low i{background:linear-gradient(90deg,#ffb36b,#e2513f)}
+#inkTxt{color:#fff6de;font-size:17px;font-weight:600;min-width:44px}
+#heartsChip{letter-spacing:2px}
+#hintBar{position:absolute;left:50%;top:64px;transform:translateX(-50%);
+  background:rgba(38,22,6,.78);color:#ffe9ae;border:2px solid #ffc53d;border-radius:14px;
+  padding:8px 18px;font-size:20px;font-weight:600;white-space:nowrap;pointer-events:none}
+#btnGo{position:absolute;right:20px;bottom:18px;font-size:30px;padding:15px 42px}
+#btnUndo{position:absolute;left:20px;bottom:18px;width:62px;height:62px;font-size:28px;padding:0;
+  display:grid;place-items:center;border-radius:20px}
+#btnClear{position:absolute;left:96px;bottom:18px;width:62px;height:62px;font-size:24px;padding:0;
+  display:grid;place-items:center;border-radius:20px}
+
+/* ---------- levels ---------- */
+#scLevels .panel{max-width:none;width:min(96%,1040px);height:92%;padding:16px 18px}
+#lvGrid{flex:1;width:100%;overflow-y:auto;display:grid;gap:10px;padding:6px 4px 12px;
+  grid-template-columns:repeat(10,1fr);align-content:start;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+.lv{aspect-ratio:1;border:3px solid var(--bark);border-radius:16px;background:linear-gradient(#ffe08a,#ffb31f);
+  color:var(--bark);font:700 21px 'Fredoka',sans-serif;cursor:pointer;position:relative;
+  box-shadow:0 4px 0 #b06a00;display:grid;place-items:center;line-height:1}
+.lv:active{transform:translateY(3px);box-shadow:0 1px 0 #b06a00}
+.lv.locked{background:linear-gradient(#ded3bd,#b9a98d);box-shadow:0 4px 0 #8d7c60;color:#7c6a4d;cursor:default}
+.lv b{position:absolute;bottom:3px;left:0;right:0;font-size:11px;letter-spacing:-1px;color:#a9600b}
+.lv.locked b{display:none}
+
+/* ---------- win / fail ---------- */
+.stars{display:flex;gap:10px;font-size:52px;line-height:1}
+.stars span{filter:grayscale(1) opacity(.42);transform:scale(.82)}
+.stars span.on{filter:none;transform:scale(1);animation:pop .38s cubic-bezier(.2,1.6,.4,1) backwards}
+.stars span.on:nth-child(2){animation-delay:.13s}
+.stars span.on:nth-child(3){animation-delay:.26s}
+@keyframes pop{from{transform:scale(0) rotate(-40deg)}to{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.stars span.on{animation:none}}
+
+/* ---------- ads ---------- */
+.adbox{width:320px;min-height:100px;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.5);border:2px dashed #c99b46;border-radius:14px;overflow:hidden}
+.adbox ins{display:inline-block;width:320px;height:100px}
+.adnote{font-size:12px;color:#8a6c3a;letter-spacing:1px}
+#rotateHint{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;background:#10202b;color:#ffe9ae;font-size:22px;text-align:center;padding:24px;z-index:50}
+#rotateHint.on{display:flex}
+#rotateHint .ph{font-size:60px;animation:tip 1.6s ease-in-out infinite}
+@keyframes tip{0%,100%{transform:rotate(0)}50%{transform:rotate(-90deg)}}
+.seo{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;
+  clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
+</style>
+</head>
+<body>
+<div class="seo">
+  <h1>Save My Dog — Bee Rescue</h1>
+  <p>A free browser puzzle game. A swarm of bees closes in on a puppy from every direction and
+  you have one job: draw walls with your finger or mouse and keep him alive until the timer runs out.
+  Ink is limited, so the tidier your shelter, the more stars you earn.</p>
+  <h2>How to play</h2>
+  <ol>
+    <li>Drag on the screen to draw a wall. Start and finish a line on the ground or on scenery so it is braced — loose lines get shoved aside by the swarm.</li>
+    <li>Press GO to release the bees, then survive the countdown. You can keep drawing while they attack if you still have ink.</li>
+    <li>Watch the puppy as well as the bees. He has weight, so he can be pushed off a ledge, and lava and deep water will finish him.</li>
+  </ol>
+  <h2>What you are up against</h2>
+  <p>Ordinary bees, fast bees, bulky bees that shift whole walls, chewers that eat through ink,
+  swervers, splitters, ghosts that slip through a single layer, bomb bees, and ants that march
+  in along the floor. One hundred levels, each with a different arena, swarm and hazard.</p>
+  <p>Plays in any modern browser on phone, tablet and desktop. No download and no sign-up.</p>
+</div>
+<div id="app">
+  <canvas id="cv"></canvas>
+
+  <!-- in-game HUD -->
+  <div id="hud" class="hidden">
+    <button class="btn icon" id="btnPause" aria-label="Pause">❚❚</button>
+    <div class="chip" id="lvlChip">Level 1</div>
+    <div class="inkwrap"><div class="inkbar" id="inkBar"><i id="inkFill"></i></div><span id="inkTxt">100%</span></div>
+    <div class="chip" id="heartsChip">❤❤❤❤❤</div>
+    <div class="chip" id="timerChip">5.0s</div>
+  </div>
+  <div id="hintBar" class="hidden"></div>
+  <button class="btn leafy" id="btnGo">GO!</button>
+  <button class="btn calm" id="btnUndo" aria-label="Undo last line">↶</button>
+  <button class="btn calm" id="btnClear" aria-label="Erase all lines">✕</button>
+
+  <!-- start -->
+  <div class="screen on" id="scStart">
+    <div class="brand">
+      <span class="l1">SAVE MY</span>
+      <span class="l2">DOG</span>
+      <span class="l3">Draw walls. Block the bees. Keep the puppy safe.</span>
+    </div>
+    <div class="row">
+      <button class="btn" id="btnPlay">Play</button>
+      <button class="btn calm" id="btnLevels">Levels</button>
+    </div>
+    <div class="row">
+      <button class="btn calm tog" id="btnMusic" aria-label="Music on or off">♪</button>
+      <button class="btn calm tog" id="btnSfx" aria-label="Sound on or off">🔊</button>
+      <button class="btn calm tog" id="btnFull" aria-label="Fullscreen">⛶</button>
+    </div>
+    <div class="adbox" id="adStart"><span class="adnote">advertisement</span></div>
+  </div>
+
+  <!-- levels -->
+  <div class="screen" id="scLevels">
+    <div class="panel">
+      <div class="row" style="width:100%;justify-content:space-between">
+        <h2>Pick a level</h2>
+        <button class="btn small" id="btnLevBack">Back</button>
+      </div>
+      <div id="lvGrid"></div>
+    </div>
+  </div>
+
+  <!-- win -->
+  <div class="screen" id="scWin">
+    <div class="panel">
+      <h2 id="winTitle">Puppy is safe!</h2>
+      <div class="stars" id="winStars"><span>★</span><span>★</span><span>★</span></div>
+      <div class="adbox" id="adWin"><span class="adnote">advertisement</span></div>
+      <div class="row">
+        <button class="btn calm small" id="btnWinLevels">Levels</button>
+        <button class="btn small" id="btnWinRetry">Replay</button>
+        <button class="btn leafy" id="btnNext">Next level</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- fail -->
+  <div class="screen" id="scFail">
+    <div class="panel">
+      <h2 id="failTitle">The bees got through</h2>
+      <p id="failTip">Seal every gap — bees squeeze through the smallest opening.</p>
+      <div class="row">
+        <button class="btn calm small" id="btnFailLevels">Levels</button>
+        <button class="btn" id="btnRetry">Try again</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- pause -->
+  <div class="screen" id="scPause">
+    <div class="panel">
+      <h2>Paused</h2>
+      <div class="row">
+        <button class="btn calm tog" id="btnMusic2" aria-label="Music on or off">♪</button>
+        <button class="btn calm tog" id="btnSfx2" aria-label="Sound on or off">🔊</button>
+      </div>
+      <div class="row">
+        <button class="btn calm small" id="btnPauseLevels">Levels</button>
+        <button class="btn small" id="btnPauseRetry">Restart</button>
+        <button class="btn leafy" id="btnResume">Resume</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- out of lives -->
+  <div class="screen" id="scLives">
+    <div class="panel">
+      <h2>Out of lives</h2>
+      <p id="livesMsg">Next life in 60s.</p>
+      <div class="adbox" id="adLives"><span class="adnote">advertisement</span></div>
+      <div class="row">
+        <button class="btn leafy" id="btnFreeLives">Get 5 lives</button>
+        <button class="btn calm small" id="btnLivesLevels">Levels</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="rotateHint"><div class="ph">📱</div><div>Turn your phone sideways to play</div></div>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   SAVE MY DOG — BEE RESCUE
+   Single-file HTML5 game. Landscape-locked, mouse + touch.
+   ============================================================ */
+
+const AD_CLIENT = "ca-pub-4203857211510947";
+const AD_SLOT_BANNER = "7417753724";
+
+/* AdMob units. These only serve inside a native wrapper (Capacitor / Cordova);
+   a plain web page cannot show them, so on the web the AdSense unit above is used. */
+const ADMOB_BANNER       = "ca-app-pub-4203857211510947/8086182570";
+const ADMOB_INTERSTITIAL = "ca-app-pub-4203857211510947/3025427580";
+const INTERSTITIAL_EVERY = 3;      // level completions between interstitials
+const INTERSTITIAL_GAP   = 100000; // and never less than this many ms apart
+
+const W = 1280, H = 720;          // virtual design resolution
+const GROUND_Y = 650;             // top of the grass strip
+const MAX_HEARTS = 5;
+const HEART_REGEN_MS = 60000;
+
+/* ---------- tiny helpers ---------- */
+const clamp = (v,a,b)=>v<a?a:(v>b?b:v);
+const lerp  = (a,b,t)=>a+(b-a)*t;
+const dist  = (x1,y1,x2,y2)=>Math.hypot(x2-x1,y2-y1);
+const $     = id=>document.getElementById(id);
+
+/* ---------- storage (never throws) ---------- */
+const Save = (()=>{
+  const mem = {};
+  let ok = true;
+  try { localStorage.setItem("__t","1"); localStorage.removeItem("__t"); } catch(e){ ok = false; }
+  return {
+    get(k,d){ try{ const v = ok?localStorage.getItem(k):mem[k]; return v==null?d:JSON.parse(v); }catch(e){ return d; } },
+    set(k,v){ try{ const s = JSON.stringify(v); if(ok) localStorage.setItem(k,s); else mem[k]=s; }catch(e){} }
+  };
+})();
+
+const P = {
+  unlocked: clamp(Save.get("smd_unlocked",1),1,100),
+  stars:    Save.get("smd_stars",{}),
+  music:    Save.get("smd_music",1),
+  sfx:      Save.get("smd_sfx",1),
+  hearts:   clamp(Save.get("smd_hearts",MAX_HEARTS),0,MAX_HEARTS),
+  heartAt:  Save.get("smd_heartAt",0)
+};
+function persist(){
+  Save.set("smd_unlocked",P.unlocked); Save.set("smd_stars",P.stars);
+  Save.set("smd_music",P.music);       Save.set("smd_sfx",P.sfx);
+  Save.set("smd_hearts",P.hearts);     Save.set("smd_heartAt",P.heartAt);
+}
+
+/* ============================================================
+   AUDIO — everything synthesised, no asset files needed
+   ============================================================ */
+const Snd = (()=>{
+  let ctx=null, master=null, musicG=null, sfxG=null, buzzG=null, buzzLp=null;
+  let started=false, timer=null, step=0, nextT=0, track="menu";
+  const buzzOsc = [];
+
+  function boot(){
+    if(ctx) return;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if(!AC) return;
+    ctx = new AC();
+    master = ctx.createGain(); master.gain.value = .85; master.connect(ctx.destination);
+    musicG = ctx.createGain(); musicG.gain.value = P.music?.34:0; musicG.connect(master);
+    sfxG   = ctx.createGain(); sfxG.gain.value   = P.sfx?.9:0;    sfxG.connect(master);
+
+    buzzLp = ctx.createBiquadFilter(); buzzLp.type="lowpass"; buzzLp.frequency.value=900;
+    buzzG  = ctx.createGain(); buzzG.gain.value = 0;
+    buzzLp.connect(buzzG); buzzG.connect(sfxG);
+    [78,116,171].forEach((f,i)=>{
+      const o = ctx.createOscillator(); o.type = i===2?"triangle":"sawtooth"; o.frequency.value=f;
+      const g = ctx.createGain(); g.gain.value = i===2?.12:.2;
+      const lfo = ctx.createOscillator(); lfo.type="sine"; lfo.frequency.value = 5.5+i*1.9;
+      const lg = ctx.createGain(); lg.gain.value = 5+i*3;
+      lfo.connect(lg); lg.connect(o.frequency); lfo.start();
+      o.connect(g); g.connect(buzzLp); o.start();
+      buzzOsc.push(o);
+    });
+  }
+  function unlock(){ boot(); if(ctx && ctx.state==="suspended") ctx.resume(); if(!started){ started=true; startMusic(); } }
+
+  /* --- one-shot voices --- */
+  function tone(f,dur,type,vol,slideTo,delay){
+    if(!ctx||!P.sfx) return;
+    const t0 = ctx.currentTime + (delay||0);
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = type||"square"; o.frequency.setValueAtTime(f,t0);
+    if(slideTo) o.frequency.exponentialRampToValueAtTime(Math.max(30,slideTo),t0+dur);
+    g.gain.setValueAtTime(0,t0);
+    g.gain.linearRampToValueAtTime(vol==null?.22:vol,t0+.012);
+    g.gain.exponentialRampToValueAtTime(.0008,t0+dur);
+    o.connect(g); g.connect(sfxG); o.start(t0); o.stop(t0+dur+.05);
+  }
+  function noise(dur,vol,freq,delay){
+    if(!ctx||!P.sfx) return;
+    const t0 = ctx.currentTime + (delay||0);
+    const n = Math.floor(ctx.sampleRate*dur);
+    const buf = ctx.createBuffer(1,n,ctx.sampleRate), d = buf.getChannelData(0);
+    for(let i=0;i<n;i++) d[i] = (Math.random()*2-1)*(1-i/n);
+    const s = ctx.createBufferSource(); s.buffer = buf;
+    const f = ctx.createBiquadFilter(); f.type="bandpass"; f.frequency.value = freq||1200; f.Q.value=.9;
+    const g = ctx.createGain(); g.gain.value = vol==null?.25:vol;
+    s.connect(f); f.connect(g); g.connect(sfxG); s.start(t0);
+  }
+
+  /* --- music: two short loops, scheduled with lookahead --- */
+  const TRACKS = {
+    menu:{ bpm:96, bass:[0,0,7,7,5,5,3,3],
+           lead:[12,null,14,15,null,14,12,null,10,null,12,null,9,null,7,null] },
+    game:{ bpm:132, bass:[0,7,0,7,3,10,5,12],
+           lead:[12,15,19,15,17,14,12,10,12,15,19,22,19,15,12,7] }
+  };
+  const ROOT = 130.81; // C3
+  const hz = s => ROOT*Math.pow(2,s/12);
+
+  function schedule(){
+    if(!ctx||!P.music) return;
+    const T = TRACKS[track], spb = 60/T.bpm, eighth = spb/2;
+    while(nextT < ctx.currentTime + .25){
+      const t = Math.max(nextT, ctx.currentTime+.02);
+      const b = T.bass[step % T.bass.length];
+      const o = ctx.createGain(); o.connect(musicG);
+      const bo = ctx.createOscillator(); bo.type="triangle"; bo.frequency.value = hz(b-12);
+      const bg = ctx.createGain();
+      bg.gain.setValueAtTime(0,t); bg.gain.linearRampToValueAtTime(.3,t+.02);
+      bg.gain.exponentialRampToValueAtTime(.001,t+eighth*1.7);
+      bo.connect(bg); bg.connect(o); bo.start(t); bo.stop(t+eighth*2);
+
+      const l = T.lead[step % T.lead.length];
+      if(l!=null){
+        const lo = ctx.createOscillator(); lo.type="square"; lo.frequency.value = hz(l);
+        const lg = ctx.createGain();
+        lg.gain.setValueAtTime(0,t); lg.gain.linearRampToValueAtTime(.11,t+.015);
+        lg.gain.exponentialRampToValueAtTime(.001,t+eighth*1.2);
+        lo.connect(lg); lg.connect(o); lo.start(t); lo.stop(t+eighth*1.4);
+      }
+      if(step % 4 === 0){
+        const n = ctx.createBufferSource();
+        const len = Math.floor(ctx.sampleRate*.06), bf = ctx.createBuffer(1,len,ctx.sampleRate), dd = bf.getChannelData(0);
+        for(let i=0;i<len;i++) dd[i] = (Math.random()*2-1)*(1-i/len);
+        n.buffer = bf;
+        const ng = ctx.createGain(); ng.gain.value = .1;
+        n.connect(ng); ng.connect(musicG); n.start(t);
+      }
+      nextT = t + eighth; step++;
+    }
+  }
+  function startMusic(){
+    if(!ctx || timer) return;
+    nextT = ctx.currentTime + .05;
+    timer = setInterval(schedule,45);
+  }
+  function setTrack(name){ if(track!==name){ track=name; step=0; } }
+
+  return {
+    unlock, setTrack,
+    setMusic(on){ if(musicG) musicG.gain.value = on?.34:0; },
+    setSfx(on){ if(sfxG) sfxG.gain.value = on?.9:0; },
+    buzz(level,pitch){                       // 0..1 intensity
+      if(!ctx||!buzzG) return;
+      const g = P.sfx ? clamp(level,0,1)*.09 : 0;
+      buzzG.gain.setTargetAtTime(g, ctx.currentTime, .12);
+      buzzLp.frequency.setTargetAtTime(600+900*clamp(pitch||0,0,1), ctx.currentTime, .2);
+      buzzOsc.forEach((o,i)=>o.frequency.setTargetAtTime((78+i*40)*(1+.35*clamp(pitch||0,0,1)), ctx.currentTime,.2));
+    },
+    click(){ tone(660,.07,"square",.16); tone(990,.06,"square",.09,null,.03); },
+    inkTick(){ tone(1400+Math.random()*400,.03,"sine",.05); },
+    strokeEnd(){ tone(520,.09,"sine",.12,760); },
+    bounce(){ tone(300+Math.random()*180,.07,"sine",.13,180); },
+    chew(){ noise(.09,.09,2400); },
+    breakWall(){ noise(.22,.3,700); tone(180,.25,"sawtooth",.16,60); },
+    boom(){ noise(.45,.42,300); tone(90,.5,"sawtooth",.24,35); },
+    zap(){ tone(1200,.1,"square",.16,220); },
+    star(i){ tone(880*Math.pow(1.26,i),.2,"triangle",.2,null,i*.13); },
+    win(){ [0,4,7,12].forEach((s,i)=>tone(hz(s+12),.3,"triangle",.2,null,i*.1)); },
+    lose(){ tone(392,.22,"sawtooth",.18,196); tone(294,.4,"sawtooth",.16,120,.16); },
+    bark(){ tone(420,.09,"sawtooth",.2,240); tone(330,.11,"sawtooth",.16,180,.1); },
+    whoosh(){ noise(.3,.16,900); },
+    life(){ [0,5,9].forEach((s,i)=>tone(hz(s+19),.18,"sine",.16,null,i*.09)); }
+  };
+})();
+
+/* ============================================================
+   LEVEL GENERATION
+   100 levels. The (dog spot, layout, swarm formation) triple runs
+   on periods of 10 / 14 / 12, so the combination cannot repeat
+   inside 420 levels — every level differs before bee mixes,
+   hazards, movers and ink budgets are even applied.
+   ============================================================ */
+function mulberry32(a){
+  return function(){
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+const rect = (x,y,w,h,t)=>({x:Math.round(x),y:Math.round(y),w:Math.round(w),h:Math.round(h),t:t||"wood"});
+const jit  = (r,m)=>(r()*2-1)*m;
+
+/* --- where the puppy stands (10) --- */
+const DOG_SPOTS = [
+  {x:170, y:612, plat:null},
+  {x:640, y:612, plat:null},
+  {x:1110,y:612, plat:null},
+  {x:640, y:518, plat:[556,556,168,94]},
+  {x:172, y:330, plat:[74,368,196,26]},
+  {x:1108,y:330, plat:[1010,368,196,26]},
+  {x:640, y:298, plat:[548,336,184,26]},
+  {x:382, y:612, plat:null},
+  {x:898, y:612, plat:null},
+  {x:232, y:206, plat:[132,244,200,26]}
+];
+
+/* --- arena furniture (14) --- */
+const LAYOUTS = [
+  r=>[],
+  r=>[rect(400+jit(r,30),358,44,292), rect(836+jit(r,30),358,44,292)],
+  r=>[rect(480+jit(r,40),300,320,28)],
+  r=>[rect(250+jit(r,30),252,268,26), rect(762+jit(r,30),252,268,26)],
+  r=>[rect(200,0,44,168+jit(r,24)), rect(520,0,44,232+jit(r,24)),
+      rect(840,0,44,168+jit(r,24)), rect(1090,0,44,232+jit(r,24))],
+  r=>[rect(546+jit(r,26),236,188,190)],
+  r=>[rect(70,288+jit(r,26),44,362), rect(1166,288+jit(r,26),44,362)],
+  r=>[rect(180,556,176,26), rect(420,468,176,26), rect(660,380,176,26), rect(900,292,176,26)],
+  r=>[rect(300,0,296,42,"spike"), rect(760,0,240,42,"spike"), rect(596,120,168,26)],
+  r=>[rect(178+jit(r,20),222,300,26), rect(802-jit(r,20),222,300,26)],
+  r=>[rect(200,420,180,24), rect(556,320,180,24), rect(918,420,180,24)],
+  r=>[rect(618,168,44,344), rect(452,330,376,40)],
+  r=>[rect(282,518,40,132), rect(522,518,40,132), rect(762,518,40,132), rect(1002,518,40,132)],
+  r=>[rect(300,168,700,26), rect(300,168,26,178), rect(974,168,26,178)]
+];
+
+/* --- swarm formations: the puppy gets surrounded, not just rained on --- */
+function ringAt(n,cx,cy,rad,off){
+  const a=[]; for(let i=0;i<n;i++){ const t=(off||0)+i/n*Math.PI*2;
+    a.push({x:cx+Math.cos(t)*rad, y:cy+Math.sin(t)*rad}); } return a;
+}
+function arcAt(n,cx,cy,rad,a1,a2){
+  const a=[]; for(let i=0;i<n;i++){ const t=lerp(a1,a2,n===1?.5:i/(n-1));
+    a.push({x:cx+Math.cos(t)*rad, y:cy+Math.sin(t)*rad}); } return a;
+}
+function lineAt(n,y,x1,x2){
+  const a=[]; for(let i=0;i<n;i++) a.push({x:lerp(x1,x2,n===1?.5:i/(n-1)), y}); return a;
+}
+function colAt(n,x,y1,y2){
+  const a=[]; for(let i=0;i<n;i++) a.push({x, y:lerp(y1,y2,n===1?.5:i/(n-1))}); return a;
+}
+function halves(n,a,b){ return a(Math.ceil(n/2)).concat(b(Math.floor(n/2))); }
+const FORMATIONS = [
+  (n,r,d)=>ringAt(n,d.x,d.y,330,r()*6.28),
+  (n,r,d)=>ringAt(n,d.x,d.y,430,.4),
+  (n,r,d)=>halves(n, k=>ringAt(k,d.x,d.y,300,.2), k=>ringAt(k,d.x,d.y,460,.9)),
+  (n,r,d)=>halves(n, k=>colAt(k,110,110,600), k=>colAt(k,1170,110,600)),
+  (n,r,d)=>{ const q=[[190,150],[1090,150],[190,570],[1090,570]], a=[];
+    for(let i=0;i<n;i++){ const c=q[i%4]; a.push({x:c[0]+jit(r,80), y:c[1]+jit(r,70)}); } return a; },
+  (n,r,d)=>halves(n, k=>lineAt(k,110,150,1130), k=>lineAt(k,600,150,1130)),
+  (n,r,d)=>ringAt(n,d.x,d.y,380,Math.PI*.25),
+  (n,r,d)=>halves(n, k=>arcAt(k,d.x,d.y,340,Math.PI*.15,Math.PI*.85),
+                     k=>arcAt(k,d.x,d.y,340,Math.PI*1.15,Math.PI*1.85)),
+  (n,r,d)=>{ const a=[]; for(let i=0;i<n;i++){ const t=i/n*Math.PI*2*1.6;
+    a.push({x:d.x+Math.cos(t)*(290+i*14), y:d.y+Math.sin(t)*(290+i*14)}); } return a; },
+  (n,r,d)=>halves(n, k=>lineAt(k,110,150,1130), k=>ringAt(k,d.x,d.y,360,1.2)),
+  (n,r,d)=>{ const a=[]; for(let i=0;i<n;i++)
+    a.push({x:120+r()*(W-240), y:80+r()*(GROUND_Y-160)}); return a; },
+  (n,r,d)=>halves(n, k=>ringAt(k,d.x,d.y,320,0), k=>lineAt(k,600,120,1160))
+];
+
+/* --- species --- */
+const BEE_DEF = {
+  buzz : {r:13, spd:112, acc:180, m:1.0},
+  fast : {r:10, spd:190, acc:330, m:0.7},
+  heavy: {r:21, spd:76,  acc:120, m:3.2},
+  chew : {r:14, spd:104, acc:170, m:1.2},
+  zig  : {r:12, spd:132, acc:230, m:0.9},
+  split: {r:16, spd:98,  acc:150, m:1.5},
+  ghost: {r:13, spd:122, acc:195, m:1.0},
+  bomb : {r:14, spd:118, acc:200, m:1.2},
+  mini : {r:8,  spd:158, acc:280, m:0.4},
+  ant  : {r:12, spd:104, acc:520, m:2.8}
+};
+const TYPE_FIRST = { fast:14, heavy:24, chew:30, zig:40, split:52, ghost:70, bomb:80 };
+const HINTS = {
+  anchor:"Lines touching the ground or scenery hold firm. Loose ones get shoved by the swarm.",
+  fast : "Pale bees are fast — build your shelter early.",
+  heavy: "Bulky bees hit hard enough to shift a whole wall.",
+  chew : "Red chewers eat through your lines. Give them two layers.",
+  zig  : "Swervers weave sideways — flat walls won't hold them.",
+  split: "Purple bees burst into two smaller bees on impact.",
+  ghost: "Ghost bees slip through one wall — so give them two.",
+  bomb : "Bomb bees blow a hole in whatever they touch.",
+  ant  : "Ants march in along the floor. Your walls have to reach the ground.",
+  pack2: "Two puppies now. Lose either one and the run ends — shelter them together.",
+  pack3: "Three puppies. One roof has to cover the whole pack.",
+  lava : "Lava burns bees, ants and puppies alike. Keep him clear of the edge.",
+  water: "Water drowns bees, but the puppy can't swim either."
+};
+function typePool(L){
+  const p = ["buzz","buzz","buzz"];
+  if(L>=14) p.push("fast");
+  if(L>=24) p.push("heavy");
+  if(L>=30) p.push("chew","chew");
+  if(L>=40) p.push("zig");
+  if(L>=52) p.push("split");
+  if(L>=62) p.push("fast","chew");
+  if(L>=70) p.push("ghost");
+  if(L>=80) p.push("bomb");
+  if(L>=90) p.push("ghost","zig","bomb");
+  return p;
+}
+
+function makeLevel(L){
+  const rng = mulberry32(1337 + L*7919);
+  const spot = DOG_SPOTS[L % 10];
+  const onGround = spot.y > 580;
+  const lv = {
+    id:L,
+    dog:{x:spot.x, y:spot.y, r:34},
+    walls:[], movers:[], fans:[], noDraw:[], hazards:[], bees:[], ants:0,
+    ink:0, survive: 5 + Math.min(3, Math.floor(L/26)),
+    dogs:[], packHalf:0, hive:{x:1140,y:104}, hints:[]
+  };
+
+  const raw = LAYOUTS[(L*3) % 14](rng);
+  for(const w of raw){
+    const cx = clamp(lv.dog.x, w.x, w.x+w.w), cy = clamp(lv.dog.y, w.y, w.y+w.h);
+    if(dist(lv.dog.x, lv.dog.y, cx, cy) > 128) lv.walls.push(w);
+  }
+  if(spot.plat) lv.walls.push(rect(spot.plat[0],spot.plat[1],spot.plat[2],spot.plat[3]));
+  if(L>=56 && L%5===0) lv.walls.push(rect(60,0,180,40,"spike"), rect(1040,0,180,40,"spike"));
+
+  /* hazards: a pool on the grass, or one right under the puppy's ledge */
+  const wantLava  = L>=18 && L%6===2;
+  const wantWater = L>=26 && L%6===5;
+  if(wantLava || wantWater){
+    const kind = wantLava ? "lava" : "water";
+    if(onGround){
+      const px = lv.dog.x > 640 ? 120 : 760;
+      if(Math.abs((px+200) - lv.dog.x) > 250)
+        lv.hazards.push({x:px, y:GROUND_Y-18, w:400, h:62, kind});
+    } else {
+      lv.hazards.push({x:clamp(lv.dog.x-230,20,W-480), y:GROUND_Y-18, w:460, h:62, kind});
+    }
+    if(lv.hazards.length) lv.hints.push(kind);
+  }
+
+  /* swarm */
+  const n = clamp(3 + Math.round(L*0.225), 3, 26);
+  const pts = FORMATIONS[(L*7) % 12](n, rng, lv.dog);
+  const pool = typePool(L);
+  let forced = null;
+  for(const k in TYPE_FIRST) if(L>=TYPE_FIRST[k] && L<TYPE_FIRST[k]+4) forced = k;
+  const cap = {bomb:1, ghost:2, split:3, chew:4, heavy:4}, used = {};
+  const BREAKER = {bomb:1, ghost:1, chew:1, heavy:1};
+  let breakers = 0;
+  for(let i=0;i<pts.length;i++){
+    let t;
+    if(i===0 && forced) t = forced;
+    else {
+      let guard = 0;
+      do { t = pool[Math.floor(rng()*pool.length)]; guard++; }
+      while(cap[t] && (used[t]||0) >= cap[t] && guard < 24);
+      if(cap[t] && (used[t]||0) >= cap[t]) t = "buzz";
+    }
+    if(BREAKER[t]){
+      if(breakers >= 5){
+        const alt = ["buzz","fast","zig","split"].filter(k=>!TYPE_FIRST[k] || L >= TYPE_FIRST[k]);
+        t = alt[i % alt.length];
+      }
+      else breakers++;
+    }
+    used[t] = (used[t]||0)+1;
+    lv.bees.push({x:pts[i].x, y:pts[i].y, type:t});
+  }
+  if(forced) lv.hints.push(forced);
+  if(L === 1) lv.hints.unshift("anchor");
+
+  /* one shelter, more than one puppy — losing any of them ends the run */
+  const narrow = !!spot.plat;            // a ledge can only hold so many puppies
+  const pack = L < 10 ? 1 : (L < 45 ? 2 : (narrow ? 2 : 3));
+  const spread = pack === 1 ? [0] : (pack === 2 ? [-40, 40] : [-72, 0, 72]);
+  lv.dogs = spread.map(o=>({x:clamp(lv.dog.x+o, 56, W-56), y:lv.dog.y, r:lv.dog.r}));
+  lv.packHalf = pack === 1 ? 0 : (pack === 2 ? 40 : 72);
+  if(pack === 2) lv.hints.push("pack2");
+  if(pack === 3) lv.hints.push("pack3");
+
+  /* ants only where they can actually reach him */
+  if(L>=34 && L%3===1 && onGround){
+    lv.ants = clamp(2 + Math.floor(L/26), 2, 6);
+    lv.hints.push("ant");
+  }
+
+  /* moving blocks grind through ink, so their whole sweep must stay
+     well outside the space the player needs for a shelter */
+  if(L>=39 && L%3!==0){
+    const count = L>=72 ? 2 : 1;
+    const clearOf = m=>{
+      const sx = Math.min(m.ax,m.bx), sy = Math.min(m.ay,m.by);
+      const sw = Math.abs(m.bx-m.ax)+m.w, sh = Math.abs(m.by-m.ay)+m.h;
+      const qx = clamp(lv.dog.x, sx, sx+sw), qy = clamp(lv.dog.y, sy, sy+sh);
+      return dist(lv.dog.x, lv.dog.y, qx, qy) > 300;
+    };
+    for(let i=0;i<count;i++){
+      const vertical = ((L+i) % 2) === 1;
+      let placed = null;
+      const lanes = vertical ? [340,940,180,1100,640] : [200,380,540,140];
+      for(const lane of lanes){
+        const m = vertical
+          ? {x:lane, y:150, w:34, h:130, ax:lane, ay:150, bx:lane, by:400,
+             period:3.4+rng()*1.6, ph:rng()*6}
+          : {x:200, y:lane, w:150, h:32, ax:200, ay:lane, bx:930, by:lane,
+             period:4.2+rng()*1.8, ph:rng()*6};
+        if(clearOf(m) && !lv.movers.some(o=>Math.abs(o.ax-m.ax)<80 && Math.abs(o.ay-m.ay)<80)){
+          placed = m; break;
+        }
+      }
+      if(placed) lv.movers.push(placed);
+    }
+  }
+  if(L>=49 && (L%4===1 || L%4===2)){
+    const count = L>=85 ? 2 : 1;
+    for(let i=0;i<count;i++){
+      const left = ((L+i)%2)===0;
+      const f = {x: left?40:W-220, y: 140+i*230, w:180, h:190, dx:left?1:-1, dy:0, force:190};
+      if(dist(lv.dog.x,lv.dog.y, f.x+f.w/2, f.y+f.h/2) > 220) lv.fans.push(f);
+    }
+  }
+  if(L>=79 && L%3!==0){
+    const cands = [rect(500,120,280,150), rect(120,300,220,180), rect(940,300,220,180), rect(480,420,300,150)];
+    for(const c of cands){
+      if(lv.noDraw.length >= (L>=92?2:1)) break;
+      if(dist(lv.dog.x,lv.dog.y, c.x+c.w/2, c.y+c.h/2) > 300) lv.noDraw.push(c);
+    }
+  }
+
+  sanitize(lv);
+
+  let threat = 0;
+  for(const b of lv.bees) if(BREAKER[b.type]) threat++;
+  lv.ink = Math.round(clamp(1000 - L*3.2, 790, 1000) + lv.bees.length*38 + threat*54
+                      + lv.ants*40 + lv.packHalf*3.4);
+  return lv;
+}
+
+function sanitize(lv){
+  const blocked = (x,y,pad)=>{
+    for(const w of lv.walls)
+      if(x > w.x-pad && x < w.x+w.w+pad && y > w.y-pad && y < w.y+w.h+pad) return true;
+    for(const h of lv.hazards)
+      if(x > h.x-pad && x < h.x+h.w+pad && y > h.y-pad && y < h.y+h.h+pad) return true;
+    return false;
+  };
+  const ok = (x,y,r)=> x>50 && x<W-50 && y>50 && y<GROUND_Y-50 &&
+                       dist(x,y,lv.dog.x,lv.dog.y) >= 262 + lv.packHalf && !blocked(x,y,r+8);
+
+  for(const b of lv.bees){
+    const r = BEE_DEF[b.type].r;
+    b.x = clamp(b.x, 50, W-50); b.y = clamp(b.y, 50, GROUND_Y-50);
+    if(ok(b.x,b.y,r)) continue;
+    let placed = false;
+    for(let ring=0; ring<4 && !placed; ring++){
+      const d = 280 + lv.packHalf + ring*52;
+      for(let k=0;k<18 && !placed;k++){
+        const a = k/18*Math.PI*2 + ring*.31;
+        const x = lv.dog.x + Math.cos(a)*d, y = lv.dog.y + Math.sin(a)*d;
+        if(ok(x,y,r)){ b.x = x; b.y = y; placed = true; }
+      }
+    }
+    if(!placed){ b.x = lv.dog.x > 640 ? 150 : 1130; b.y = 100; }
+  }
+  let hx=0, hy=0; for(const b of lv.bees){ hx+=b.x; hy+=b.y; }
+  lv.hive.x = clamp(hx/lv.bees.length, 120, W-120);
+  lv.hive.y = clamp(hy/lv.bees.length - 90, 70, 400);
+}
+
+const LEVELS = [];
+for(let i=1;i<=100;i++) LEVELS.push(makeLevel(i));
+
+/* ============================================================
+   GAME STATE
+   ============================================================ */
+const G = {
+  screen:"start", paused:false,
+  dogs:[],
+  level:1, def:null,
+  phase:"plan",
+  bees:[], bodies:[], strokes:[], walls:[], solids:[], movers:[], fans:[], noDraw:[], hazards:[],
+  dog:{x:640,y:612,r:34,vx:0,vy:0,invM:1/9,mood:"scared"},
+  ink:0, inkMax:0, timer:0, survive:5, failCause:"bee",
+  drawing:null, strokeId:0, bodyId:0, dirty:false,
+  parts:[], shake:0, t:0, endAt:0, view:{s:1,ox:0,oy:0}
+};
+const STROKE_HALF = 5.5;
+const SEG_HP = 100;
+const SAMPLE = 7;
+const WELD = 15;
+const BEE_SPEED = 5;      // flight-speed multiplier for the swarm (ants excluded)
+const SPEED_CAP = 1400;
+const HOP = 4.5;          // furthest a bee may move between collision checks   // keeps a step short enough to never skip through ink
+const LEAN_F = 300;     // steady shove a leaning bee applies to loose ink
+const ANCH_LEAN = 300;  // same, but bowing a fixed wall instead of moving it
+const ANCH_K = 150;     // how stiffly a fixed wall springs back
+const ANCH_D = 11;
+const ANCH_MAX = 22;    // furthest a fixed wall can bow
+const ANCH_GIVE = 0.55; // how much of an impact a fixed wall absorbs as flex
+const DOG_MASS = 9;
+
+function border(){
+  return [
+    rect(-60, GROUND_Y, W+120, H-GROUND_Y+120),
+    rect(-60, -140, W+120, 140),
+    rect(-140, -140, 140, H+280),
+    rect(W, -140, 140, H+280)
+  ];
+}
+
+function loadLevel(n){
+  const def = LEVELS[clamp(n,1,100)-1];
+  G.level = n; G.def = def; G.phase = "plan"; G.failCause = "bee";
+  G.dogs = def.dogs.map(d=>({x:d.x, y:d.y, r:d.r, vx:0, vy:0, invM:1/DOG_MASS, mood:"scared"}));
+  G.dog = G.dogs[(G.dogs.length-1) >> 1];          // reference puppy, for spawn distances
+  G.walls = def.walls; G.hazards = def.hazards;
+  G.movers = def.movers.map(m=>Object.assign({}, m, {x:m.ax, y:m.ay, tt:0}));
+  G.fans = def.fans; G.noDraw = def.noDraw;
+  G.solids = border().concat(def.walls);
+  G.bodies = []; G.strokes = []; G.strokeId = 0; G.bodyId = 0; G.drawing = null;
+  G.ink = G.inkMax = def.ink;
+  G.survive = def.survive; G.timer = def.survive;
+  G.parts = []; G.shake = 0; G.t = 0; G.endAt = 0;
+
+  const boost = 1 + Math.min(.28, n*.0026);
+  G.bees = def.bees.map(b=>spawnBee(b.x, b.y, b.type, boost));
+  /* ants march in from an edge — never one the puppy is already standing near */
+  const leftOk = Math.abs(def.dog.x - 60) > 300, rightOk = Math.abs(def.dog.x - (W-60)) > 300;
+  for(let i=0;i<def.ants;i++){
+    let left = i % 2 === 0;
+    if(left && !leftOk) left = false;
+    if(!left && !rightOk) left = true;
+    G.bees.push(spawnBee(left ? 46 + i*30 : W-46 - i*30, GROUND_Y-20, "ant", boost));
+  }
+
+  const seen = Save.get("smd_seen",{});
+  const fresh = def.hints.find(h=>!seen[h]);
+  if(fresh){ seen[fresh] = 1; Save.set("smd_seen", seen); showHint(HINTS[fresh]); }
+  else hideHint();
+  Snd.setTrack("game");
+}
+function spawnBee(x,y,type,boost){
+  const d = BEE_DEF[type];
+  return {
+    x, y, sx:x, sy:y, vx:0, vy:0, type,
+    r:d.r, spd:Math.min(d.spd*boost*(type==="ant"?1:BEE_SPEED), SPEED_CAP),
+    acc:d.acc*boost*(type==="ant"?1:BEE_SPEED), mass:d.m, invM:1/d.m,
+    alive:true, wob:Math.random()*6.28, ground:false, drown:0,
+    ghosting:false, phaseCharge:type==="ghost"?1:0, phaseT:0,
+    didSplit:false, hitCd:0, chewing:0
+  };
+}
+
+/* ============================================================
+   DRAWING — every stroke becomes a physical object
+   ============================================================ */
+function packCentre(){
+  let sx = 0, sy = 0;
+  for(const d of G.dogs){ sx += d.x; sy += d.y; }
+  return {x:sx/G.dogs.length, y:sy/G.dogs.length};
+}
+function nearestDog(x,y){
+  let best = G.dogs[0], bd = Infinity;
+  for(const d of G.dogs){ const q = dist(x,y,d.x,d.y); if(q < bd){ bd = q; best = d; } }
+  return best;
+}
+function nearAnyDog(x,y,pad){
+  for(const d of G.dogs) if(dist(x,y,d.x,d.y) < d.r + pad) return true;
+  return false;
+}
+function canDraw(){ return G.screen==="game" && !G.paused && (G.phase==="plan"||G.phase==="run"); }
+function inNoDraw(x,y){
+  for(const z of G.noDraw) if(x>z.x&&x<z.x+z.w&&y>z.y&&y<z.y+z.h) return true;
+  return false;
+}
+function newBody(){
+  return {id:++G.bodyId, cx:0, cy:0, ang:0, vx:0, vy:0, av:0,
+          sx:0, sy:0, svx:0, svy:0,
+          mass:1e9, I:1e9, invM:0, invI:0, rad:1e6, len:0, anchored:true, segs:[]};
+}
+function strokeStart(x,y){
+  if(!canDraw() || G.ink<=0 || inNoDraw(x,y)) return;
+  if(nearAnyDog(x,y,14)) return;
+  G.strokeId++;
+  const body = newBody();
+  body.cx = x; body.cy = y;
+  G.bodies.push(body);
+  G.drawing = {id:G.strokeId, body, x, y};
+  G.strokes.push({id:G.strokeId, cost:0});
+}
+function strokeMove(x,y){
+  const d = G.drawing;
+  if(!d) return;
+  if(inNoDraw(x,y) || nearAnyDog(x,y,14)){ strokeEnd(); return; }
+  let len = dist(d.x,d.y,x,y);
+  if(len < SAMPLE) return;
+  if(len > G.ink){ const k = G.ink/len; x = d.x+(x-d.x)*k; y = d.y+(y-d.y)*k; len = G.ink; }
+  if(len < .5){ strokeEnd(); return; }
+  if(countSegs() < 620){
+    d.body.segs.push({ax:d.x, ay:d.y, bx:x, by:y, lax:0, lay:0, lbx:0, lby:0, hp:SEG_HP, sid:d.id});
+    const st = G.strokes[G.strokes.length-1];
+    if(st && st.id===d.id) st.cost += len;
+  }
+  G.ink = Math.max(0, G.ink-len);
+  d.x = x; d.y = y;
+  if(Math.random()<.35) Snd.inkTick();
+  if(G.ink<=0) strokeEnd();
+}
+function strokeEnd(){
+  if(!G.drawing) return;
+  const id = G.drawing.id, body = G.drawing.body;
+  G.drawing = null;
+  if(!body.segs.length){
+    G.bodies = G.bodies.filter(b=>b!==body);
+    const i = G.strokes.findIndex(s=>s.id===id);
+    if(i>=0) G.strokes.splice(i,1);
+    return;
+  }
+  weld(body);
+  Snd.strokeEnd();
+}
+function countSegs(){ let n=0; for(const b of G.bodies) n += b.segs.length; return n; }
+
+/* a new stroke laid across existing ink fuses with it into one object */
+function weld(body){
+  const touching = [];
+  for(const other of G.bodies){
+    if(other === body || !other.segs.length) continue;
+    let hit = false;
+    for(const s of body.segs){
+      for(const o of other.segs){
+        if(o.dead) continue;
+        if(segNear(s,o,WELD)){ hit = true; break; }
+      }
+      if(hit) break;
+    }
+    if(hit) touching.push(other);
+  }
+  for(const other of touching){
+    for(const s of other.segs) if(!s.dead) body.segs.push(s);
+    other.segs.length = 0;
+  }
+  G.bodies = G.bodies.filter(b=>b===body || b.segs.length);
+  finalize(body);
+}
+function segNear(a,b,tol){
+  return ptSegDist(a.ax,a.ay,b) < tol || ptSegDist(a.bx,a.by,b) < tol ||
+         ptSegDist(b.ax,b.ay,a) < tol || ptSegDist(b.bx,b.by,a) < tol;
+}
+function ptSegDist(px,py,s){
+  const dx = s.bx-s.ax, dy = s.by-s.ay, l2 = dx*dx+dy*dy||1;
+  let t = ((px-s.ax)*dx + (py-s.ay)*dy)/l2; t = t<0?0:(t>1?1:t);
+  return Math.hypot(px-(s.ax+dx*t), py-(s.ay+dy*t));
+}
+function touchesScenery(x,y){
+  for(const w of G.solids){
+    const qx = clamp(x,w.x,w.x+w.w), qy = clamp(y,w.y,w.y+w.h);
+    if(dist(x,y,qx,qy) < STROKE_HALF+9) return true;
+  }
+  return false;
+}
+/* centre of mass, inertia, and whether the object is braced against scenery */
+function finalize(body){
+  body.segs = body.segs.filter(s=>!s.dead);
+  const segs = body.segs;
+  if(!segs.length){ G.bodies = G.bodies.filter(b=>b!==body); return; }
+  let sx=0, sy=0, tl=0;
+  for(const s of segs){
+    const l = Math.hypot(s.bx-s.ax, s.by-s.ay) || 1;
+    sx += (s.ax+s.bx)/2*l; sy += (s.ay+s.by)/2*l; tl += l;
+  }
+  body.cx = sx/tl; body.cy = sy/tl; body.ang = 0;
+  body.vx = body.vy = body.av = 0;
+  body.sx = body.sy = body.svx = body.svy = 0;
+  let rad = 0, sum = 0, anchored = false;
+  body.anchors = [];
+  for(const s of segs){
+    s.lax = s.ax-body.cx; s.lay = s.ay-body.cy;
+    s.lbx = s.bx-body.cx; s.lby = s.by-body.cy;
+    rad = Math.max(rad, Math.hypot(s.lax,s.lay), Math.hypot(s.lbx,s.lby));
+    const mx=(s.lax+s.lbx)/2, my=(s.lay+s.lby)/2;
+    sum += mx*mx+my*my;
+    if(touchesScenery(s.ax,s.ay)){ anchored = true; body.anchors.push([s.ax,s.ay]); }
+    if(touchesScenery(s.bx,s.by)){ anchored = true; body.anchors.push([s.bx,s.by]); }
+  }
+  body.rad = rad + STROKE_HALF + 2;
+  body.len = tl;
+  body.mass = Math.max(4, tl*0.042);
+  body.I = Math.max(600, body.mass*(sum/segs.length + 260));
+  body.anchored = anchored;
+  body.invM = anchored ? 0 : 1/body.mass;
+  body.invI = anchored ? 0 : 1/body.I;
+}
+function updateWorld(body){
+  const c = Math.cos(body.ang), s = Math.sin(body.ang);
+  const ox = body.cx + body.sx, oy = body.cy + body.sy;
+  for(const g of body.segs){
+    g.ax = ox + g.lax*c - g.lay*s;  g.ay = oy + g.lax*s + g.lay*c;
+    g.bx = ox + g.lbx*c - g.lby*s;  g.by = oy + g.lbx*s + g.lby*c;
+  }
+}
+function undoStroke(){
+  if(G.phase!=="plan" || !G.strokes.length) return;
+  const st = G.strokes.pop();
+  for(const b of G.bodies){
+    const keep = b.segs.filter(s=>s.sid!==st.id);
+    if(keep.length !== b.segs.length){ b.segs = keep; if(keep.length) finalize(b); }
+  }
+  G.bodies = G.bodies.filter(b=>b.segs.length);
+  G.ink = Math.min(G.inkMax, G.ink + st.cost);
+  Snd.click();
+}
+function clearStrokes(){
+  if(G.phase!=="plan" || !G.strokes.length) return;
+  G.bodies = []; G.strokes = []; G.ink = G.inkMax; G.drawing = null;
+  Snd.whoosh();
+}
+
+/* ============================================================
+   PHYSICS
+   ============================================================ */
+function circleRect(cx,cy,r,w){
+  const nx = clamp(cx,w.x,w.x+w.w), ny = clamp(cy,w.y,w.y+w.h);
+  let dx = cx-nx, dy = cy-ny, d = Math.hypot(dx,dy);
+  if(d > 0.0001) return d>=r ? null : {nx:dx/d, ny:dy/d, pen:r-d};
+  const l = cx-w.x, rt = w.x+w.w-cx, tp = cy-w.y, bt = w.y+w.h-cy;
+  const m = Math.min(l,rt,tp,bt);
+  if(m===l)  return {nx:-1,ny:0,pen:l+r};
+  if(m===rt) return {nx:1, ny:0,pen:rt+r};
+  if(m===tp) return {nx:0,ny:-1,pen:tp+r};
+  return {nx:0,ny:1,pen:bt+r};
+}
+function circleSeg(cx,cy,r,s){
+  const dx = s.bx-s.ax, dy = s.by-s.ay;
+  const l2 = dx*dx+dy*dy || 1;
+  let t = ((cx-s.ax)*dx + (cy-s.ay)*dy)/l2; t = t<0?0:(t>1?1:t);
+  const px = s.ax+dx*t, py = s.ay+dy*t;
+  let ox = cx-px, oy = cy-py, d = Math.hypot(ox,oy);
+  const R = r + STROKE_HALF;
+  if(d >= R) return null;
+  if(d < 0.0001){ ox = -dy; oy = dx; d = Math.hypot(ox,oy)||1; }
+  return {nx:ox/d, ny:oy/d, pen:R-d, px, py};
+}
+function inRect(x,y,z){ return x>z.x && x<z.x+z.w && y>z.y && y<z.y+z.h; }
+
+/* impulse between a moving circle and a line object; n points body -> circle */
+function bodyHit(body, obj, n, rest, h){
+  const rx = n.px - body.cx, ry = n.py - body.cy;
+  const vpx = body.vx - body.av*ry, vpy = body.vy + body.av*rx;
+  const rvx = obj.vx - vpx, rvy = obj.vy - vpy;
+  const vn = rvx*n.nx + rvy*n.ny;
+  const rn = rx*n.ny - ry*n.nx;
+  const denom = obj.invM + body.invM + rn*rn*body.invI;
+  let j = 0;
+  if(vn < 0 && denom > 0){
+    j = -(1+rest)*vn/denom;
+    obj.vx += j*n.nx*obj.invM; obj.vy += j*n.ny*obj.invM;
+    body.vx -= j*n.nx*body.invM; body.vy -= j*n.ny*body.invM;
+    body.av -= j*rn*body.invI;
+  }
+  const share = body.invM > 0 ? obj.invM/(obj.invM+body.invM) : 1;
+  obj.x += n.nx*n.pen*share; obj.y += n.ny*n.pen*share;
+  if(body.invM > 0){
+    body.cx -= n.nx*n.pen*(1-share); body.cy -= n.ny*n.pen*(1-share);
+  }
+  /* a crowd leaning on ink keeps pushing, it doesn't just bounce once */
+  const m = obj.mass || 1;
+  if(h){
+    if(body.invM > 0){
+      const acc = LEAN_F*m*body.invM*h;
+      body.vx -= n.nx*acc; body.vy -= n.ny*acc;
+      body.av -= rn*LEAN_F*m*body.invI*h;
+    } else {
+      const acc = ANCH_LEAN*m*h;
+      body.svx -= n.nx*acc; body.svy -= n.ny*acc;
+    }
+  }
+  if(body.invM <= 0 && vn < 0){
+    body.svx -= n.nx*vn*ANCH_GIVE*m; body.svy -= n.ny*vn*ANCH_GIVE*m;
+  }
+  return j;
+}
+function damageSeg(s,d,x,y){
+  s.hp -= d;
+  if(s.hp <= 0 && !s.dead){
+    s.dead = true; G.dirty = true;
+    burst(x,y,10,"#2f6fed"); Snd.breakWall();
+  }
+}
+function explode(x,y,rad){
+  for(const b of G.bodies) for(const s of b.segs){
+    if(s.dead) continue;
+    if(ptSegDist(x,y,s) < rad){ s.dead = true; G.dirty = true; }
+  }
+  burst(x,y,34,"#ff9a3c"); burst(x,y,16,"#5b3a1a");
+  G.shake = Math.max(G.shake, 16); Snd.boom();
+}
+function splitBee(b){
+  for(let i=0;i<2;i++){
+    const a = Math.random()*6.28;
+    const m = spawnBee(b.x+Math.cos(a)*16, b.y+Math.sin(a)*16, "mini", 1);
+    m.vx = Math.cos(a)*120; m.vy = Math.sin(a)*120; m.didSplit = true; m.hitCd = .2;
+    G.bees.push(m);
+  }
+  b.alive = false; burst(b.x,b.y,14,"#b06ae0"); Snd.zap();
+}
+function hazardAt(x,y){
+  for(const h of G.hazards) if(inRect(x,y,h)) return h;
+  return null;
+}
+
+function stepPhysics(h){
+  G.t += h;
+  const running = G.phase === "run";
+  const finished = G.phase === "won" || G.phase === "lost";
+
+  for(const m of G.movers){
+    m.tt += h;
+    const k = .5 - .5*Math.cos((m.tt/m.period + m.ph)*Math.PI*2);
+    m.x = lerp(m.ax,m.bx,k); m.y = lerp(m.ay,m.by,k);
+    for(const b of G.bodies) for(const s of b.segs){
+      if(s.dead) continue;
+      if(circleRect((s.ax+s.bx)/2,(s.ay+s.by)/2, STROKE_HALF+2, m) ||
+         circleRect(s.ax,s.ay,STROKE_HALF+2,m) || circleRect(s.bx,s.by,STROKE_HALF+2,m)){
+        s.dead = true; G.dirty = true; burst((s.ax+s.bx)/2,(s.ay+s.by)/2,4,"#2f6fed");
+      }
+    }
+  }
+  const solids = G.solids.concat(G.movers);
+  const held = G.drawing && G.drawing.body;
+
+  /* fixed ink bows under pressure and springs back */
+  for(const body of G.bodies){
+    if(!body.anchored || body === held) continue;
+    body.svx += (-ANCH_K*body.sx - ANCH_D*body.svx)*h;
+    body.svy += (-ANCH_K*body.sy - ANCH_D*body.svy)*h;
+    body.sx += body.svx*h; body.sy += body.svy*h;
+    const off = Math.hypot(body.sx,body.sy);
+    if(off > ANCH_MAX){
+      body.sx = body.sx/off*ANCH_MAX; body.sy = body.sy/off*ANCH_MAX;
+      body.svx *= .35; body.svy *= .35;
+    }
+    if(off > .04 || Math.abs(body.svx)+Math.abs(body.svy) > .04) updateWorld(body);
+  }
+
+  /* loose ink drifts, spins and piles up against the scenery */
+  for(const body of G.bodies){
+    if(body.anchored || body === held) continue;
+    body.cx += body.vx*h; body.cy += body.vy*h; body.ang += body.av*h;
+    body.vx *= Math.exp(-1.5*h); body.vy *= Math.exp(-1.5*h); body.av *= Math.exp(-2.4*h);
+    const sp = Math.hypot(body.vx,body.vy);
+    if(sp > 430){ body.vx = body.vx/sp*430; body.vy = body.vy/sp*430; }
+    body.av = clamp(body.av, -7, 7);
+    updateWorld(body);
+    for(const s of body.segs){
+      if(s.dead) continue;
+      for(const w of solids){
+        const pts = [[s.ax,s.ay],[s.bx,s.by]];
+        for(let i=0;i<2;i++){
+          const n = circleRect(pts[i][0],pts[i][1],STROKE_HALF,w);
+          if(!n) continue;
+          body.cx += n.nx*n.pen; body.cy += n.ny*n.pen;
+          const vn = body.vx*n.nx + body.vy*n.ny;
+          if(vn < 0){ body.vx -= 1.35*vn*n.nx; body.vy -= 1.35*vn*n.ny; }
+          body.av *= .82;
+        }
+      }
+    }
+    updateWorld(body);
+  }
+
+  /* the swarm */
+  for(const b of G.bees){
+    if(!b.alive) continue;
+    const ant = b.type === "ant";
+    b.wob += h*7; b.hitCd = Math.max(0, b.hitCd-h);
+
+    if(b.type === "ghost" && b.phaseCharge > 0 && running){
+      if(b.phaseT > 0){
+        b.phaseT -= h;
+        if(b.phaseT <= 0){ b.phaseCharge = 0; b.ghosting = false; burst(b.x,b.y,12,"#cfe6ff"); Snd.zap(); }
+      } else {
+        for(const bd of G.bodies){
+          if(dist(b.x,b.y,bd.cx,bd.cy) > bd.rad + 40) continue;
+          for(const s of bd.segs) if(!s.dead && circleSeg(b.x,b.y,b.r+3,s)){ b.phaseT = .30; b.ghosting = true; break; }
+          if(b.ghosting) break;
+        }
+      }
+    }
+
+    if(G.phase === "won" && !ant){
+      b.vy -= 900*h; b.vx += Math.cos(b.wob)*60*h;
+    } else if(ant){
+      if(running){
+        const dir = Math.sign(nearestDog(b.x,b.y).x - b.x) || 1;
+        b.vx += dir*b.acc*h;
+        if(Math.abs(b.vx) > b.spd) b.vx = Math.sign(b.vx)*b.spd;
+      } else b.vx *= Math.exp(-6*h);
+      b.vy += 1500*h;
+      if(b.vy > 900) b.vy = 900;
+    } else if(!running){
+      b.vx += ((b.sx-b.x)*2.2 + Math.cos(b.wob*.7)*34)*h;
+      b.vy += ((b.sy-b.y)*2.2 + Math.sin(b.wob)*34)*h;
+      b.vx *= .965; b.vy *= .965;
+    } else {
+      const tgt = nearestDog(b.x,b.y);
+      let tx = tgt.x, ty = tgt.y;
+      if(b.type === "zig"){
+        const dx = tx-b.x, dy = ty-b.y, d = Math.hypot(dx,dy)||1;
+        tx += (-dy/d)*Math.sin(G.t*3.4 + b.wob)*190;
+        ty += ( dx/d)*Math.sin(G.t*3.4 + b.wob)*190;
+      }
+      const dx = tx-b.x, dy = ty-b.y, d = Math.hypot(dx,dy)||1;
+      const acc = b.chewing > 0 ? b.acc*.35 : b.acc;
+      b.vx += dx/d*acc*h; b.vy += dy/d*acc*h;
+      b.vx += Math.cos(b.wob*1.3)*26*h; b.vy += Math.sin(b.wob*1.1)*26*h;
+      for(const f of G.fans) if(inRect(b.x,b.y,f)){ b.vx += f.dx*f.force*h; b.vy += f.dy*f.force*h; }
+      const sp = Math.hypot(b.vx,b.vy), cap = b.chewing>0 ? b.spd*.5 : b.spd;
+      if(sp > cap){ b.vx = b.vx/sp*cap; b.vy = b.vy/sp*cap; }
+    }
+    b.chewing = Math.max(0, b.chewing - h);
+
+    /* a fast bee covers more ground per tick than a wall is thick, so walk it
+       forward in short hops and test for contact after each one */
+    const travel = Math.hypot(b.vx, b.vy)*h;
+    const hops = travel > HOP ? Math.min(8, Math.ceil(travel/HOP)) : 1;
+    const hs = h/hops;
+
+    for(let hop = 0; hop < hops && b.alive; hop++){
+      b.x += b.vx*hs; b.y += b.vy*hs;
+
+      const hz = hazardAt(b.x, b.y);
+      if(hz && !finished){
+        if(hz.kind === "lava"){ b.alive = false; burst(b.x,b.y,16,"#ff7a2f"); Snd.zap(); break; }
+        b.vx *= Math.exp(-5*hs); b.vy = Math.min(b.vy, 40) + 120*hs;
+        b.drown += hs;
+        if(b.drown > 1.4){ b.alive = false; burst(b.x,b.y,12,"#7fd3ff"); Snd.zap(); break; }
+      }
+
+      b.ground = false;
+      for(const w of solids){
+        const n = circleRect(b.x,b.y,b.r,w);
+        if(!n) continue;
+        if(w.t === "spike" && !finished){ b.alive = false; burst(b.x,b.y,16,"#ffd24a"); Snd.zap(); break; }
+        b.x += n.nx*n.pen; b.y += n.ny*n.pen;
+        const vn = b.vx*n.nx + b.vy*n.ny;
+        if(vn < 0){ const e = ant?0:.55; b.vx -= (1+e)*vn*n.nx; b.vy -= (1+e)*vn*n.ny; }
+        if(n.ny < -.5) b.ground = true;
+      }
+      if(!b.alive) break;
+
+      if(!b.ghosting && !finished){
+        for(const body of G.bodies){
+          if(dist(b.x,b.y,body.cx,body.cy) > body.rad + b.r + 8) continue;
+          for(const s of body.segs){
+            if(s.dead) continue;
+            const n = circleSeg(b.x,b.y,b.r,s);
+            if(!n) continue;
+            if(b.type === "bomb"){ explode(b.x,b.y,46); b.alive = false; break; }
+            if(b.type === "split" && !b.didSplit){ splitBee(b); break; }
+            if(b.type === "chew" || ant){
+              b.chewing = .25;
+              damageSeg(s, (ant?20:32)*hs, n.px, n.py);
+              if(Math.random() < hs*9) Snd.chew();
+              bodyHit(body, b, n, 0, hs);
+              continue;
+            }
+            if(b.type === "heavy" && b.hitCd <= 0){ b.hitCd = .3; damageSeg(s, 26, n.px, n.py); }
+            const j = bodyHit(body, b, n, .78, hs);
+            if(b.hitCd <= 0 && j > 60){ b.hitCd = .12; Snd.bounce(); burst(n.px,n.py,3,"#ffffff"); }
+          }
+          if(!b.alive) break;
+        }
+      }
+    }
+    if(!b.alive) continue;
+
+    b.x = clamp(b.x, -40, W+40); b.y = clamp(b.y, -240, H+60);
+
+    if(running) for(const d of G.dogs) if(dist(b.x,b.y,d.x,d.y) < b.r + d.r){ fail(ant ? "ant" : "bee"); break; }
+  }
+
+  /* the puppy has weight — he can be shoved off a ledge, and he can fall */
+  if(!finished) for(const dog of G.dogs){
+    dog.vy += 1500*h;
+    dog.vx *= Math.exp(-7*h);
+    dog.x += dog.vx*h; dog.y += dog.vy*h;
+    for(const w of solids){
+      const n = circleRect(dog.x,dog.y,dog.r,w);
+      if(!n) continue;
+      dog.x += n.nx*n.pen; dog.y += n.ny*n.pen;
+      const vn = dog.vx*n.nx + dog.vy*n.ny;
+      if(vn < 0){ dog.vx -= vn*n.nx; dog.vy -= vn*n.ny; }
+    }
+    for(const body of G.bodies){
+      if(dist(dog.x,dog.y,body.cx,body.cy) > body.rad + dog.r + 8) continue;
+      for(const s of body.segs){
+        if(s.dead) continue;
+        const n = circleSeg(dog.x,dog.y,dog.r,s);
+        if(n) bodyHit(body, dog, n, .05, h);
+      }
+    }
+    dog.x = clamp(dog.x, 30, W-30);
+    for(const mate of G.dogs){            // littermates jostle instead of merging
+      if(mate === dog) continue;
+      const dd = dist(dog.x,dog.y,mate.x,mate.y), want = dog.r + mate.r;
+      if(dd < want && dd > .01){
+        const k = (want-dd)*.5;
+        const px = (dog.x-mate.x)/dd*k, py = (dog.y-mate.y)/dd*k;
+        dog.x += px; dog.y += py; mate.x -= px; mate.y -= py;
+      }
+    }
+    if(hazardAt(dog.x, dog.y + dog.r*.5)){ fail("hazard"); break; }
+    if(dog.y > H + 70){ fail("fall"); break; }
+  }
+
+  if(G.dirty){
+    for(const body of G.bodies){
+      if(body.segs.some(s=>s.dead)){
+        body.segs = body.segs.filter(s=>!s.dead);
+        if(body.segs.length) finalize(body);
+      }
+    }
+    G.bodies = G.bodies.filter(b=>b.segs.length);
+    G.dirty = false;
+  }
+  const alive = G.bees.filter(b=>b.alive);
+  if(alive.length !== G.bees.length) G.bees = alive;
+
+  if(running){
+    G.timer -= h;
+    if(G.timer <= 0 || G.bees.length === 0) win();
+  }
+}
+
+/* ============================================================
+   ROUND FLOW
+   ============================================================ */
+function release(){
+  if(G.phase !== "plan") return;
+  strokeEnd();
+  G.phase = "run"; G.timer = G.survive;
+  hideHint(); Snd.bark(); Snd.whoosh();
+  syncHud();
+}
+function starsFor(){
+  const left = G.ink/G.inkMax;
+  return left >= .35 ? 3 : (left >= .15 ? 2 : 1);
+}
+function win(){
+  if(G.phase !== "run") return;
+  G.phase = "won"; for(const d of G.dogs) d.mood = "happy";
+  const st = starsFor();
+  for(let i=0;i<st;i++) Snd.star(i);
+  Snd.win();
+  const pc = packCentre();
+  for(let i=0;i<40;i++) burst(pc.x + jit(Math.random,140), pc.y-60, 1,
+    ["#ffd24a","#ff7a9e","#7fd3ff","#8ce06a"][i%4]);
+  P.stars[G.level] = Math.max(P.stars[G.level]||0, st);
+  if(G.level >= P.unlocked && G.level < 100) P.unlocked = G.level+1;
+  persist();
+  G.endAt = 1.0;
+}
+function fail(cause){
+  if(G.phase !== "run") return;
+  G.phase = "lost"; for(const d of G.dogs) d.mood = "cry"; G.failCause = cause || "bee";
+  G.shake = 18; Snd.lose();
+  P.hearts = Math.max(0, P.hearts-1);
+  if(!P.heartAt) P.heartAt = Date.now();
+  persist();
+  G.endAt = .9;
+}
+function regenHearts(){
+  if(P.hearts >= MAX_HEARTS){ P.heartAt = 0; return; }
+  if(!P.heartAt){ P.heartAt = Date.now(); return; }
+  const gained = Math.floor((Date.now()-P.heartAt)/HEART_REGEN_MS);
+  if(gained > 0){
+    P.hearts = Math.min(MAX_HEARTS, P.hearts+gained);
+    P.heartAt = P.hearts >= MAX_HEARTS ? 0 : P.heartAt + gained*HEART_REGEN_MS;
+    persist();
+  }
+}
+
+/* ---------- particles ---------- */
+function burst(x,y,n,color){
+  for(let i=0;i<n;i++){
+    const a = Math.random()*6.28, s = 40+Math.random()*180;
+    G.parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-40,
+      life:.4+Math.random()*.7, max:1.1, c:color||"#ffd24a", r:2+Math.random()*4});
+  }
+  if(G.parts.length > 420) G.parts.splice(0, G.parts.length-420);
+}
+function stepParts(dt){
+  for(const p of G.parts){
+    p.life -= dt; p.vy += 420*dt; p.x += p.vx*dt; p.y += p.vy*dt; p.vx *= .99;
+  }
+  G.parts = G.parts.filter(p=>p.life > 0);
+}
+
+/* ============================================================
+   RENDERING
+   ============================================================ */
+const app = $("app"), cv = $("cv"), ctx = cv.getContext("2d");
+const hud = $("hud");
+
+const bg = document.createElement("canvas"); bg.width = W; bg.height = H;
+(function buildBg(){
+  const b = bg.getContext("2d");
+  const sky = b.createLinearGradient(0,0,0,GROUND_Y);
+  sky.addColorStop(0,"#5cc4f5"); sky.addColorStop(.62,"#a5e2fb"); sky.addColorStop(1,"#daf3ff");
+  b.fillStyle = sky; b.fillRect(0,0,W,GROUND_Y);
+
+  b.fillStyle = "rgba(255,247,199,.85)";
+  b.beginPath(); b.arc(126,86,74,0,6.29); b.fill();
+  b.fillStyle = "rgba(255,252,225,.95)";
+  b.beginPath(); b.arc(126,86,52,0,6.29); b.fill();
+
+  b.fillStyle = "#8ed474";
+  b.beginPath(); b.moveTo(-40,GROUND_Y); b.quadraticCurveTo(240,430,560,GROUND_Y); b.fill();
+  b.beginPath(); b.moveTo(420,GROUND_Y); b.quadraticCurveTo(760,392,1120,GROUND_Y); b.fill();
+  b.fillStyle = "#7ac763";
+  b.beginPath(); b.moveTo(880,GROUND_Y); b.quadraticCurveTo(1120,462,1340,GROUND_Y); b.fill();
+
+  b.strokeStyle = "#a2764a"; b.lineWidth = 9; b.lineCap = "round";
+  for(let x=40;x<W;x+=118){ b.beginPath(); b.moveTo(x,GROUND_Y-4); b.lineTo(x,GROUND_Y-52); b.stroke(); }
+  b.lineWidth = 7;
+  b.beginPath(); b.moveTo(24,GROUND_Y-42); b.lineTo(W-24,GROUND_Y-42); b.stroke();
+
+  b.fillStyle = "#63b83f"; b.fillRect(0,GROUND_Y,W,44);
+  b.fillStyle = "#7ed65a"; b.fillRect(0,GROUND_Y,W,11);
+  b.fillStyle = "#9a6535"; b.fillRect(0,GROUND_Y+44,W,H-GROUND_Y-44);
+  b.fillStyle = "#82522a";
+  for(let x=0;x<W;x+=64){ b.fillRect(x+6,GROUND_Y+54,44,9); b.fillRect(x+34,GROUND_Y+68,44,9); }
+  const petals = ["#ff8fb1","#fff0a3","#c9a4ff","#ffffff"];
+  for(let i=0;i<26;i++){
+    const x = (i*97+31)%(W-30)+15, y = GROUND_Y+14+((i*37)%22);
+    b.fillStyle = petals[i%4];
+    for(let k=0;k<4;k++){ b.beginPath(); b.arc(x+Math.cos(k*1.57)*5, y+Math.sin(k*1.57)*5, 4.2, 0, 6.29); b.fill(); }
+    b.fillStyle = "#ffd24a"; b.beginPath(); b.arc(x,y,3,0,6.29); b.fill();
+  }
+})();
+
+const CLOUDS = [{x:180,y:110,s:1.1,v:7},{x:560,y:76,s:.8,v:5},{x:900,y:140,s:1.25,v:9},{x:1180,y:70,s:.7,v:6}];
+function drawClouds(t){
+  ctx.fillStyle = "rgba(255,255,255,.82)";
+  for(const c of CLOUDS){
+    const x = ((c.x + t*c.v) % (W+300)) - 150;
+    ctx.save(); ctx.translate(x,c.y); ctx.scale(c.s,c.s);
+    ctx.beginPath();
+    ctx.arc(0,0,30,0,6.29); ctx.arc(34,-12,38,0,6.29); ctx.arc(74,2,28,0,6.29); ctx.arc(38,16,32,0,6.29);
+    ctx.fill(); ctx.restore();
+  }
+}
+
+function roundRect(x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
+}
+function drawWall(w){
+  if(w.t === "spike"){
+    ctx.fillStyle = "#8d97a5"; roundRect(w.x,w.y,w.w,w.h*.55,5); ctx.fill();
+    ctx.fillStyle = "#c3ccd8";
+    const down = w.y <= 4, n = Math.max(2, Math.round(w.w/34));
+    for(let i=0;i<n;i++){
+      const x = w.x + w.w*i/n, x2 = w.x + w.w*(i+1)/n;
+      ctx.beginPath();
+      if(down){ ctx.moveTo(x,w.y+w.h*.5); ctx.lineTo(x2,w.y+w.h*.5); ctx.lineTo((x+x2)/2,w.y+w.h+16); }
+      else    { ctx.moveTo(x,w.y+w.h*.5); ctx.lineTo(x2,w.y+w.h*.5); ctx.lineTo((x+x2)/2,w.y-16); }
+      ctx.closePath(); ctx.fill();
+    }
+    ctx.strokeStyle = "#5d6674"; ctx.lineWidth = 3; roundRect(w.x,w.y,w.w,w.h*.55,5); ctx.stroke();
+    return;
+  }
+  ctx.fillStyle = "#9c6634"; roundRect(w.x,w.y,w.w,w.h,8); ctx.fill();
+  ctx.fillStyle = "rgba(255,225,180,.28)"; roundRect(w.x+4,w.y+4,w.w-8,Math.min(12,w.h*.3),5); ctx.fill();
+  ctx.strokeStyle = "#5b3a1a"; ctx.lineWidth = 4; roundRect(w.x,w.y,w.w,w.h,8); ctx.stroke();
+  ctx.strokeStyle = "rgba(91,58,26,.35)"; ctx.lineWidth = 2;
+  if(w.w > w.h){ for(let x=w.x+30;x<w.x+w.w-10;x+=34){ ctx.beginPath(); ctx.moveTo(x,w.y+5); ctx.lineTo(x,w.y+w.h-5); ctx.stroke(); } }
+  else         { for(let y=w.y+30;y<w.y+w.h-10;y+=34){ ctx.beginPath(); ctx.moveTo(w.x+5,y); ctx.lineTo(w.x+w.w-5,y); ctx.stroke(); } }
+}
+function drawMover(m){
+  ctx.fillStyle = "#7d8794"; roundRect(m.x,m.y,m.w,m.h,7); ctx.fill();
+  ctx.strokeStyle = "#39424e"; ctx.lineWidth = 4; roundRect(m.x,m.y,m.w,m.h,7); ctx.stroke();
+  ctx.fillStyle = "#d7deea";
+  for(const p of [[m.x+9,m.y+9],[m.x+m.w-9,m.y+9],[m.x+9,m.y+m.h-9],[m.x+m.w-9,m.y+m.h-9]]){
+    ctx.beginPath(); ctx.arc(p[0],p[1],3.4,0,6.29); ctx.fill();
+  }
+}
+function drawFan(f,t){
+  ctx.fillStyle = "rgba(150,215,255,.16)"; roundRect(f.x,f.y,f.w,f.h,12); ctx.fill();
+  ctx.strokeStyle = "rgba(120,190,240,.5)"; ctx.lineWidth = 3; ctx.setLineDash([10,8]);
+  roundRect(f.x,f.y,f.w,f.h,12); ctx.stroke(); ctx.setLineDash([]);
+  ctx.strokeStyle = "rgba(255,255,255,.75)"; ctx.lineWidth = 4; ctx.lineCap = "round";
+  for(let i=0;i<3;i++){
+    const p = ((t*.55 + i/3) % 1);
+    const x = f.dx > 0 ? f.x + p*f.w : f.x + f.w - p*f.w;
+    const y = f.y + f.h*(.25 + i*.25);
+    ctx.beginPath();
+    ctx.moveTo(x - 14*f.dx, y-11); ctx.lineTo(x, y); ctx.lineTo(x - 14*f.dx, y+11);
+    ctx.stroke();
+  }
+}
+function drawNoDraw(z){
+  ctx.save(); roundRect(z.x,z.y,z.w,z.h,14); ctx.clip();
+  ctx.fillStyle = "rgba(226,81,63,.14)"; ctx.fillRect(z.x,z.y,z.w,z.h);
+  ctx.strokeStyle = "rgba(226,81,63,.34)"; ctx.lineWidth = 8;
+  for(let i=-z.h;i<z.w;i+=28){ ctx.beginPath(); ctx.moveTo(z.x+i,z.y+z.h); ctx.lineTo(z.x+i+z.h,z.y); ctx.stroke(); }
+  ctx.restore();
+  ctx.strokeStyle = "rgba(226,81,63,.75)"; ctx.lineWidth = 4; ctx.setLineDash([12,9]);
+  roundRect(z.x,z.y,z.w,z.h,14); ctx.stroke(); ctx.setLineDash([]);
+}
+function drawBodies(){
+  ctx.lineCap = "round"; ctx.lineJoin = "round";
+  ctx.strokeStyle = "rgba(20,40,90,.28)"; ctx.lineWidth = STROKE_HALF*2 + 5;
+  ctx.beginPath();
+  for(const b of G.bodies) for(const s of b.segs){ ctx.moveTo(s.ax,s.ay+3); ctx.lineTo(s.bx,s.by+3); }
+  ctx.stroke();
+  for(const b of G.bodies){
+    const loose = !b.anchored;
+    for(const s of b.segs){
+      const k = clamp(s.hp/SEG_HP,0,1);
+      const rr = Math.round((loose? 96:47) + 170*(1-k));
+      const gg = Math.round((loose?168:111) - 30*(1-k));
+      const bb = Math.round((loose?226:237) - 170*(1-k));
+      ctx.strokeStyle = "rgb(" + rr + "," + gg + "," + bb + ")";
+      ctx.lineWidth = STROKE_HALF*2 * (0.6 + .4*k);
+      ctx.beginPath(); ctx.moveTo(s.ax,s.ay); ctx.lineTo(s.bx,s.by); ctx.stroke();
+    }
+  }
+  ctx.strokeStyle = "rgba(255,255,255,.42)"; ctx.lineWidth = 2.4;
+  ctx.beginPath();
+  for(const b of G.bodies) for(const s of b.segs){ ctx.moveTo(s.ax,s.ay-2.4); ctx.lineTo(s.bx,s.by-2.4); }
+  ctx.stroke();
+  ctx.fillStyle = "#ffc53d"; ctx.strokeStyle = "#5b3a1a"; ctx.lineWidth = 2;
+  for(const b of G.bodies){
+    if(!b.anchored || !b.anchors) continue;
+    for(const p of b.anchors){
+      ctx.beginPath(); ctx.arc(p[0],p[1],4.6,0,6.29); ctx.fill(); ctx.stroke();
+    }
+  }
+}
+function drawHazard(z,t){
+  const lava = z.kind === "lava";
+  ctx.save(); roundRect(z.x,z.y,z.w,z.h,10); ctx.clip();
+  const g = ctx.createLinearGradient(0,z.y,0,z.y+z.h);
+  if(lava){ g.addColorStop(0,"#ffdc6a"); g.addColorStop(.34,"#ff7a2f"); g.addColorStop(1,"#a81d0a"); }
+  else    { g.addColorStop(0,"#a8ebff"); g.addColorStop(.4,"#3aa9e8"); g.addColorStop(1,"#0d5892"); }
+  ctx.fillStyle = g; ctx.fillRect(z.x,z.y,z.w,z.h);
+  ctx.fillStyle = lava ? "rgba(255,238,160,.6)" : "rgba(255,255,255,.5)";
+  for(let i=0;i<6;i++){
+    const w = z.w/6, x = z.x + i*w;
+    const y = z.y + 8 + Math.sin(t*(lava?1.7:2.6) + i*1.25)*4.5;
+    ctx.beginPath(); ctx.ellipse(x+w/2, y, w*.32, 4, 0, 0, 6.29); ctx.fill();
+  }
+  if(lava){
+    ctx.fillStyle = "rgba(255,200,90,.5)";
+    for(let i=0;i<3;i++){
+      const x = z.x + z.w*(.2+i*.3) + Math.sin(t*2+i)*18;
+      const y = z.y + 10 - ((t*40+i*33) % 34);
+      ctx.beginPath(); ctx.arc(x,y,3.4,0,6.29); ctx.fill();
+    }
+  }
+  ctx.restore();
+  ctx.strokeStyle = lava ? "#711805" : "#0b4670"; ctx.lineWidth = 4;
+  roundRect(z.x,z.y,z.w,z.h,10); ctx.stroke();
+}
+function drawAnt(b,t){
+  ctx.save(); ctx.translate(b.x,b.y);
+  ctx.scale(b.vx < -4 ? -1 : 1, 1);
+  const r = b.r, step = Math.sin(t*17 + b.wob);
+  ctx.strokeStyle = "#4a1f0e"; ctx.lineWidth = 2.6; ctx.lineCap = "round";
+  for(let i=0;i<3;i++){
+    const ox = (i-1)*r*.5, sw = step*4*(i%2?1:-1);
+    ctx.beginPath(); ctx.moveTo(ox,0); ctx.lineTo(ox-7+sw, r*.98); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(ox,0); ctx.lineTo(ox+7-sw, r*.98); ctx.stroke();
+  }
+  ctx.fillStyle = "#8b2f16";
+  ctx.beginPath(); ctx.ellipse(-r*.6,0,r*.44,r*.37,0,0,6.29); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(0,0,r*.33,r*.29,0,0,6.29); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(r*.62,-r*.06,r*.46,r*.40,0,0,6.29); ctx.fill();
+  ctx.strokeStyle = "#5a1c0a"; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(r*.82,-r*.3); ctx.lineTo(r*1.3,-r*.9); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(r*.9,-r*.14); ctx.lineTo(r*1.44,-r*.52); ctx.stroke();
+  ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(r*.8,-r*.12,r*.15,0,6.29); ctx.fill();
+  ctx.fillStyle = "#241a0c"; ctx.beginPath(); ctx.arc(r*.83,-r*.12,r*.08,0,6.29); ctx.fill();
+  ctx.restore();
+}
+function drawHive(x,y,t){
+  ctx.save(); ctx.translate(x,y);
+  ctx.strokeStyle = "#6b4a22"; ctx.lineWidth = 5;
+  ctx.beginPath(); ctx.moveTo(0,-70); ctx.lineTo(0,-30); ctx.stroke();
+  ctx.fillStyle = "#e8a83c";
+  for(let i=0;i<4;i++){
+    const w = 34 + i*13, yy = -26 + i*20;
+    ctx.beginPath(); ctx.ellipse(0,yy,w,13,0,0,6.29); ctx.fill();
+  }
+  ctx.fillStyle = "#c9861f";
+  for(let i=0;i<4;i++){ const w = 34+i*13, yy = -26+i*20;
+    ctx.beginPath(); ctx.ellipse(0,yy+9,w*.94,4,0,0,6.29); ctx.fill(); }
+  ctx.fillStyle = "#4a2c12"; ctx.beginPath(); ctx.ellipse(0,44,15,13,0,0,6.29); ctx.fill();
+  ctx.fillStyle = "rgba(255,214,110,.55)";
+  ctx.beginPath(); ctx.ellipse(Math.cos(t*2)*3,40,7,6,0,0,6.29); ctx.fill();
+  ctx.restore();
+}
+
+const BEE_SKIN = {
+  buzz :{b:"#ffd24a",s:"#4a3010"}, fast :{b:"#ffe98f",s:"#2f7d3f"},
+  heavy:{b:"#e8a83c",s:"#3a2408"}, chew :{b:"#ff9f74",s:"#9e2a18"},
+  zig  :{b:"#8fe3ff",s:"#1b5f7d"}, split:{b:"#d8a8ff",s:"#5b2a8a"},
+  ghost:{b:"#eef6ff",s:"#8f9fbc"}, bomb :{b:"#767c88",s:"#22262d"},
+  mini :{b:"#ffd24a",s:"#4a3010"}
+};
+function drawBee(b,t){
+  if(b.type === "ant"){ drawAnt(b,t); return; }
+  const sk = BEE_SKIN[b.type] || BEE_SKIN.buzz;
+  const r = b.r;
+  ctx.save(); ctx.translate(b.x,b.y);
+  ctx.globalAlpha = b.ghosting ? .38 : 1;
+  const tilt = clamp(b.vx/260,-.45,.45);
+  ctx.rotate(tilt);
+
+  const flap = .45 + .55*Math.abs(Math.sin(t*34 + b.wob));
+  ctx.fillStyle = "rgba(255,255,255,.62)";
+  ctx.beginPath(); ctx.ellipse(-r*.15,-r*.85, r*.72, r*.34*flap, -.5, 0, 6.29); ctx.fill();
+  ctx.beginPath(); ctx.ellipse( r*.42,-r*.78, r*.62, r*.30*flap, .45, 0, 6.29); ctx.fill();
+
+  ctx.fillStyle = sk.b;
+  ctx.beginPath(); ctx.ellipse(0,0,r*1.12,r*.94,0,0,6.29); ctx.fill();
+  ctx.save(); ctx.clip();
+  ctx.fillStyle = sk.s;
+  ctx.fillRect(-r*.28,-r,r*.34,r*2);
+  ctx.fillRect( r*.42,-r,r*.32,r*2);
+  ctx.restore();
+  ctx.strokeStyle = "rgba(60,36,10,.55)"; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.ellipse(0,0,r*1.12,r*.94,0,0,6.29); ctx.stroke();
+
+  ctx.strokeStyle = sk.s; ctx.lineWidth = 2.2; ctx.lineCap = "round";
+  ctx.beginPath(); ctx.moveTo(-r*.7,-r*.5); ctx.lineTo(-r*1.15,-r*1.1); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-r*.45,-r*.62); ctx.lineTo(-r*.62,-r*1.25); ctx.stroke();
+
+  ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(-r*.62,-r*.14,r*.3,0,6.29); ctx.fill();
+  ctx.fillStyle = "#241a0c"; ctx.beginPath(); ctx.arc(-r*.68,-r*.14,r*.16,0,6.29); ctx.fill();
+
+  if(b.type === "chew"){
+    ctx.fillStyle = "#fff";
+    ctx.beginPath(); ctx.moveTo(-r*1.0,r*.18); ctx.lineTo(-r*1.34,r*.44); ctx.lineTo(-r*.86,r*.5); ctx.fill();
+  }
+  if(b.type === "bomb"){
+    ctx.strokeStyle = "#3a2a12"; ctx.lineWidth = 2.6;
+    ctx.beginPath(); ctx.moveTo(r*.9,-r*.6); ctx.quadraticCurveTo(r*1.4,-r*1.1,r*1.1,-r*1.5); ctx.stroke();
+    ctx.fillStyle = Math.sin(t*22)>0 ? "#ffe08a" : "#ff7a2f";
+    ctx.beginPath(); ctx.arc(r*1.1,-r*1.6,r*.28,0,6.29); ctx.fill();
+  }
+  if(b.type === "heavy"){
+    ctx.fillStyle = "rgba(90,58,20,.4)";
+    ctx.beginPath(); ctx.ellipse(r*.2,r*.42,r*.7,r*.24,0,0,6.29); ctx.fill();
+  }
+  ctx.fillStyle = sk.s;
+  ctx.beginPath(); ctx.moveTo(r*1.05,-r*.16); ctx.lineTo(r*1.55,0); ctx.lineTo(r*1.05,r*.16); ctx.fill();
+  ctx.restore();
+  ctx.globalAlpha = 1;
+}
+
+function drawDog(x,y,r,mood,t){
+  ctx.save(); ctx.translate(x,y);
+  ctx.fillStyle = "rgba(0,0,0,.16)";
+  ctx.beginPath(); ctx.ellipse(0,r*1.02,r*.98,r*.26,0,0,6.29); ctx.fill();
+  const bob = mood === "happy" ? Math.abs(Math.sin(t*7))*6 : Math.sin(t*2.4)*1.6;
+  ctx.translate(0,-bob);
+
+  const wag = mood === "happy" ? Math.sin(t*16)*.6 : Math.sin(t*3)*.16;
+  ctx.save(); ctx.translate(r*.76,r*.24); ctx.rotate(-.5+wag);
+  ctx.fillStyle = "#f0a04b"; roundRect(0,-r*.16,r*.72,r*.32,r*.16); ctx.fill();
+  ctx.fillStyle = "#fff0d2"; roundRect(r*.44,-r*.13,r*.3,r*.26,r*.13); ctx.fill();
+  ctx.restore();
+
+  ctx.fillStyle = "#f0a04b";
+  ctx.beginPath(); ctx.ellipse(0,r*.42,r*.82,r*.56,0,0,6.29); ctx.fill();
+  ctx.fillStyle = "#fff0d2";
+  ctx.beginPath(); ctx.ellipse(0,r*.56,r*.52,r*.36,0,0,6.29); ctx.fill();
+  ctx.fillStyle = "#e08d3a";
+  ctx.beginPath(); ctx.ellipse(-r*.5,r*.9,r*.24,r*.14,0,0,6.29); ctx.fill();
+  ctx.beginPath(); ctx.ellipse( r*.5,r*.9,r*.24,r*.14,0,0,6.29); ctx.fill();
+
+  ctx.fillStyle = "#f0a04b";
+  for(const s of [-1,1]){
+    ctx.beginPath();
+    ctx.moveTo(s*r*.34,-r*.82); ctx.lineTo(s*r*.86,-r*1.28); ctx.lineTo(s*r*.72,-r*.5);
+    ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#f6cba0";
+    ctx.beginPath();
+    ctx.moveTo(s*r*.44,-r*.82); ctx.lineTo(s*r*.76,-r*1.12); ctx.lineTo(s*r*.66,-r*.62);
+    ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#f0a04b";
+  }
+  ctx.beginPath(); ctx.arc(0,-r*.36,r*.68,0,6.29); ctx.fill();
+  ctx.fillStyle = "#fff0d2";
+  ctx.beginPath(); ctx.ellipse(0,-r*.16,r*.42,r*.3,0,0,6.29); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(0,-r*.72,r*.3,r*.16,0,0,6.29); ctx.fill();
+
+  ctx.fillStyle = "#241a0c";
+  if(mood === "happy"){
+    ctx.strokeStyle = "#241a0c"; ctx.lineWidth = r*.11; ctx.lineCap = "round";
+    for(const s of [-1,1]){
+      ctx.beginPath(); ctx.arc(s*r*.28,-r*.44,r*.16,Math.PI*1.1,Math.PI*1.9); ctx.stroke();
+    }
+  } else {
+    for(const s of [-1,1]){
+      ctx.fillStyle = "#fff";
+      ctx.beginPath(); ctx.ellipse(s*r*.28,-r*.44,r*.19,r*.22,0,0,6.29); ctx.fill();
+      ctx.fillStyle = "#241a0c";
+      ctx.beginPath(); ctx.arc(s*r*.28 + Math.sin(t*1.6)*r*.04, -r*.42, r*.12,0,6.29); ctx.fill();
+      ctx.fillStyle = "#fff";
+      ctx.beginPath(); ctx.arc(s*r*.24,-r*.5,r*.045,0,6.29); ctx.fill();
+    }
+    const dropT = (t*1.4) % 1;
+    ctx.fillStyle = "rgba(120,200,255,.9)";
+    for(const s of [-1,1]){
+      ctx.beginPath();
+      ctx.ellipse(s*r*.34, -r*.2 + dropT*r*.5, r*.075, r*.11*(1+dropT), 0,0,6.29);
+      ctx.fill();
+    }
+  }
+  ctx.fillStyle = "#241a0c";
+  ctx.beginPath(); ctx.ellipse(0,-r*.24,r*.12,r*.09,0,0,6.29); ctx.fill();
+  ctx.strokeStyle = "#241a0c"; ctx.lineWidth = r*.07; ctx.lineCap = "round";
+  ctx.beginPath();
+  if(mood === "happy"){ ctx.arc(0,-r*.16,r*.16,.2,Math.PI-.2); }
+  else { ctx.moveTo(-r*.13,-r*.05); ctx.quadraticCurveTo(0,-r*.15,r*.13,-r*.05); }
+  ctx.stroke();
+  ctx.restore();
+}
+
+const AMB = [{a:0,r:150,s:.7},{a:2.1,r:190,s:-.5},{a:4.2,r:120,s:.9}];
+function drawWorld(t){
+  ctx.drawImage(bg,0,0);
+  drawClouds(t);
+
+  if(G.screen === "game" && G.def){
+    for(const z of G.noDraw) drawNoDraw(z);
+    for(const f of G.fans) drawFan(f,t);
+    drawHive(G.def.hive.x, G.def.hive.y, t);
+    for(const w of G.walls) drawWall(w);
+    for(const z of G.hazards) drawHazard(z,t);
+    for(const m of G.movers) drawMover(m);
+    drawBodies();
+    for(const d of G.dogs) drawDog(d.x, d.y, d.r*1.16, d.mood, t);
+    for(const b of G.bees) drawBee(b,t);
+    if(G.phase === "run" && G.timer > 0){
+      ctx.strokeStyle = "rgba(255,255,255,.75)"; ctx.lineWidth = 7; ctx.lineCap = "round";
+      ctx.beginPath();
+      const pc = packCentre();
+      ctx.arc(pc.x, pc.y - 84, 20, -Math.PI/2, -Math.PI/2 + 6.283*(G.timer/G.survive));
+      ctx.stroke();
+    }
+  } else {
+    drawHive(1090,120,t);
+    drawDog(640,616,46,"happy",t);
+    for(const a of AMB){
+      const ang = a.a + t*a.s;
+      drawBee({x:640+Math.cos(ang)*a.r, y:430+Math.sin(ang*1.3)*70, r:14, vx:-Math.sin(ang)*100,
+               type:"buzz", wob:a.a, ghosting:false}, t);
+    }
+  }
+  for(const p of G.parts){
+    ctx.globalAlpha = clamp(p.life/p.max,0,1);
+    ctx.fillStyle = p.c;
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,6.29); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+}
+
+let rotated = false;
+let viewW = window.innerWidth, viewH = window.innerHeight;
+function getViewport(){
+  if(window.visualViewport){
+    return {w: window.visualViewport.width, h: window.visualViewport.height};
+  }
+  return {w: window.innerWidth, h: window.innerHeight};
+}
+function layout(){
+  const vp = getViewport();
+  const iw = vp.w, ih = vp.h;
+  viewW = iw; viewH = ih;
+  const touch = matchMedia("(pointer:coarse)").matches || "ontouchstart" in window;
+  rotated = ih > iw && touch;
+  if(rotated){
+    app.style.width = ih+"px"; app.style.height = iw+"px";
+    app.style.transform = "translate("+iw+"px,0) rotate(90deg)";
+  } else {
+    app.style.width = iw+"px"; app.style.height = ih+"px";
+    app.style.transform = "none";
+  }
+}
+function render(t){
+  const cw = app.clientWidth, ch = app.clientHeight;
+  const dpr = Math.min(window.devicePixelRatio||1, 2);
+  const bw = Math.round(cw*dpr), bh = Math.round(ch*dpr);
+  if(cv.width !== bw || cv.height !== bh){ cv.width = bw; cv.height = bh; }
+  const s = Math.min(cw/W, ch/H), ox = (cw-W*s)/2, oy = (ch-H*s)/2;
+  G.view = {s,ox,oy};
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.fillStyle = "#10202b"; ctx.fillRect(0,0,cw,ch);
+  ctx.save();
+  ctx.translate(ox,oy); ctx.scale(s,s);
+  ctx.beginPath(); ctx.rect(0,0,W,H); ctx.clip();
+  if(G.shake > .3) ctx.translate((Math.random()-.5)*G.shake,(Math.random()-.5)*G.shake);
+  drawWorld(t);
+  ctx.restore();
+}
+
+/* ============================================================
+   INPUT
+   ============================================================ */
+function toWorld(e){
+  let lx, ly;
+  if(rotated){ lx = e.clientY; ly = viewW - e.clientX; }
+  else { lx = e.clientX; ly = e.clientY; }
+  const v = G.view;
+  return {x:(lx-v.ox)/v.s, y:(ly-v.oy)/v.s};
+}
+let drawingPointer = null;
+cv.addEventListener("pointerdown", e=>{
+  Snd.unlock();
+  if(!canDraw()) return;
+  drawingPointer = e.pointerId;
+  try{ cv.setPointerCapture(e.pointerId); }catch(err){}
+  const p = toWorld(e); strokeStart(p.x,p.y); e.preventDefault();
+},{passive:false});
+cv.addEventListener("pointermove", e=>{
+  if(drawingPointer !== e.pointerId) return;
+  const p = toWorld(e); strokeMove(p.x,p.y); e.preventDefault();
+},{passive:false});
+function endPointer(e){
+  if(drawingPointer !== e.pointerId) return;
+  drawingPointer = null; strokeEnd();
+}
+cv.addEventListener("pointerup", endPointer);
+cv.addEventListener("pointercancel", endPointer);
+cv.addEventListener("contextmenu", e=>e.preventDefault());
+
+window.addEventListener("keydown", e=>{
+  if(G.screen !== "game") return;
+  if(e.code === "Space"){ e.preventDefault(); if(G.phase === "plan") release(); }
+  if(e.code === "KeyZ") undoStroke();
+  if(e.code === "KeyC") clearStrokes();
+  if(e.code === "Escape") togglePause();
+});
+
+/* ============================================================
+   SCREENS + HUD
+   ============================================================ */
+function show(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));
+  if(id) $(id).classList.add("on");
+}
+function showHint(txt){ const h = $("hintBar"); h.textContent = txt; h.classList.remove("hidden"); }
+function hideHint(){ $("hintBar").classList.add("hidden"); }
+function setGameChrome(on){
+  hud.classList.toggle("hidden", !on);
+  if(!on){ $("btnGo").classList.add("hidden"); $("btnUndo").classList.add("hidden"); $("btnClear").classList.add("hidden"); hideHint(); }
+}
+function syncHud(){
+  $("lvlChip").textContent = "Level " + G.level;
+  $("timerChip").textContent = (G.phase === "run" ? Math.max(0,G.timer).toFixed(1) : G.survive.toFixed(1)) + "s";
+  const k = G.inkMax ? G.ink/G.inkMax : 0;
+  $("inkFill").style.width = (k*100).toFixed(1) + "%";
+  $("inkTxt").textContent = Math.round(k*100) + "%";
+  $("inkBar").classList.toggle("low", k < .25);
+  $("heartsChip").textContent = "❤".repeat(P.hearts) + "♡".repeat(MAX_HEARTS-P.hearts);
+  const planning = G.phase === "plan";
+  $("btnGo").classList.toggle("hidden", !planning);
+  $("btnUndo").classList.toggle("hidden", !planning || !G.strokes.length);
+  $("btnClear").classList.toggle("hidden", !planning || !G.strokes.length);
+}
+
+const CAUSE_TITLE = {
+  bee:"The bees got through", ant:"The ants got in",
+  hazard:"He didn't make it out", fall:"He fell"
+};
+const CAUSE_TIP = {
+  hazard:"He was shoved in. Brace the walls beside him so the swarm can't push them.",
+  fall:"He fell. Put a rail on the ledge before you press GO."
+};
+const FAIL_TIPS = [
+  "Seal every gap. Bees squeeze through the smallest opening.",
+  "Start and end a line on the ground or scenery — braced walls never budge.",
+  "A dome over the puppy beats a flat lid — bees slide off curves.",
+  "Chewers eat one line at a time. Two layers buy you the clock.",
+  "Use the scenery. Walls and ledges are free shelter.",
+  "You can keep drawing after GO, if you still have ink.",
+  "Spikes pop bees. Funnel the swarm into them.",
+  "Short, thick shelters cost less ink than long fences."
+];
+let endShown = false;
+
+function startLevel(n){
+  regenHearts();
+  if(P.hearts <= 0){ G.level = n; show("scLives"); setGameChrome(false); updateLives(); return; }
+  Snd.unlock();
+  G.screen = "game"; G.paused = false; endShown = false;
+  Ads.hideBanner();                      // no ads over live gameplay
+  loadLevel(clamp(n,1,100));
+  show(null); setGameChrome(true); syncHud();
+}
+function endPanel(){
+  endShown = true; setGameChrome(false);
+  if(G.phase === "won"){
+    const st = starsFor();
+    $("winTitle").textContent = st === 3 ? "Perfect rescue!" : (st === 2 ? "Puppy is safe!" : "That was close!");
+    const nodes = $("winStars").children;
+    for(let i=0;i<3;i++) nodes[i].classList.toggle("on", i < st);
+    $("btnNext").disabled = G.level >= 100;
+    $("btnNext").textContent = G.level >= 100 ? "All done!" : "Next level";
+    mountAd($("adWin"));
+    Ads.showBanner(); Ads.levelDone();
+    show("scWin");
+  } else {
+    regenHearts();
+    if(P.hearts <= 0){ updateLives(); mountAd($("adLives")); Ads.showBanner(); show("scLives"); }
+    else {
+      $("failTitle").textContent = CAUSE_TITLE[G.failCause] || CAUSE_TITLE.bee;
+      $("failTip").textContent = CAUSE_TIP[G.failCause] ||
+        FAIL_TIPS[Math.floor(Math.random()*FAIL_TIPS.length)];
+      show("scFail");
+    }
+  }
+}
+function togglePause(){
+  if(G.screen !== "game" || G.phase === "won" || G.phase === "lost") return;
+  G.paused = !G.paused;
+  show(G.paused ? "scPause" : null);
+  setGameChrome(!G.paused);
+  if(!G.paused) syncHud();
+}
+function openLevels(){
+  Ads.showBanner();
+  G.screen = "levels"; G.paused = false; setGameChrome(false);
+  Snd.setTrack("menu"); buildGrid(); show("scLevels");
+}
+function openStart(){
+  Ads.showBanner();
+  G.screen = "start"; G.paused = false; setGameChrome(false);
+  Snd.setTrack("menu"); show("scStart");
+}
+function buildGrid(){
+  const g = $("lvGrid");
+  g.innerHTML = "";
+  for(let i=1;i<=100;i++){
+    const b = document.createElement("button");
+    const locked = i > P.unlocked;
+    b.className = "lv" + (locked ? " locked" : "");
+    const st = P.stars[i] || 0;
+    b.innerHTML = locked ? "🔒" : i + (st ? "<b>" + "★".repeat(st) + "</b>" : "");
+    if(!locked) b.addEventListener("click", ()=>{ Snd.click(); startLevel(i); });
+    g.appendChild(b);
+  }
+}
+function updateLives(){
+  const msg = $("livesMsg");
+  if(P.hearts > 0){ msg.textContent = "You have " + P.hearts + " lives."; return; }
+  const left = Math.max(0, HEART_REGEN_MS - (Date.now() - (P.heartAt || Date.now())));
+  msg.textContent = "Next life in " + Math.ceil(left/1000) + "s — or grab five now.";
+}
+setInterval(()=>{
+  if($("scLives").classList.contains("on")){
+    regenHearts(); updateLives();
+    if(P.hearts > 0){ show(null); startLevel(G.level); }
+  }
+},1000);
+
+/* ============================================================
+   ADS
+   ============================================================ */
+/* ------------------------------------------------------------
+   Native AdMob bridge. Does nothing in a browser; when the game
+   is packaged with Capacitor or Cordova it drives the real units.
+   ------------------------------------------------------------ */
+const Ads = {
+  native:null, ready:false, wins:0, lastFull:0, bannerUp:false,
+  detect(){
+    const cap = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.AdMob;
+    if(cap) return {kind:"capacitor", api:cap};
+    if(window.admob && window.admob.banner) return {kind:"cordova", api:window.admob};
+    if(window.NativeAds) return {kind:"custom", api:window.NativeAds};
+    return null;
+  },
+  async init(){
+    this.native = this.detect();
+    if(!this.native) return;
+    const {kind, api} = this.native;
+    try{
+      if(kind === "capacitor"){
+        if(api.initialize) await api.initialize({});
+        if(api.prepareInterstitial) await api.prepareInterstitial({adId:ADMOB_INTERSTITIAL});
+      } else if(kind === "cordova"){
+        this.bannerObj = new api.BannerAd({adUnitId:ADMOB_BANNER, position:"bottom"});
+        this.fullObj = new api.InterstitialAd({adUnitId:ADMOB_INTERSTITIAL});
+        await this.fullObj.load();
+      }
+      this.ready = true;
+    }catch(e){ this.ready = false; }
+  },
+  async showBanner(){
+    if(!this.native || !this.ready || this.bannerUp) return;
+    this.bannerUp = true;
+    const {kind, api} = this.native;
+    try{
+      if(kind === "capacitor") await api.showBanner({adId:ADMOB_BANNER, position:"BOTTOM_CENTER", margin:0});
+      else if(kind === "cordova") await this.bannerObj.show();
+      else api.showBanner && api.showBanner(ADMOB_BANNER);
+    }catch(e){ this.bannerUp = false; }
+  },
+  async hideBanner(){
+    if(!this.native || !this.bannerUp) return;
+    this.bannerUp = false;
+    const {kind, api} = this.native;
+    try{
+      if(kind === "capacitor") await api.hideBanner();
+      else if(kind === "cordova") await this.bannerObj.hide();
+      else api.hideBanner && api.hideBanner();
+    }catch(e){}
+  },
+  /* between levels only — never over live play, and never back to back */
+  async levelDone(){
+    if(!this.native || !this.ready) return;
+    this.wins++;
+    if(this.wins % INTERSTITIAL_EVERY !== 0) return;
+    if(Date.now() - this.lastFull < INTERSTITIAL_GAP) return;
+    this.lastFull = Date.now();
+    const {kind, api} = this.native;
+    try{
+      if(kind === "capacitor"){
+        await api.showInterstitial();
+        if(api.prepareInterstitial) api.prepareInterstitial({adId:ADMOB_INTERSTITIAL});
+      } else if(kind === "cordova"){
+        await this.fullObj.show();
+        this.fullObj.load();
+      } else api.showInterstitial && api.showInterstitial(ADMOB_INTERSTITIAL);
+    }catch(e){}
+  }
+};
+
+function mountAd(box){
+  if(!box || box.dataset.mounted) return;
+  box.dataset.mounted = "1";
+  box.innerHTML = "";
+  const avail = box.clientWidth || app.clientWidth || 320;
+  const size = avail >= 750 ? [728,90] : (avail >= 490 ? [468,60] : (avail >= 330 ? [320,100] : [300,50]));
+  const ins = document.createElement("ins");
+  ins.className = "adsbygoogle";
+  ins.style.display = "inline-block";
+  ins.style.width = size[0] + "px";
+  ins.style.height = size[1] + "px";
+  ins.setAttribute("data-ad-client", AD_CLIENT);
+  ins.setAttribute("data-ad-slot", AD_SLOT_BANNER);
+  ins.setAttribute("data-full-width-responsive", "false");
+  box.appendChild(ins);
+  try{ (window.adsbygoogle = window.adsbygoogle || []).push({}); }catch(e){}
+}
+function grantLives(){
+  P.hearts = MAX_HEARTS; P.heartAt = 0; persist();
+  Snd.life(); syncHud();
+  show(null); startLevel(G.level || 1);
+}
+function freeLives(){
+  const btn = $("btnFreeLives");
+  if(typeof window.adBreak === "function"){          // AdSense H5 rewarded, if the page enables it
+    try{
+      window.adBreak({ type:"reward", name:"extra-lives",
+        beforeReward:showAd=>showAd(), adViewed:grantLives,
+        adDismissed:()=>{}, adBreakDone:()=>{} });
+      return;
+    }catch(e){}
+  }
+  btn.disabled = true;
+  let n = 5;
+  btn.textContent = "Ad playing… " + n;
+  const iv = setInterval(()=>{
+    n--; btn.textContent = "Ad playing… " + n;
+    if(n <= 0){ clearInterval(iv); btn.disabled = false; btn.textContent = "Get 5 lives"; grantLives(); }
+  },1000);
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+function tap(id, fn){ $(id).addEventListener("click", ()=>{ Snd.unlock(); Snd.click(); fn(); }); }
+tap("btnPlay",       ()=>{ requestLandscape(); startLevel(Math.min(P.unlocked,100)); });
+tap("btnLevels",     openLevels);
+tap("btnLevBack",    openStart);
+tap("btnPause",      togglePause);
+tap("btnResume",     togglePause);
+tap("btnPauseRetry", ()=>startLevel(G.level));
+tap("btnPauseLevels",openLevels);
+tap("btnRetry",      ()=>startLevel(G.level));
+tap("btnFailLevels", openLevels);
+tap("btnWinRetry",   ()=>startLevel(G.level));
+tap("btnWinLevels",  openLevels);
+tap("btnNext",       ()=>{ if(G.level < 100) startLevel(G.level+1); else openLevels(); });
+tap("btnLivesLevels",openLevels);
+tap("btnGo",         release);
+tap("btnUndo",       undoStroke);
+tap("btnClear",      clearStrokes);
+$("btnFreeLives").addEventListener("click", ()=>{ Snd.unlock(); Snd.click(); freeLives(); });
+
+function syncToggles(){
+  $("btnMusic").classList.toggle("off", !P.music);
+  $("btnMusic2").classList.toggle("off", !P.music);
+  $("btnSfx").classList.toggle("off", !P.sfx);
+  $("btnSfx2").classList.toggle("off", !P.sfx);
+}
+function toggleMusic(){ P.music = P.music?0:1; Snd.setMusic(P.music); persist(); syncToggles(); }
+function toggleSfx(){ P.sfx = P.sfx?0:1; Snd.setSfx(P.sfx); persist(); syncToggles(); }
+tap("btnMusic", toggleMusic); tap("btnMusic2", toggleMusic);
+tap("btnSfx",   toggleSfx);   tap("btnSfx2",   toggleSfx);
+tap("btnFull",  ()=>requestLandscape(true));
+
+function requestLandscape(force){
+  const el = document.documentElement;
+  const touch = matchMedia("(pointer:coarse)").matches || "ontouchstart" in window;
+  if((touch || force) && !document.fullscreenElement){
+    const r = el.requestFullscreen || el.webkitRequestFullscreen;
+    if(r){ try{ const p = r.call(el); if(p && p.catch) p.catch(()=>{}); }catch(e){} }
+  }
+  try{
+    if(screen.orientation && screen.orientation.lock){
+      const p = screen.orientation.lock("landscape");
+      if(p && p.catch) p.catch(()=>{});
+    }
+  }catch(e){}
+}
+
+/* ============================================================
+   MAIN LOOP
+   ============================================================ */
+window.addEventListener("resize", layout);
+window.addEventListener("orientationchange", ()=>setTimeout(layout,120));
+if(window.visualViewport){
+  window.visualViewport.addEventListener("resize", layout);
+  window.visualViewport.addEventListener("scroll", layout);
+}
+document.addEventListener("gesturestart", e=>e.preventDefault());
+layout();
+syncToggles();
+mountAd($("adStart"));
+Ads.init().then(()=>Ads.showBanner());
+Snd.setTrack("menu");
+regenHearts();
+
+let last = performance.now(), acc = 0, hudTick = 0;
+function frame(now){
+  requestAnimationFrame(frame);
+  let dt = (now-last)/1000; last = now;
+  if(dt > .06) dt = .06;
+
+  if(G.screen === "game" && !G.paused){
+    acc += dt;
+    let guard = 0;
+    while(acc >= 1/90 && guard < 12){ stepPhysics(1/90); acc -= 1/90; guard++; }
+    if(acc > 1/40) acc = 0;
+    if((G.phase === "won" || G.phase === "lost") && !endShown && G.endAt > 0){
+      G.endAt -= dt;
+      if(G.endAt <= 0) endPanel();
+    }
+    const busy = clamp(G.bees.length/10, 0, 1);
+    Snd.buzz(G.phase === "run" ? busy : busy*.4, G.phase === "run" ? .75 : .15);
+    hudTick += dt;
+    if(hudTick > 1/20){ hudTick = 0; syncHud(); }
+  } else {
+    Snd.buzz(.14,.1);
+  }
+  G.shake *= Math.pow(.0015, dt);
+  stepParts(dt);
+  render(now/1000);
+}
+requestAnimationFrame(frame);
+</script>
+<noscript>
+  <p style="color:#ffe9ae;font:16px sans-serif;padding:24px">
+  Save My Dog is a browser game and needs JavaScript switched on to play.</p>
+</noscript>
+</body>
+</html>

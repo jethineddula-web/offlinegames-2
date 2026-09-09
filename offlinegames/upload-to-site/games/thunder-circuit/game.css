@@ -1,0 +1,175 @@
+:root{--vw:100vw;--vh:100vh}
+/* Thunder Circuit - stylesheet */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;background:#05070c;color:#e8edf6;
+  font-family:"Rajdhani","Segoe UI",Roboto,system-ui,Arial,sans-serif;user-select:none;-webkit-user-select:none;touch-action:none}
+#game{position:fixed;inset:0}
+canvas{display:block;width:100%;height:100%}
+.hide{display:none!important}
+/* ---------- shared UI ---------- */
+.screen{position:fixed;inset:0;z-index:40;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at 50% 0%,#182338 0%,#080b12 60%,#04060a 100%);overflow-y:auto;padding:18px}
+.panel{width:min(1000px,calc(var(--vw) * 0.96));background:rgba(10,14,22,.86);border:1px solid #253048;border-radius:16px}
+h1.logo{font-size:clamp(34px,calc(var(--vw) * 0.07),72px);font-weight:900;letter-spacing:3px;line-height:.95;text-align:center;
+  background:linear-gradient(180deg,#fff 0%,#ffd45e 45%,#ff6b1a 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 0 40px rgba(255,140,20,.25);filter:drop-shadow(0 6px 0 rgba(0,0,0,.5))}
+.sub{letter-spacing:6px;font-size:clamp(10px,calc(var(--vw) * 0.022),14px);color:#7f8ca6;text-transform:uppercase;margin-top:6px;text-align:center}
+.menu{display:flex;flex-direction:column;gap:10px;margin-top:26px;width:min(360px,calc(var(--vw) * 0.86))}
+.btn{position:relative;display:flex;align-items:center;justify-content:center;gap:10px;padding:13px 18px;border:0;cursor:pointer;
+  font:700 16px/1 inherit;letter-spacing:1.5px;text-transform:uppercase;color:#0a0d14;border-radius:10px;
+  background:linear-gradient(180deg,#ffd45e,#ff8a1a);box-shadow:0 4px 0 #a34d00,0 8px 22px rgba(255,140,20,.3);transition:.12s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #a34d00}
+.btn.ghost{background:linear-gradient(180deg,#26304a,#161d2e);color:#cfd9ea;box-shadow:0 4px 0 #0c1120}
+.btn.small{padding:9px 14px;font-size:13px}
+.btn:disabled{filter:grayscale(1) brightness(.7);cursor:not-allowed}
+.title{font-size:22px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:#ffd45e;margin-bottom:14px;text-align:center}
+.row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.card{background:rgba(18,24,38,.9);border:1px solid #253048;border-radius:12px;padding:14px}
+.muted{color:#8b98b3;font-size:13px;line-height:1.55}
+.kbd{display:inline-block;min-width:26px;text-align:center;padding:3px 7px;margin:0 2px;border-radius:5px;background:#1d2740;
+  border:1px solid #33415f;border-bottom-width:3px;font:700 12px/1 monospace;color:#dbe6f7}
+.close{position:absolute;top:14px;right:16px;z-index:5}
+.scrollbox{width:min(1000px,calc(var(--vw) * 0.96));max-height:calc(var(--vh) * 0.74);overflow-y:auto;padding:4px}
+.scrollbox::-webkit-scrollbar{width:8px}.scrollbox::-webkit-scrollbar-thumb{background:#2c3a58;border-radius:8px}
+/* ---------- track select ---------- */
+.tracks{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:10px}
+.track{position:relative;border-radius:11px;overflow:hidden;cursor:pointer;border:1px solid #253048;background:#121828;transition:.15s}
+.track:hover{transform:translateY(-3px);border-color:#ffb43a}
+.track .thumb{height:74px;position:relative}
+.track .tn{position:absolute;left:8px;bottom:6px;font:800 12px/1.15 inherit;letter-spacing:.4px;text-shadow:0 2px 4px #000}
+.track .meta{display:flex;justify-content:space-between;padding:7px 8px;font-size:10.5px;color:#8b98b3;letter-spacing:.6px;text-transform:uppercase}
+.track .flag{position:absolute;top:6px;right:7px;font-size:10px;background:rgba(0,0,0,.55);padding:2px 6px;border-radius:20px;letter-spacing:.5px}
+.lockd{position:absolute;inset:0;background:rgba(5,8,14,.78);display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:4px;font-size:11px;color:#9fb0cc;letter-spacing:1px}
+/* ---------- HUD ---------- */
+#hud{position:fixed;inset:0;z-index:20;pointer-events:none;font-variant-numeric:tabular-nums}
+.hudbox{position:absolute;background:linear-gradient(180deg,rgba(9,13,21,.82),rgba(9,13,21,.62));
+  border:1px solid rgba(120,145,190,.22);border-radius:12px;padding:8px 12px;backdrop-filter:blur(6px)}
+#speedo{right:14px;bottom:14px;text-align:right;min-width:132px}
+#speedo .kmh{font:900 46px/0.9 inherit;color:#fff;letter-spacing:-1px}
+#speedo .unit{font-size:11px;color:#8b98b3;letter-spacing:3px}
+#speedo .gear{font:900 20px/1 inherit;color:#ffd45e;margin-top:2px}
+#rpmbar{height:7px;background:#1b2436;border-radius:6px;overflow:hidden;margin-top:7px}
+#rpmfill{height:100%;width:0;background:linear-gradient(90deg,#3ee08a,#ffd45e 65%,#ff3b30 92%);transition:width .05s linear}
+#leftinfo{left:14px;top:14px;min-width:150px}
+.hrow{display:flex;justify-content:space-between;gap:14px;font-size:12px;letter-spacing:1px;color:#93a1bd;padding:2px 0}
+.hrow b{color:#fff;font-weight:800;font-size:14px}
+.bar{height:6px;background:#1b2436;border-radius:6px;overflow:hidden;margin:3px 0 6px}
+.bar>i{display:block;height:100%;border-radius:6px;transition:width .2s}
+#pos{position:absolute;left:50%;top:12px;transform:translateX(-50%);text-align:center;padding:6px 22px}
+#pos .p{font:900 32px/1 inherit;color:#ffd45e}#pos .t{font-size:10px;letter-spacing:3px;color:#8b98b3}
+#minimap{position:absolute;right:14px;top:14px;width:132px;height:132px;background:rgba(9,13,21,.7);
+  border:1px solid rgba(120,145,190,.22);border-radius:12px}
+#board{position:absolute;left:14px;bottom:14px;font-size:11.5px;min-width:186px;max-height:calc(var(--vh) * 0.4);overflow:hidden}
+#board .ln{display:flex;gap:8px;padding:2.5px 0;color:#a9b6d0}
+#board .ln.me{color:#ffd45e;font-weight:800}
+#board .ln .n{width:16px;color:#6d7c99}
+#board .ln .g{margin-left:auto;color:#7f8da8}
+#centermsg{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);text-align:center;
+  font:900 clamp(28px,calc(var(--vw) * 0.07),74px)/1 inherit;letter-spacing:3px;color:#fff;text-shadow:0 6px 30px rgba(0,0,0,.8);opacity:0;transition:opacity .25s}
+#centermsg small{display:block;font-size:.32em;letter-spacing:5px;color:#ffd45e;margin-top:10px}
+#speedfx{position:fixed;inset:0;z-index:18;pointer-events:none;opacity:0;transition:opacity .18s;
+  background:radial-gradient(ellipse at 50% 52%,rgba(0,0,0,0) 34%,rgba(0,0,0,.24) 72%,rgba(0,0,0,.62) 100%)}
+#speedfx::after{content:'';position:absolute;inset:-12%;
+  background:repeating-conic-gradient(from 0deg at 50% 50%,rgba(255,255,255,.14) 0deg .35deg,rgba(255,255,255,0) .35deg 3deg);
+  -webkit-mask-image:radial-gradient(ellipse at 50% 50%,transparent 40%,#000 88%);
+  mask-image:radial-gradient(ellipse at 50% 50%,transparent 40%,#000 88%)}
+#flash{position:fixed;inset:0;z-index:19;background:#fff;opacity:0;pointer-events:none;transition:opacity .35s}
+#pitpanel{position:absolute;left:50%;bottom:26%;transform:translateX(-50%);text-align:center;min-width:250px}
+#pitpanel .pt{font:900 17px/1 inherit;letter-spacing:3px;color:#ffd45e}
+#pitpanel #pitstage{font-size:11px;letter-spacing:2px;color:#cfd9ea}
+#pitprompt{position:absolute;left:50%;bottom:22%;transform:translateX(-50%);padding:8px 16px;font-size:13px;letter-spacing:2px;
+  color:#0a0d14;background:linear-gradient(180deg,#ffd45e,#ff8a1a);border-radius:8px;font-weight:800}
+#hintarrow{position:absolute;left:50%;top:52%;transform:translateX(-50%);font-size:13px;letter-spacing:2px;color:#3ee08a}
+/* ---------- touch controls ---------- */
+#touch{position:fixed;inset:0;z-index:25;pointer-events:none}
+.tbtn{position:absolute;pointer-events:auto;display:flex;align-items:center;justify-content:center;
+  border-radius:50%;background:rgba(20,28,44,.5);border:2px solid rgba(140,165,210,.3);color:#dbe6f7;
+  font:800 15px/1 inherit;letter-spacing:1px;backdrop-filter:blur(4px)}
+.tbtn.on{background:rgba(255,180,58,.55);border-color:#ffd45e;color:#0a0d14}
+#tLeft{left:16px;bottom:18px;width:82px;height:82px}
+#tRight{left:110px;bottom:18px;width:82px;height:82px}
+#tGas{right:16px;bottom:18px;width:96px;height:96px;background:rgba(62,224,138,.22);border-color:rgba(62,224,138,.5)}
+#tBrake{right:124px;bottom:18px;width:80px;height:80px;background:rgba(255,59,48,.2);border-color:rgba(255,90,80,.5)}
+#tHand{right:130px;bottom:112px;width:62px;height:62px;font-size:12px}
+#tCam{right:16px;top:158px;width:56px;height:56px;font-size:11px}
+#tPause{left:16px;top:158px;width:56px;height:56px;font-size:18px}
+/* ---------- ads ---------- */
+#adTop{position:fixed;left:0;right:0;top:0;z-index:35;display:flex;justify-content:center;background:rgba(5,8,14,.55);min-height:0}
+#adBottom{position:fixed;left:0;right:0;bottom:0;z-index:35;display:flex;justify-content:center;background:rgba(5,8,14,.55)}
+#adInter{position:fixed;inset:0;z-index:80;background:rgba(4,6,10,.96);display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:18px}
+#adInter .slotbox{width:min(760px,calc(var(--vw) * 0.94));min-height:200px;display:flex;align-items:center;justify-content:center;
+  border:1px dashed #2c3a58;border-radius:12px;background:#0a0e16}
+#adSkip{font-size:13px;color:#8b98b3;letter-spacing:2px}
+.adlabel{font-size:9px;letter-spacing:3px;color:#5d6b86;text-transform:uppercase;padding:2px}
+/* ---------- shop ---------- */
+.shopgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(214px,1fr));gap:11px}
+.item{background:rgba(18,24,38,.92);border:1px solid #253048;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.item h4{font-size:14px;letter-spacing:1px;text-transform:uppercase;color:#fff}
+.pips{display:flex;gap:3px}.pips i{flex:1;height:6px;border-radius:3px;background:#26314a}
+.pips i.f{background:linear-gradient(90deg,#ffd45e,#ff8a1a)}
+.coins{display:flex;align-items:center;gap:7px;font:800 17px/1 inherit;color:#ffd45e}
+.swatches{display:flex;flex-wrap:wrap;gap:7px}
+.sw{width:30px;height:30px;border-radius:7px;cursor:pointer;border:2px solid transparent}
+.sw.sel{border-color:#fff;transform:scale(1.08)}
+/* ---------- compact HUD for phones in landscape ---------- */
+/* ---------- compact phone layout (also used when the game self-rotates) ---------- */
+body.compact #leftinfo{left:6px;top:6px;padding:5px 8px;min-width:112px}
+body.compact #leftinfo .hrow{font-size:9.5px;padding:1px 0;gap:8px}
+body.compact #leftinfo .hrow b{font-size:11px}
+body.compact #leftinfo .bar{height:4px;margin:2px 0 4px}
+body.compact #minimap{width:92px;height:92px;top:6px;right:6px;border-radius:9px}
+body.compact #pos{top:5px;padding:4px 14px}
+body.compact #pos .p{font-size:22px}
+body.compact #pos .t{font-size:8px;letter-spacing:2px}
+body.compact #board{left:6px;top:132px;bottom:auto;min-width:146px;max-height:112px;font-size:9.5px;padding:5px 8px}
+body.compact #board .ln{padding:1px 0}
+body.compact #speedo{left:50%;right:auto;bottom:6px;transform:translateX(-50%);text-align:center;min-width:104px;padding:5px 10px}
+body.compact #speedo .kmh{font-size:30px}
+body.compact #speedo .unit{font-size:8px;letter-spacing:2px}
+body.compact #speedo .gear{font-size:14px}
+body.compact #rpmbar{height:5px;margin-top:4px}
+body.compact #centermsg{top:33%}
+body.compact #pitprompt{bottom:30%;font-size:11px;padding:6px 12px}
+body.compact #tLeft{left:10px;bottom:12px;width:70px;height:70px}
+body.compact #tRight{left:88px;bottom:12px;width:70px;height:70px}
+body.compact #tGas{right:10px;bottom:12px;width:82px;height:82px}
+body.compact #tBrake{right:100px;bottom:12px;width:68px;height:68px}
+body.compact #tHand{right:104px;bottom:100px;width:54px;height:54px;font-size:10px}
+body.compact #tCam{right:6px;top:106px;width:48px;height:48px;font-size:10px}
+body.compact #tPause{left:auto;right:106px;top:6px;width:44px;height:44px;font-size:15px}
+body.compact .screen{padding:10px}
+body.compact h1.logo{font-size:clamp(26px,calc(var(--vw) * 0.06),44px)}
+body.compact .menu{margin-top:12px;gap:7px;width:min(300px,calc(var(--vw) * 0.78))}
+body.compact .btn{padding:9px 14px;font-size:13px}
+body.compact .title{font-size:17px;margin-bottom:9px}
+body.compact .scrollbox{max-height:calc(var(--vh) * 0.62)}
+body.compact .close{top:8px;right:10px}
+#loading{position:fixed;inset:0;z-index:95;background:#05070c;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+#lbar{width:min(320px,calc(var(--vw) * 0.72));height:5px;background:#161d2e;border-radius:5px;overflow:hidden}
+#lfill{height:100%;width:0;background:linear-gradient(90deg,#ffd45e,#ff8a1a);transition:width .25s}
+#ltext{font-size:11px;letter-spacing:4px;color:#7f8ca6;text-transform:uppercase}
+.tabs{display:flex;gap:6px;justify-content:center;margin-bottom:14px;flex-wrap:wrap}
+.tab{padding:7px 14px;border-radius:8px;background:#161d2e;color:#93a1bd;cursor:pointer;font:700 12px/1 inherit;letter-spacing:1.5px;text-transform:uppercase}
+.tab.on{background:#ffd45e;color:#0a0d14}
+table.res{width:100%;border-collapse:collapse;font-size:13px}
+table.res th{font-size:10px;letter-spacing:2px;color:#7f8ca6;text-transform:uppercase;text-align:left;padding:6px 8px}
+table.res td{padding:7px 8px;border-top:1px solid #1c2435;color:#c3cee2}
+table.res tr.me td{color:#ffd45e;font-weight:800;background:rgba(255,180,58,.07)}
+
+/* ---------- automatic landscape ----------
+   If the browser will not give us a real orientation lock (iOS Safari never does,
+   Android needs fullscreen first) we simply rotate the whole game 90 degrees so it
+   is landscape in the player's hands without ever asking them to turn the phone.
+   Fixed-position children are contained by the transformed body, so the entire
+   UI - including the touch buttons - rotates and stays hit-testable. */
+body.force-landscape{
+  position:fixed;
+  top:0;
+  left:100%;
+  width:100vh;
+  height:100vw;
+  transform-origin:0 0;
+  transform:rotate(90deg);
+  overflow:hidden;
+}

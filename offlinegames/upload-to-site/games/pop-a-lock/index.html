@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Play Pop-a-Lock Online Free | Casual Reflex & Timing Arcade Game</title>
+    <meta name="description" content="Test your timing in Pop-a-Lock! Tap at the precise moment to pick the lock and break records. Play free online on offlinegames.art—no downloads required.">
+    <meta name="keywords" content="Pop a Lock game online, pick the lock game, play Pop a Lock free, offline reflex games, timing arcade games, browser games no download">
+    <link rel="canonical" href="https://offlinegames.art/pop-a-lock">
+
+    <meta property="og:title" content="Play Pop-a-Lock Online Free | offlinegames.art">
+    <meta property="og:description" content="Test your timing and reflexes in Pop-a-Lock. Tap at the right moment to pick the lock!">
+    <meta property="og:type" content="website">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Pop-a-Lock",
+      "url": "https://offlinegames.art/pop-a-lock",
+      "applicationCategory": "GameApplication",
+      "genre": "Arcade",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Oswald:wght@400;500;600;700&display=swap');
+:root{
+  --brass-hi:#d9a45c;
+  --brass:#9c7238;
+  --brass-lo:#5e4322;
+  --gunmetal:#141210;
+  --glass:#0a0908;
+  --red:#e6432c;
+  --red-glow:#ff6a4d;
+  --gold:#f4c542;
+  --gold-glow:#ffe28a;
+  --ink:#e9dfc9;
+  --ink-dim:#9c8f74;
+}
+*{box-sizing:border-box;}
+html,body{
+  height:100%;
+  width:100%;
+  margin:0;
+  background: radial-gradient(ellipse at 50% 0%, #26201a 0%, #14100c 55%, #080705 100%);
+  color:var(--ink);
+  font-family:'Oswald',sans-serif;
+  overflow:hidden;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;
+  touch-action:manipulation;
+}
+
+.rotate-wrapper{
+  width:100%;
+  height:100%;
+}
+@media screen and (max-width: 900px) and (orientation: portrait){
+  html, body{
+    width:100dvw;
+    height:100dvh;
+    overflow:hidden;
+  }
+  .rotate-wrapper{
+    position:absolute;
+    top:0; left:0;
+    width:100dvh;
+    height:100dvw;
+    transform-origin:0 0;
+    transform:rotate(90deg) translateY(-100%);
+  }
+}
+
+.stage{
+  position:relative;
+  width:100%;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:3vmin 3vmin;
+}
+.topbar{
+  display:flex;
+  gap:6vmin;
+  margin-bottom:2vmin;
+  align-items:center;
+}
+.stat{ text-align:center; }
+.stat .label{
+  font-family:'Cinzel',serif;
+  font-size:2.1vmin;
+  letter-spacing:0.18em;
+  color:var(--ink-dim);
+  text-transform:uppercase;
+}
+.stat .value{
+  font-size:4.4vmin;
+  font-weight:600;
+  color:var(--gold-glow);
+  text-shadow:0 0 12px rgba(244,197,66,0.35);
+}
+.mute-btn{
+  width:5vmin;
+  height:5vmin;
+  border-radius:50%;
+  border:1.5px solid rgba(217,164,92,0.5);
+  background:radial-gradient(circle at 35% 30%, #241a0c, #08070a 75%);
+  color:var(--ink-dim);
+  font-size:2.3vmin;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  z-index:30;
+  position:relative;
+}
+.mute-btn:active{ transform:scale(0.92); }
+.dial-wrap{
+  position:relative;
+  width:min(70vw,78vh,540px);
+  height:min(70vw,78vh,540px);
+  border-radius:50%;
+  touch-action:manipulation;
+  cursor:pointer;
+}
+/* outer bezel */
+.bezel{
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  background:
+    conic-gradient(from 210deg,
+      #3a2a15, #d9a45c 8%, #6b4c22 16%, #efc27c 24%,
+      #4a3418 32%, #d9a45c 40%, #6b4c22 48%, #f0cd8f 56%,
+      #3a2a15 64%, #d9a45c 72%, #5e4322 80%, #eec27c 88%, #3a2a15 100%);
+  box-shadow:
+    0 0 0 2px rgba(0,0,0,0.6) inset,
+    0 18px 40px rgba(0,0,0,0.65),
+    0 0 2px rgba(0,0,0,0.8);
+}
+.bezel::after{
+  content:"";
+  position:absolute;
+  inset:3.2%;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 25%, #2a2115, #0c0a07 70%);
+  box-shadow:0 0 0 2px rgba(0,0,0,0.7) inset;
+}
+.rivet{
+  position:absolute;
+  width:2.6%;
+  height:2.6%;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #f2d38f, #6e4e22 70%, #2c1e0d);
+  box-shadow:0 1px 2px rgba(0,0,0,0.8);
+}
+/* glass face */
+.face{
+  position:absolute;
+  inset:8.5%;
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 32% 26%, rgba(255,255,255,0.05), transparent 45%),
+    radial-gradient(circle, #131110 0%, #08070a 72%, #030203 100%);
+  box-shadow:
+    0 0 0 3px #050403 inset,
+    0 0 40px rgba(0,0,0,0.85) inset;
+  overflow:hidden;
+}
+/* faint tick ring */
+.ticks{ position:absolute; inset:0; border-radius:50%; }
+.sweep-line{
+  position:absolute;
+  left:50%; top:50%;
+  width:50%; height:0.9%;
+  transform-origin:0% 50%;
+  background:linear-gradient(90deg, rgba(230,67,44,0.05), var(--red) 55%, var(--red-glow) 100%);
+  box-shadow:0 0 10px 2px rgba(230,67,44,0.75), 0 0 22px 6px rgba(255,106,77,0.35);
+  border-radius:4px;
+  z-index:3;
+}
+.sweep-line::after{
+  content:"";
+  position:absolute;
+  right:-2%; top:50%;
+  width:5%; height:340%;
+  transform:translateY(-50%);
+  background:radial-gradient(circle, var(--red-glow), transparent 70%);
+  opacity:0.9;
+}
+.hub{
+  position:absolute;
+  left:50%; top:50%;
+  width:3.6%; height:3.6%;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #7c5a2c, #241a0c 75%);
+  box-shadow:0 0 0 2px rgba(0,0,0,0.7), 0 0 10px rgba(0,0,0,0.6);
+  z-index:5;
+}
+.target{
+  position:absolute;
+  width:8.5%; height:8.5%;
+  transform:translate(-50%,-50%);
+  z-index:4;
+  pointer-events:none;
+}
+.target-core{
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, var(--gold-glow), var(--gold) 55%, #a9740f 100%);
+  box-shadow:
+    0 0 14px 4px rgba(244,197,66,0.75),
+    0 0 30px 10px rgba(244,197,66,0.3),
+    0 2px 3px rgba(0,0,0,0.6) inset;
+  animation:pulse 1.1s ease-in-out infinite;
+}
+@keyframes pulse{
+  0%,100%{ transform:scale(1); }
+  50%{ transform:scale(1.14); }
+}
+.target-ring{
+  position:absolute;
+  inset:-38%;
+  border-radius:50%;
+  border:2px solid rgba(244,197,66,0.35);
+}
+.center-readout{
+  position:absolute;
+  left:50%; top:50%;
+  transform:translate(-50%,-50%);
+  width:46%; height:46%;
+  border-radius:50%;
+  background:radial-gradient(circle at 40% 30%, #1c1712, #08070a 75%);
+  box-shadow:0 0 0 3px rgba(0,0,0,0.75) inset, 0 8px 18px rgba(0,0,0,0.7);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  z-index:6;
+  text-align:center;
+  pointer-events:none;
+}
+.cr-label{
+  font-family:'Cinzel',serif;
+  font-size:clamp(11px,2.3vmin,17px);
+  letter-spacing:0.16em;
+  color:var(--ink-dim);
+}
+.cr-time{
+  font-size:clamp(30px,8vmin,58px);
+  font-weight:600;
+  color:var(--ink);
+  letter-spacing:0.02em;
+  margin:0.2vmin 0 1.6vmin 0;
+  font-variant-numeric:tabular-nums;
+}
+.cr-time.low{
+  color:var(--red-glow);
+  text-shadow:0 0 14px rgba(230,67,44,0.6);
+}
+.cr-score{
+  font-size:clamp(18px,4.2vmin,30px);
+  font-weight:600;
+  color:var(--gold-glow);
+  font-variant-numeric:tabular-nums;
+}
+.combo-pop{
+  position:absolute;
+  font-family:'Cinzel',serif;
+  font-weight:700;
+  font-size:3.4vmin;
+  color:var(--gold-glow);
+  text-shadow:0 0 10px rgba(244,197,66,0.7);
+  pointer-events:none;
+  z-index:8;
+  animation:floatUp 0.75s ease-out forwards;
+}
+@keyframes floatUp{
+  0%{ opacity:1; transform:translate(-50%,-50%) scale(0.8); }
+  30%{ transform:translate(-50%,-160%) scale(1.15); }
+  100%{ opacity:0; transform:translate(-50%,-320%) scale(1); }
+}
+.spark{
+  position:absolute;
+  width:0.9%; height:0.9%;
+  border-radius:50%;
+  background:radial-gradient(circle, #fff9dd, var(--gold-glow) 45%, var(--gold) 75%, transparent 100%);
+  box-shadow:0 0 6px 2px rgba(255,226,138,0.9);
+  pointer-events:none;
+  z-index:8;
+  left:0; top:0;
+  transform:translate(-50%,-50%);
+  animation:sparkFly 0.6s ease-out forwards;
+}
+@keyframes sparkFly{
+  0%{ opacity:1; transform:translate(-50%,-50%) translate(0,0) scale(1); }
+  100%{ opacity:0; transform:translate(-50%,-50%) translate(var(--sx), var(--sy)) scale(0.2); }
+}
+.spark-ring{
+  position:absolute;
+  width:8.5%; height:8.5%;
+  border-radius:50%;
+  border:2px solid rgba(255,226,138,0.9);
+  box-shadow:0 0 12px 3px rgba(244,197,66,0.6);
+  pointer-events:none;
+  z-index:7;
+  transform:translate(-50%,-50%) scale(1);
+  animation:sparkRing 0.5s ease-out forwards;
+}
+@keyframes sparkRing{
+  0%{ opacity:0.9; transform:translate(-50%,-50%) scale(1); }
+  100%{ opacity:0; transform:translate(-50%,-50%) scale(2.6); }
+}
+.flash{
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  pointer-events:none;
+  z-index:9;
+  opacity:0;
+}
+.flash.hit{ animation:flashGold 0.35s ease-out; }
+.flash.miss{ animation:flashRed 0.35s ease-out; }
+@keyframes flashGold{
+  0%{ opacity:0.55; box-shadow:0 0 60px 20px rgba(244,197,66,0.7) inset; }
+  100%{ opacity:0; }
+}
+@keyframes flashRed{
+  0%{ opacity:0.5; box-shadow:0 0 60px 20px rgba(230,67,44,0.7) inset; }
+  100%{ opacity:0; }
+}
+.footnote{
+  margin-top:2vmin;
+  font-family:'Cinzel',serif;
+  font-size:clamp(11px,1.9vmin,15px);
+  letter-spacing:0.14em;
+  color:var(--ink-dim);
+  text-transform:uppercase;
+  text-align:center;
+  max-width:90vw;
+}
+.overlay{
+  position:absolute;
+  inset:0;
+  background:rgba(5,4,3,0.82);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:20;
+  padding:4vmin;
+}
+.overlay-card{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(6px,2.2vmin,16px);
+  text-align:center;
+  background:radial-gradient(circle at 38% 22%, #201a10, #0a0806 78%);
+  border:1px solid rgba(217,164,92,0.4);
+  border-radius:clamp(18px,3vmin,30px);
+  box-shadow:0 24px 60px rgba(0,0,0,0.65), 0 0 40px rgba(0,0,0,0.5) inset;
+  padding:clamp(20px,5vmin,44px) clamp(20px,6vmin,48px);
+  width:min(92vw,460px);
+  max-height:92%;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+}
+.overlay h1{
+  font-family:'Cinzel',serif;
+  font-size:clamp(16px,5vmin,28px);
+  letter-spacing:0.08em;
+  color:var(--gold-glow);
+  text-shadow:0 0 18px rgba(244,197,66,0.5);
+  margin:0;
+  flex-shrink:0;
+}
+.overlay p{
+  font-size:clamp(11px,2.4vmin,17px);
+  color:var(--ink-dim);
+  margin:0;
+  max-width:100%;
+  line-height:1.45;
+  flex-shrink:0;
+}
+.overlay p:empty{
+  display:none;
+}
+.overlay .big-score{
+  font-size:clamp(20px,6.5vmin,36px);
+  font-weight:600;
+  color:var(--ink);
+}
+.world-stats{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:clamp(3px,0.6vmin,8px);
+  padding:clamp(4px,1vmin,10px) clamp(10px,2.4vmin,20px);
+  border-top:1px solid rgba(217,164,92,0.25);
+  border-bottom:1px solid rgba(217,164,92,0.25);
+  flex-shrink:0;
+}
+.world-line{
+  font-family:'Cinzel',serif;
+  font-size:clamp(10px,1.9vmin,14px);
+  letter-spacing:0.08em;
+  color:var(--ink-dim);
+  text-transform:uppercase;
+}
+.world-top{
+  font-size:clamp(10px,2vmin,14px);
+  color:var(--gold-glow);
+  font-weight:500;
+}
+.name-entry{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:clamp(6px,1.2vmin,12px);
+  flex-shrink:0;
+}
+.ne-label{
+  font-family:'Cinzel',serif;
+  font-size:clamp(11px,2.1vmin,15px);
+  color:var(--gold-glow);
+  letter-spacing:0.06em;
+}
+#nameInput{
+  font-family:'Oswald',sans-serif;
+  font-size:clamp(12px,2.2vmin,16px);
+  letter-spacing:0.1em;
+  text-align:center;
+  text-transform:uppercase;
+  color:var(--ink);
+  background:radial-gradient(circle at 35% 25%, #1c1712, #08070a 75%);
+  border:1.5px solid rgba(217,164,92,0.5);
+  border-radius:999px;
+  padding:clamp(8px,1.2vmin,14px) clamp(16px,3vmin,28px);
+  width:80%;
+  outline:none;
+}
+#nameInput::placeholder{ color:var(--ink-dim); }
+.board-list{
+  display:flex;
+  flex-direction:column;
+  gap:0.9vmin;
+  width:100%;
+  max-height:44vh;
+  overflow-y:auto;
+}
+.board-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:clamp(11px,2.1vmin,15px);
+  padding:clamp(4px,0.6vmin,8px) clamp(8px,1.4vmin,16px);
+  border-radius:999px;
+  background:rgba(217,164,92,0.08);
+}
+.board-row .brank{
+  color:var(--ink-dim);
+  font-family:'Cinzel',serif;
+  width:2.6em;
+}
+.board-row .bname{
+  flex:1;
+  text-align:left;
+  color:var(--ink);
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.board-row .bscore{
+  color:var(--gold-glow);
+  font-weight:600;
+  font-variant-numeric:tabular-nums;
+}
+.board-row.me{
+  background:rgba(244,197,66,0.18);
+  box-shadow:0 0 0 1px rgba(244,197,66,0.4) inset;
+}
+.board-empty{
+  font-size:clamp(11px,2vmin,14px);
+  color:var(--ink-dim);
+}
+.playing-as{
+  font-family:'Cinzel',serif;
+  font-size:clamp(10px,1.8vmin,13px);
+  letter-spacing:0.06em;
+  color:var(--ink-dim);
+  text-align:center;
+  flex-shrink:0;
+}
+.playing-as .pa-name{
+  color:var(--gold-glow);
+  font-weight:600;
+}
+.playing-as .pa-change{
+  color:var(--ink-dim);
+  text-decoration:underline;
+  cursor:pointer;
+  margin-left:0.6em;
+}
+.btn-skip{
+  font-family:'Oswald',sans-serif;
+  font-size:clamp(9px,1.7vmin,13px);
+  letter-spacing:0.08em;
+  color:var(--ink-dim);
+  background:none;
+  border:none;
+  text-decoration:underline;
+  cursor:pointer;
+  padding:0.4vmin;
+  flex-shrink:0;
+}
+.btn-skip:active{ opacity:0.6; }
+.btn{
+  font-family:'Cinzel',serif;
+  font-size:clamp(16px,3vmin,24px);
+  font-weight:700;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:#221708;
+  background:linear-gradient(180deg, var(--gold-glow), var(--gold) 60%, #a9740f);
+  border:none;
+  border-radius:999px;
+  padding:clamp(14px,2.4vmin,22px) clamp(34px,7vmin,60px);
+  cursor:pointer;
+  box-shadow:0 4px 0 #7a5410, 0 10px 22px rgba(0,0,0,0.5);
+  transition:transform 0.08s ease;
+  position:relative;
+  z-index:30;
+  flex-shrink:0;
+}
+.btn:active{
+  transform:translateY(3px);
+  box-shadow:0 1px 0 #7a5410;
+}
+</style>
+</head>
+<body>
+<div class="rotate-wrapper">
+  <div class="stage" id="stage">
+    <div class="topbar">
+      <div class="stat">
+        <div class="label">Best</div>
+        <div class="value" id="bestVal">0</div>
+      </div>
+      <div class="stat">
+        <div class="label">Streak</div>
+        <div class="value" id="streakVal">0</div>
+      </div>
+      <div class="mute-btn" id="muteBtn" title="Toggle sound">🔊</div>
+      <div class="mute-btn" id="boardBtn" title="Leaderboard">🏆</div>
+    </div>
+
+    <div class="dial-wrap" id="dial">
+      <div class="bezel"></div>
+      <div class="face" id="face">
+        <div class="flash" id="flash"></div>
+        <div class="sweep-line" id="sweepLine"></div>
+        <div class="target" id="target">
+          <div class="target-ring"></div>
+          <div class="target-core"></div>
+        </div>
+        <div class="hub"></div>
+        <div class="center-readout">
+          <div class="cr-label">Time Remaining</div>
+          <div class="cr-time" id="timeVal">30.0</div>
+          <div class="cr-label">Score</div>
+          <div class="cr-score" id="scoreVal">0</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay" id="overlay">
+      <div class="overlay-card">
+        <h1 id="overlayTitle">Pop-a-Lock</h1>
+        <p id="overlayText"></p>
+        <div class="world-stats" id="worldStats">
+          <div class="world-line" id="worldPlays">Loading worldwide stats…</div>
+          <div class="world-top" id="worldTop"></div>
+        </div>
+        <div class="name-entry" id="nameEntry" style="display:none;">
+          <div class="ne-label" id="neLabel">New high score! Add your name:</div>
+          <input type="text" id="nameInput" maxlength="14" placeholder="YOUR NAME" autocomplete="off" autocapitalize="characters">
+          <button class="btn" id="submitScoreBtn">Save Score</button>
+          <button class="btn-skip" id="skipNameBtn">Skip — save as Anonymous</button>
+        </div>
+        <button class="btn" id="startBtn">Start</button>
+      </div>
+    </div>
+    <div class="overlay" id="continueOverlay" style="display:none;">
+      <div class="overlay-card">
+        <h1 id="continueTitle">Jammed!</h1>
+        <p id="continueText">Watch a short ad to keep this run alive.</p>
+        <button class="btn" id="watchAdBtn">Watch Ad to Continue</button>
+        <button class="btn-skip" id="endRunBtn">End Run</button>
+      </div>
+    </div>
+    <div class="overlay" id="boardOverlay" style="display:none;">
+      <div class="overlay-card">
+        <h1>Top Locksmiths</h1>
+        <div class="playing-as" id="playingAsRow"></div>
+        <div class="board-list" id="boardList"></div>
+        <button class="btn" id="closeBoardBtn">Close</button>
+      </div>
+    </div>
+
+    <div class="footnote">Tap anywhere when red touches gold — direction flips each hit — a full untapped turn jams the lock</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const stage = document.getElementById('stage');
+  const dial = document.getElementById('dial');
+  const face = document.getElementById('face');
+  const sweepLine = document.getElementById('sweepLine');
+  const target = document.getElementById('target');
+  const timeVal = document.getElementById('timeVal');
+  const scoreVal = document.getElementById('scoreVal');
+  const streakVal = document.getElementById('streakVal');
+  const bestVal = document.getElementById('bestVal');
+  const flash = document.getElementById('flash');
+  const overlay = document.getElementById('overlay');
+  const overlayTitle = document.getElementById('overlayTitle');
+  const overlayText = document.getElementById('overlayText');
+  const startBtn = document.getElementById('startBtn');
+  const muteBtn = document.getElementById('muteBtn');
+  const boardBtn = document.getElementById('boardBtn');
+  const boardOverlay = document.getElementById('boardOverlay');
+  const boardList = document.getElementById('boardList');
+  const playingAsRow = document.getElementById('playingAsRow');
+  const closeBoardBtn = document.getElementById('closeBoardBtn');
+  const worldStats = document.getElementById('worldStats');
+  const worldPlays = document.getElementById('worldPlays');
+  const worldTop = document.getElementById('worldTop');
+  const nameEntry = document.getElementById('nameEntry');
+  const neLabel = document.getElementById('neLabel');
+  const nameInput = document.getElementById('nameInput');
+  const submitScoreBtn = document.getElementById('submitScoreBtn');
+  const skipNameBtn = document.getElementById('skipNameBtn');
+  const continueOverlay = document.getElementById('continueOverlay');
+  const continueTitle = document.getElementById('continueTitle');
+  const continueText = document.getElementById('continueText');
+  const watchAdBtn = document.getElementById('watchAdBtn');
+  const endRunBtn = document.getElementById('endRunBtn');
+
+  /* ---------- ads (Google AdSense / H5 Games Ad Placement API) ---------- */
+  // Fill in AD_CLIENT once AdSense approves the site. Until then, every ad
+  // call below just runs its "no ad" fallback immediately, so the game is
+  // fully playable during review and for anyone with an ad blocker.
+  // Nothing else needs to change when ads go live — just fill in the
+  // constant.
+  var AD_CLIENT = "ca-pub-4203857211510947";
+  let adsScriptState = 'idle'; // idle | loading | ready | failed
+  let adPendingCbs = [];
+  const adsEnabled = () => !!AD_CLIENT;
+
+  function loadAdScript(cb){
+    if(!adsEnabled() || adsScriptState === 'failed') return cb && cb(false);
+    if(adsScriptState === 'ready') return cb && cb(true);
+    window.adsbygoogle = window.adsbygoogle || [];
+    window.adBreak = window.adBreak || (o => window.adsbygoogle.push(o));
+    window.adConfig = window.adConfig || (o => window.adsbygoogle.push(o));
+    if(adsScriptState === 'loading'){ adPendingCbs.push(cb); return; }
+    adsScriptState = 'loading';
+    adPendingCbs.push(cb);
+    const settle = ok => {
+      if(adsScriptState !== 'loading') return; // already settled (e.g. by the timeout)
+      adsScriptState = ok ? 'ready' : 'failed';
+      if(ok){ try{ window.adConfig({ preloadAdBreaks:'on', sound:'off' }); }catch(e){} }
+      const cbs = adPendingCbs.splice(0);
+      cbs.forEach(fn => fn && fn(ok));
+    };
+    const s = document.createElement('script');
+    s.async = true;
+    s.crossOrigin = 'anonymous';
+    s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + AD_CLIENT;
+    s.onload = () => settle(true);
+    s.onerror = () => settle(false);
+    document.head.appendChild(s);
+    // Ad blockers, restrictive networks, and sandboxed webviews can swallow
+    // the request silently — no load event, no error event, ever. Never
+    // let that leave the "continue" prompt stuck: if it hasn't settled
+    // quickly, treat it as failed and let the player continue without ads.
+    setTimeout(() => settle(false), 1500);
+  }
+
+  // Rewarded ad ("watch an ad to continue this run"). onReward fires only
+  // if the ad was actually watched; onSkipped fires if the player declined,
+  // the ad failed, ads aren't live yet, or the call stalls.
+  function showRewardedAd(name, onReward, onSkipped){
+    let done = false;
+    const reward = () => { if(done) return; done = true; clearTimeout(timer); onReward && onReward(); };
+    const skip = () => { if(done) return; done = true; clearTimeout(timer); onSkipped && onSkipped(); };
+    const timer = setTimeout(skip, 30000); // rewarded videos legitimately run up to ~30s — don't cut a real one off mid-play
+    if(!adsEnabled()) return skip();
+    loadAdScript(ok => {
+      if(!ok || typeof window.adBreak !== 'function') return skip();
+      window.adBreak({
+        type: 'reward',
+        name: name || 'continue-run',
+        beforeReward: showAdFn => showAdFn(),
+        adViewed: reward,
+        adDismissed: skip,
+        adBreakDone: info => { if(info && info.breakStatus && info.breakStatus !== 'viewed') skip(); },
+      });
+    });
+  }
+
+  const BASE_SPEED = 70;      // deg/sec
+  const HIT_GROWTH = 1.06;    // multiplier per hit
+  const MAX_TIME_FACTOR = 3.2; // how much the clock alone can multiply speed by time 0
+  const MAX_SPEED = 900;
+  const BASE_TOLERANCE = 9;   // degrees, half-window
+  const MIN_TOLERANCE = 4;
+  const GAME_TIME = 30;
+
+  let angle = 0;
+  let direction = 1; // 1 = clockwise, -1 = counter-clockwise
+  let traveled = 0;  // degrees swept since target was placed, resets on hit
+  let hitMultiplier = 1;
+  let speed = BASE_SPEED;
+  let targetAngle = 0;
+  let score = 0;
+  let streak = 0;
+  let best = Number(localStorage.getItem('popalock_best') || 0);
+  let timeLeft = GAME_TIME;
+  let running = false;
+  let lastTs = null;
+  let rafId = null;
+  let maxStreak = 0;
+  let lastBeepSecond = null;
+  let continueUsed = false;   // one "watch ad to continue" chance per run
+  let continueBusy = false;   // waiting on the rewarded-ad call
+  let pendingEndReason = null;
+
+  bestVal.textContent = best;
+
+  /* ---------------- Sound engine ----------------
+     All effects are synthesized with the Web Audio API (oscillators +
+     filtered noise bursts) so nothing needs to be downloaded and there
+     are no licensing concerns. Everything routes through a single
+     master gain so the mute button can silence it instantly. */
+  let audioCtx = null;
+  let masterGain = null;
+  let muted = false;
+
+  function ensureAudio(){
+    if(!audioCtx){
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      masterGain = audioCtx.createGain();
+      masterGain.gain.value = muted ? 0 : 0.9;
+      masterGain.connect(audioCtx.destination);
+    }
+    if(audioCtx.state === 'suspended'){
+      audioCtx.resume();
+    }
+  }
+
+  function toggleMute(){
+    muted = !muted;
+    muteBtn.textContent = muted ? '🔇' : '🔊';
+    if(masterGain) masterGain.gain.value = muted ? 0 : 0.9;
+  }
+
+  function noiseBurst(startTime, duration, peakGain, filterFreq, filterQ, type){
+    const bufferSize = Math.max(1, Math.floor(audioCtx.sampleRate * duration));
+    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for(let i=0;i<bufferSize;i++){ data[i] = Math.random()*2-1; }
+    const src = audioCtx.createBufferSource();
+    src.buffer = buffer;
+    const filt = audioCtx.createBiquadFilter();
+    filt.type = type || 'bandpass';
+    filt.frequency.value = filterFreq;
+    filt.Q.value = filterQ || 1;
+    const g = audioCtx.createGain();
+    g.gain.setValueAtTime(0, startTime);
+    g.gain.linearRampToValueAtTime(peakGain, startTime + 0.005);
+    g.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+    src.connect(filt).connect(g).connect(masterGain);
+    src.start(startTime);
+    src.stop(startTime + duration + 0.02);
+  }
+
+  function tone(startTime, freq, duration, peakGain, type, freqEnd){
+    const o = audioCtx.createOscillator();
+    o.type = type || 'sine';
+    o.frequency.setValueAtTime(freq, startTime);
+    if(freqEnd){ o.frequency.exponentialRampToValueAtTime(Math.max(20,freqEnd), startTime+duration); }
+    const g = audioCtx.createGain();
+    g.gain.setValueAtTime(0, startTime);
+    g.gain.linearRampToValueAtTime(peakGain, startTime + 0.006);
+    g.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+    o.connect(g).connect(masterGain);
+    o.start(startTime);
+    o.stop(startTime + duration + 0.02);
+  }
+
+  // Bright metallic "clink" when a pin is popped, pitch rises with streak.
+  function playHit(streakCount){
+    if(!audioCtx) return;
+    const t = audioCtx.currentTime;
+    const freq = 560 + Math.min(streakCount, 16) * 34;
+    tone(t, freq, 0.16, 0.28, 'triangle');
+    tone(t, freq * 2.01, 0.11, 0.13, 'sine');
+    noiseBurst(t, 0.07, 0.12, 5200, 3, 'bandpass');
+    // extra chime on big streaks
+    if(streakCount > 0 && streakCount % 5 === 0){
+      tone(t + 0.05, freq * 1.5, 0.2, 0.16, 'sine');
+    }
+  }
+
+  // Low mechanical buzz for a mistimed tap.
+  function playMiss(){
+    if(!audioCtx) return;
+    const t = audioCtx.currentTime;
+    tone(t, 190, 0.32, 0.26, 'sawtooth', 55);
+    noiseBurst(t, 0.22, 0.22, 300, 1.2, 'lowpass');
+  }
+
+  // Heavier clunk for winding a full turn without a tap.
+  function playOverwound(){
+    if(!audioCtx) return;
+    const t = audioCtx.currentTime;
+    tone(t, 130, 0.4, 0.28, 'square', 40);
+    tone(t + 0.03, 90, 0.35, 0.2, 'sine', 30);
+    noiseBurst(t, 0.3, 0.2, 220, 1, 'lowpass');
+  }
+
+  // Descending tone when the 30s clock simply runs out.
+  function playTimeUp(){
+    if(!audioCtx) return;
+    const t = audioCtx.currentTime;
+    tone(t, 420, 0.5, 0.22, 'sine', 120);
+    tone(t + 0.1, 300, 0.5, 0.16, 'triangle', 90);
+  }
+
+  // Short tick beep for the final 5 seconds, one per whole second.
+  function playCountdownBeep(secondsLeft){
+    if(!audioCtx) return;
+    const t = audioCtx.currentTime;
+    const freq = 700 + (5 - secondsLeft) * 40;
+    tone(t, freq, 0.09, 0.16, 'square');
+  }
+
+  // Mechanical clunk-and-wind when the player presses Start.
+  function playStart(){
+    if(!audioCtx) return;
+    const t = audioCtx.currentTime;
+    tone(t, 160, 0.12, 0.2, 'square', 90);
+    noiseBurst(t + 0.02, 0.1, 0.15, 800, 2, 'bandpass');
+    tone(t + 0.14, 520, 0.14, 0.14, 'sine');
+  }
+
+  /* ---------------- Shared leaderboard ----------------
+     Global data (shared=true) is visible to every player of this artifact,
+     so a real leaderboard + play counter is what actually creates the
+     "other people are playing / scoring right now" pull. Everything is
+     wrapped in try/catch since storage can fail or the key may not exist
+     yet, and none of it blocks the game itself. */
+  const LB_KEY = 'leaderboard:top';
+  const PLAYS_KEY = 'stats:totalPlays';
+  const LB_MAX = 10;
+  let leaderboardCache = [];
+  let lastSavedEntry = null; // {name, score} the current player just saved, for highlighting
+  let pendingSave = null;    // {score} set when a qualifying score is awaiting a name, so it's never lost
+  let myName = null;         // remembered locally so we only ask for a name once per device
+
+  const NAME_KEY = 'player:name';
+  async function loadPlayerName(){
+    try{
+      const res = await storageAdapter.get(NAME_KEY, false);
+      myName = res ? res.value : null;
+    }catch(e){
+      myName = null;
+    }
+    renderPlayingAs();
+  }
+  async function savePlayerName(name){
+    myName = name;
+    try{ await storageAdapter.set(NAME_KEY, name, false); }catch(e){ /* non-critical */ }
+    renderPlayingAs();
+  }
+  function renderPlayingAs(){
+    if(myName){
+      playingAsRow.innerHTML = `Playing as <span class="pa-name"></span><span class="pa-change" id="paChangeLink">change</span>`;
+      playingAsRow.querySelector('.pa-name').textContent = myName;
+      const link = document.getElementById('paChangeLink');
+      link.addEventListener('pointerdown', (e)=>{ e.stopPropagation(); });
+      link.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        myName = null;
+        storageAdapter.set(NAME_KEY, '', false).catch(()=>{});
+        renderPlayingAs();
+      });
+    } else {
+      playingAsRow.textContent = "You'll be asked for a name the first time you make the board.";
+    }
+  }
+
+  async function fetchLeaderboard(){
+    try{
+      const res = await storageAdapter.get(LB_KEY, true);
+      const arr = res ? JSON.parse(res.value) : [];
+      return Array.isArray(arr) ? arr : [];
+    }catch(e){
+      return [];
+    }
+  }
+  async function fetchPlayCount(){
+    try{
+      const res = await storageAdapter.get(PLAYS_KEY, true);
+      const n = res ? Number(res.value) : 0;
+      return Number.isFinite(n) ? n : 0;
+    }catch(e){
+      return 0;
+    }
+  }
+  function formatCount(n){
+    return n.toLocaleString();
+  }
+  function renderWorldStats(count, list){
+    worldPlays.textContent = `🔒 ${formatCount(count)} lock${count===1?'':'s'} picked worldwide`;
+    if(list.length){
+      worldTop.textContent = `Top: ${list[0].name} — ${list[0].score}`;
+    } else {
+      worldTop.textContent = 'Be the first on the board';
+    }
+  }
+  async function refreshWorldStats(){
+    const [count, list] = await Promise.all([fetchPlayCount(), fetchLeaderboard()]);
+    leaderboardCache = list;
+    renderWorldStats(count, list);
+  }
+  async function bumpPlayCount(){
+    try{
+      const current = await fetchPlayCount();
+      await storageAdapter.set(PLAYS_KEY, String(current+1), true);
+    }catch(e){ /* non-critical */ }
+  }
+  function qualifiesForBoard(list, s, existingScore){
+    if(s <= 0) return false;
+    // If this name already has an entry on the board, the only thing that
+    // matters is beating your own previous score - the board should move
+    // your one row up, never add a second row for the same name.
+    if(existingScore != null){
+      return s > existingScore;
+    }
+    if(list.length < LB_MAX) return true;
+    return s > list[list.length-1].score;
+  }
+  async function saveScoreToBoard(name, s){
+    const finalName = name || 'Anonymous';
+    try{
+      const list = await fetchLeaderboard();
+      const idx = list.findIndex(e => e.name === finalName);
+      if(idx >= 0){
+        if(s > list[idx].score){
+          list[idx] = {name: finalName, score: s, ts: Date.now()};
+        }
+        // else: this name's existing entry is already higher, nothing to do
+      } else {
+        list.push({name: finalName, score: s, ts: Date.now()});
+      }
+      list.sort((a,b)=>b.score-a.score);
+      const trimmed = list.slice(0, LB_MAX);
+      await storageAdapter.set(LB_KEY, JSON.stringify(trimmed), true);
+      leaderboardCache = trimmed;
+      lastSavedEntry = {name: finalName, score: s};
+      renderWorldStats(await fetchPlayCount(), trimmed);
+    }catch(e){ /* non-critical */ }
+  }
+  function renderBoardPanel(){
+    boardList.innerHTML = '';
+    if(!leaderboardCache.length){
+      const empty = document.createElement('div');
+      empty.className = 'board-empty';
+      empty.textContent = 'No scores yet — set the first record!';
+      boardList.appendChild(empty);
+      return;
+    }
+    leaderboardCache.forEach((entry, i)=>{
+      const row = document.createElement('div');
+      row.className = 'board-row';
+      if(myName && entry.name === myName){
+        row.classList.add('me');
+      }
+      const medal = i===0 ? '🥇' : i===1 ? '🥈' : i===2 ? '🥉' : (i+1)+'.';
+      row.innerHTML = `<span class="brank">${medal}</span><span class="bname"></span><span class="bscore">${entry.score}</span>`;
+      row.querySelector('.bname').textContent = entry.name;
+      boardList.appendChild(row);
+    });
+  }
+
+  /* ---------------- Storage adapter (Supabase-backed) ----------------
+     Shared data (the leaderboard, the worldwide play counter) is written
+     straight to the same Supabase project + kv_store table already wired
+     into the main OfflineGames site, using its exact REST pattern. That
+     means every phone/browser that plays this game reads and writes the
+     same rows - a real cross-device leaderboard, not a per-device one.
+     Keys are prefixed "popalock:" so they never collide with the vault's
+     own keys (vault-data, admin-config, game-code:*, news-data).
+
+     Personal data (the remembered player name) deliberately stays OUT of
+     Supabase and lives only in this device's localStorage - there's no
+     login system here, so "who is playing" is inherently per-device, not
+     something that should sync or overwrite across phones. */
+  const SUPABASE_PROJECT_URL = "https://iufctryjylbtrngayihn.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1ZmN0cnlqeWxidHJuZ2F5aWhuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyOTQ4NTEsImV4cCI6MjA5OTg3MDg1MX0.-DL79RcbLhRFwCuPZt-MXg6CBhbU0Zi786sIFJT4nf8";
+  const KV_PREFIX = 'popalock:';
+
+  function supabaseConfigured(){
+    return !!SUPABASE_PROJECT_URL && !!SUPABASE_ANON_KEY;
+  }
+  function supabaseHeaders(extra){
+    const h = { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + SUPABASE_ANON_KEY };
+    if(extra){ for(const k in extra){ h[k] = extra[k]; } }
+    return h;
+  }
+  async function supabaseGet(key){
+    const url = SUPABASE_PROJECT_URL + '/rest/v1/kv_store?key=eq.' + encodeURIComponent(key) + '&select=value';
+    const res = await fetch(url, { headers: supabaseHeaders() });
+    if(!res.ok) throw new Error('supabase get failed');
+    const rows = await res.json();
+    if(!rows || !rows.length || rows[0].value == null) throw new Error('not found');
+    return rows[0].value;
+  }
+  async function supabaseSet(key, value){
+    const url = SUPABASE_PROJECT_URL + '/rest/v1/kv_store';
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: supabaseHeaders({ 'Content-Type':'application/json', 'Prefer':'resolution=merge-duplicates' }),
+      body: JSON.stringify([{ key: key, value: value, updated_at: new Date().toISOString() }])
+    });
+    if(!res.ok) throw new Error('supabase set failed');
+  }
+
+  let localStorageOK = true;
+  try{
+    const t = '__popalock_test__';
+    localStorage.setItem(t,'1');
+    localStorage.removeItem(t);
+  }catch(e){ localStorageOK = false; }
+
+  const storageAdapter = {
+    async get(key, shared){
+      if(shared && supabaseConfigured()){
+        const value = await supabaseGet(KV_PREFIX + key);
+        return {key, value, shared:true};
+      }
+      if(!localStorageOK) throw new Error('no storage available');
+      const raw = localStorage.getItem('popalock:'+key);
+      if(raw===null) throw new Error('not found');
+      return {key, value: raw, shared: !!shared};
+    },
+    async set(key, value, shared){
+      if(shared && supabaseConfigured()){
+        await supabaseSet(KV_PREFIX + key, value);
+        return {key, value, shared:true};
+      }
+      if(!localStorageOK) return null;
+      localStorage.setItem('popalock:'+key, value);
+      return {key, value, shared: !!shared};
+    }
+  };
+
+  function angularDiff(a,b){
+    let d = Math.abs(a-b) % 360;
+    return d > 180 ? 360-d : d;
+  }
+  function toleranceForSpeed(){
+    const t = 1 - Math.min(1, (speed-BASE_SPEED)/(MAX_SPEED-BASE_SPEED));
+    return MIN_TOLERANCE + t*(BASE_TOLERANCE-MIN_TOLERANCE);
+  }
+  function placeTarget(){
+    const forwardDist = 80 + Math.random()*180; // 80-260deg ahead, in the current sweep direction
+    targetAngle = direction === 1 ? (angle + forwardDist) % 360 : (angle - forwardDist + 360) % 360;
+    traveled = 0;
+    const rad = targetAngle*Math.PI/180;
+    // target sits at 36% radius from center, well clear of the face edge/bezel
+    const r = 36;
+    const x = 50 + r*Math.cos(rad);
+    const y = 50 + r*Math.sin(rad);
+    target.style.left = x+'%';
+    target.style.top = y+'%';
+  }
+  function resetGame(){
+    angle = Math.random()*360;
+    direction = Math.random() < 0.5 ? 1 : -1;
+    traveled = 0;
+    hitMultiplier = 1;
+    speed = BASE_SPEED;
+    score = 0;
+    streak = 0;
+    maxStreak = 0;
+    timeLeft = GAME_TIME;
+    lastBeepSecond = null;
+    continueUsed = false;
+    continueBusy = false;
+    pendingEndReason = null;
+    scoreVal.textContent = score;
+    streakVal.textContent = streak;
+    timeVal.textContent = timeLeft.toFixed(1);
+    timeVal.classList.remove('low');
+    placeTarget();
+    sweepLine.style.transform = `rotate(${angle}deg)`;
+  }
+  function tryLockLandscape(){
+    try{
+      if(screen.orientation && screen.orientation.lock){
+        screen.orientation.lock('landscape').catch(()=>{});
+      }
+    }catch(e){ /* ignore - CSS rotation fallback covers this */ }
+  }
+  function startGame(){
+    ensureAudio();
+    playStart();
+    tryLockLandscape();
+    // Never silently drop a qualifying score: if the player starts a new
+    // run without submitting a name for the previous one (closed the
+    // keyboard, tapped the wrong thing, whatever), log it as Anonymous
+    // before it's overwritten.
+    if(pendingSave){
+      const toSave = pendingSave;
+      pendingSave = null;
+      savePlayerName('Anonymous');
+      saveScoreToBoard('Anonymous', toSave.score);
+    }
+    resetGame();
+    nameEntry.style.display = 'none';
+    worldStats.style.display = 'flex';
+    startBtn.style.display = '';
+    overlay.style.display = 'none';
+    running = true;
+    lastTs = null;
+    rafId = requestAnimationFrame(loop);
+    bumpPlayCount().then(refreshWorldStats);
+  }
+  // Offer one "watch ad to continue" chance on a jam or overwind — the two
+  // ways a mistake ends the run early. Running out of the clock is the
+  // natural end of a timed round, not a mistake, so it always goes
+  // straight to endGame() instead. Only one continue is offered per run,
+  // and only when ads are configured at all — no point showing a "watch
+  // an ad" button that can never do anything.
+  function maybeOfferContinue(reason){
+    if(continueUsed || !adsEnabled()){ endGame(reason); return; }
+    pendingEndReason = reason;
+    running = false;
+    cancelAnimationFrame(rafId);
+    continueTitle.textContent = reason === 'overwound' ? 'Overwound!' : 'Jammed!';
+    continueText.textContent = 'Watch a short ad to keep this run alive.';
+    setContinueLoading(false);
+    continueOverlay.style.display = 'flex';
+  }
+  function setContinueLoading(on){
+    watchAdBtn.disabled = on;
+    watchAdBtn.textContent = on ? 'Loading…' : 'Watch Ad to get a life❤️';
+    endRunBtn.disabled = on;
+  }
+  function requestContinueAd(){
+    if(continueBusy) return;
+    continueBusy = true;
+    setContinueLoading(true);
+    showRewardedAd('pop-a-lock-continue', () => {
+      // Reward: hop back into the same run, penance paid via a broken
+      // streak and a softened speed multiplier rather than a full reset.
+      continueBusy = false;
+      continueUsed = true;
+      pendingEndReason = null;
+      continueOverlay.style.display = 'none';
+      streak = 0;
+      streakVal.textContent = streak;
+      hitMultiplier = 1;
+      traveled = 0;
+      placeTarget();
+      running = true;
+      lastTs = null;
+      rafId = requestAnimationFrame(loop);
+    }, () => {
+      // Declined, failed, or ads aren't live yet — the run ends for real.
+      continueBusy = false;
+      setContinueLoading(false);
+      continueOverlay.style.display = 'none';
+      const reason = pendingEndReason;
+      pendingEndReason = null;
+      endGame(reason);
+    });
+  }
+  function declineContinue(){
+    if(continueBusy) return;
+    continueOverlay.style.display = 'none';
+    const reason = pendingEndReason;
+    pendingEndReason = null;
+    endGame(reason);
+  }
+  function endGame(reason){
+    running = false;
+    cancelAnimationFrame(rafId);
+    if(reason === 'miss') playMiss();
+    else if(reason === 'overwound') playOverwound();
+    else playTimeUp();
+    if(score > best){
+      best = score;
+      localStorage.setItem('popalock_best', String(best));
+    }
+    bestVal.textContent = best;
+    overlayTitle.textContent = (reason === 'miss') ? 'Jammed' : (reason === 'overwound') ? 'Overwound' : 'Locked Out';
+    overlayText.innerHTML = `Final score<br><span class="big-score">${score}</span><br>Best streak: ${maxStreak}`;
+    startBtn.textContent = 'Try Again';
+    overlay.style.display = 'flex';
+    lastSavedEntry = null;
+
+    const myExisting = myName ? leaderboardCache.find(e=>e.name===myName) : null;
+    if(qualifiesForBoard(leaderboardCache, score, myExisting ? myExisting.score : null)){
+      const rank = leaderboardCache.filter(e=>e.score>score && e.name!==myName).length + 1;
+      if(myName){
+        // Already know who's playing on this device - save straight away,
+        // no repeated prompt.
+        pendingSave = null;
+        saveScoreToBoard(myName, score).then(refreshWorldStats);
+        overlayText.innerHTML = `Final score<br><span class="big-score">${score}</span><br>${rank<=3?`Top ${rank} worldwide!`:'On the leaderboard!'} Saved as ${myName}.`;
+      } else {
+        neLabel.textContent = rank<=3 ? `Top ${rank} worldwide! Add your name:` : `Made the leaderboard! Add your name:`;
+        nameEntry.style.display = 'flex';
+        startBtn.style.display = 'none';
+        worldStats.style.display = 'none';
+        nameInput.value = '';
+        pendingSave = {score};
+        setTimeout(()=>nameInput.focus(), 50);
+      }
+    } else {
+      refreshWorldStats();
+    }
+  }
+  function submitScore(){
+    const name = nameInput.value.trim().slice(0,14) || 'Anonymous';
+    pendingSave = null;
+    savePlayerName(name);
+    saveScoreToBoard(name, score).then(()=>{
+      nameEntry.style.display = 'none';
+      worldStats.style.display = 'flex';
+      startBtn.style.display = '';
+      refreshWorldStats();
+    });
+  }
+  function loop(ts){
+    if(!running) return;
+    if(lastTs===null) lastTs = ts;
+    const dt = (ts-lastTs)/1000;
+    lastTs = ts;
+
+    const elapsedFrac = 1 - Math.max(0, timeLeft)/GAME_TIME;
+    const timeFactor = 1 + elapsedFrac*(MAX_TIME_FACTOR-1);
+    speed = Math.min(MAX_SPEED, BASE_SPEED*hitMultiplier*timeFactor);
+
+    const step = direction*speed*dt;
+    angle = (angle + step + 360) % 360;
+    sweepLine.style.transform = `rotate(${angle}deg)`;
+    traveled += Math.abs(step);
+
+    if(traveled >= 360){
+      maybeOfferContinue('overwound');
+      return;
+    }
+
+    timeLeft -= dt;
+    if(timeLeft <= 0){
+      timeLeft = 0;
+      timeVal.textContent = '0.0';
+      endGame('time');
+      return;
+    }
+    timeVal.textContent = timeLeft.toFixed(1);
+    const low = timeLeft <= 5;
+    timeVal.classList.toggle('low', low);
+    if(low){
+      const secondBucket = Math.ceil(timeLeft);
+      if(secondBucket !== lastBeepSecond && secondBucket >= 1){
+        lastBeepSecond = secondBucket;
+        playCountdownBeep(secondBucket);
+      }
+    }
+
+    rafId = requestAnimationFrame(loop);
+  }
+
+  function sparkleBurst(x, y){
+    // expanding ring
+    const ring = document.createElement('div');
+    ring.className = 'spark-ring';
+    ring.style.left = x+'%';
+    ring.style.top = y+'%';
+    face.appendChild(ring);
+    setTimeout(()=>ring.remove(), 550);
+
+    // radiating particles
+    const count = 10;
+    for(let i=0;i<count;i++){
+      const spark = document.createElement('div');
+      spark.className = 'spark';
+      const ang = (Math.PI*2*i/count) + (Math.random()*0.4-0.2);
+      const dist = 30 + Math.random()*35; // px-ish travel via % translate below, scaled by JS px
+      const sx = Math.cos(ang)*dist;
+      const sy = Math.sin(ang)*dist;
+      spark.style.setProperty('--sx', sx+'px');
+      spark.style.setProperty('--sy', sy+'px');
+      spark.style.left = x+'%';
+      spark.style.top = y+'%';
+      face.appendChild(spark);
+      setTimeout(()=>spark.remove(), 650);
+    }
+  }
+  function popFloatText(text, x, y){
+    const el = document.createElement('div');
+    el.className = 'combo-pop';
+    el.textContent = text;
+    el.style.left = x+'%';
+    el.style.top = y+'%';
+    face.appendChild(el);
+    setTimeout(()=>el.remove(), 800);
+  }
+
+  function attemptPop(){
+    if(!running) return;
+    const tol = toleranceForSpeed();
+    const diff = angularDiff(angle, targetAngle);
+
+    // Use the target's own local percentage coordinates (the same values
+    // placeTarget() set), rather than re-deriving them from
+    // getBoundingClientRect(). On phones the whole board is rotated 90deg
+    // via a CSS transform for the landscape layout, so a screen-space
+    // bounding-rect measurement doesn't line up with the local (pre-rotation)
+    // percentage space that the spark/ring elements are positioned in -
+    // that mismatch was what made the sparkle burst appear on the opposite
+    // side from the actual gold pin.
+    const cx = parseFloat(target.style.left) || 50;
+    const cy = parseFloat(target.style.top) || 50;
+
+    if(diff <= tol){
+      // HIT
+      streak += 1;
+      maxStreak = Math.max(maxStreak, streak);
+      const comboBonus = Math.min(streak, 10)*10;
+      const gained = 100 + comboBonus;
+      score += gained;
+      scoreVal.textContent = score;
+      streakVal.textContent = streak;
+      hitMultiplier = hitMultiplier*HIT_GROWTH;
+
+      playHit(streak);
+      popFloatText('+'+gained, cx, cy);
+      sparkleBurst(cx, cy);
+      flash.classList.remove('hit'); void flash.offsetWidth; flash.classList.add('hit');
+
+      direction *= -1;
+      placeTarget();
+    } else {
+      // MISS - offer a continue instead of ending immediately
+      flash.classList.remove('miss'); void flash.offsetWidth; flash.classList.add('miss');
+      maybeOfferContinue('miss');
+    }
+  }
+
+  // Tap ANYWHERE on the stage (the whole brown/gunmetal screen) to pop the lock.
+  // Only the Start / Try Again button is excluded, via stopPropagation on itself.
+  stage.addEventListener('pointerdown', (e)=>{
+    if(!running) return;
+    e.preventDefault();
+    attemptPop();
+  }, { passive:false });
+
+  window.addEventListener('keydown', (e)=>{
+    if(e.code==='Space'){
+      e.preventDefault();
+      if(running) attemptPop();
+      else if(overlay.style.display !== 'none') startGame();
+    }
+  });
+
+  startBtn.addEventListener('pointerdown', (e)=>{ e.stopPropagation(); });
+  startBtn.addEventListener('click', (e)=>{ e.stopPropagation(); startGame(); });
+
+  muteBtn.addEventListener('pointerdown', (e)=>{ e.stopPropagation(); });
+  muteBtn.addEventListener('click', (e)=>{ e.stopPropagation(); ensureAudio(); toggleMute(); });
+
+  let wasRunningBeforeBoard = false;
+  boardOverlay.addEventListener('pointerdown', (e)=>{ e.stopPropagation(); });
+  boardBtn.addEventListener('pointerdown', (e)=>{ e.stopPropagation(); });
+  boardBtn.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    renderBoardPanel();
+    renderPlayingAs();
+    boardOverlay.style.display = 'flex';
+    if(running){
+      wasRunningBeforeBoard = true;
+      running = false;
+      cancelAnimationFrame(rafId);
+    }
+  });
+  closeBoardBtn.addEventListener('pointerdown', (e)=>{ e.stopPropagation(); });
+  closeBoardBtn.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    boardOverlay.style.display = 'none';
+    if(wasRunningBeforeBoard){
+      wasRunningBeforeBoard = false;
+      running = true;
+      lastTs = null;
+      rafId = requestAnimationFrame(loop);
+    }
+  });
+
+  nameEntry.addEventListener('pointerdown', (e)=>{ e.stopPropagation(); });
+  submitScoreBtn.addEventListener('click', (e)=>{ e.stopPropagation(); submitScore(); });
+  skipNameBtn.addEventListener('pointerdown', (e)=>{ e.stopPropagation(); });
+  skipNameBtn.addEventListener('click', (e)=>{ e.stopPropagation(); nameInput.value = ''; submitScore(); });
+  nameInput.addEventListener('keydown', (e)=>{
+    e.stopPropagation();
+    if(e.key === 'Enter'){ e.preventDefault(); submitScore(); }
+  });
+
+  continueOverlay.addEventListener('pointerdown', (e)=>{ e.stopPropagation(); });
+  watchAdBtn.addEventListener('pointerdown', (e)=>{ e.stopPropagation(); });
+  watchAdBtn.addEventListener('click', (e)=>{ e.stopPropagation(); requestContinueAd(); });
+  endRunBtn.addEventListener('pointerdown', (e)=>{ e.stopPropagation(); });
+  endRunBtn.addEventListener('click', (e)=>{ e.stopPropagation(); declineContinue(); });
+
+  // Initial load: show worldwide play count + current #1 as soon as the
+  // start screen appears, so the very first thing a new player sees is
+  // social proof that other people are already playing and scoring.
+  refreshWorldStats();
+  // Remembered player name (personal, per-device) so we only ever ask once.
+  loadPlayerName();
+
+  // ---- Viewport stabilizer ----
+  function forceReflow(){
+    document.documentElement.style.display = 'none';
+    void document.documentElement.offsetHeight;
+    document.documentElement.style.display = '';
+  }
+  window.addEventListener('resize', forceReflow);
+  if(window.visualViewport){
+    window.visualViewport.addEventListener('resize', forceReflow);
+  }
+
+  // Lightweight test/demo hook — harmless in production, lets an outside
+  // harness exercise the continue-on-miss flow without simulating real
+  // pointer events on the dial.
+  window.__pal = {
+    get state(){
+      return {
+        running,
+        score,
+        streak,
+        continueUsed,
+        continueBusy,
+        continueShown: continueOverlay.style.display !== 'none',
+        overlayShown: overlay.style.display !== 'none',
+      };
+    },
+    start: startGame,
+    forceMiss: () => maybeOfferContinue('miss'),
+    forceOverwound: () => maybeOfferContinue('overwound'),
+    watchAd: requestContinueAd,
+    declineContinue: declineContinue,
+  };
+})();
+</script>
+
+</body></html>

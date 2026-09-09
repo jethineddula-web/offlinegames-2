@@ -1,0 +1,103 @@
+# Cloudflare Pages security headers for offlinegames.art
+# Place this file at the ROOT of your deployed folder (same level as index.html).
+# Cloudflare Pages reads it automatically on deploy. No build step needed.
+
+/*
+  # --- Anti-clickjacking / anti-leeching -------------------------------------
+  # Stops other game portals from putting your whole site in an iframe and
+  # selling ads around your games. This is the single highest-value header here.
+  X-Frame-Options: SAMEORIGIN
+
+  # --- MIME sniffing ---------------------------------------------------------
+  # Stops a browser from "guessing" that an uploaded .jpg is really a script.
+  X-Content-Type-Options: nosniff
+
+  # --- Referrer leakage ------------------------------------------------------
+  # Third-party game files and ad calls stop receiving your full URLs.
+  Referrer-Policy: strict-origin-when-cross-origin
+
+  # --- Device permissions ----------------------------------------------------
+  # An embedded game can no longer silently ask for a camera, mic or location.
+  # fullscreen + gamepad stay allowed because your games need them.
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(self), accelerometer=(self), fullscreen=(self), autoplay=(self)
+
+  # --- HTTPS enforcement -----------------------------------------------------
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+
+  # --- Cross-origin isolation (safe defaults) --------------------------------
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Cross-Origin-Resource-Policy: same-site
+
+  # --- Content Security Policy ----------------------------------------------
+  # Tuned to keep Google AdSense, Google Fonts and your own inline scripts
+  # working. 'unsafe-inline' is required by AdSense and by the inline
+  # <script> / style="" attributes already in index.html.
+  # frame-ancestors 'self' is the CSP-native version of X-Frame-Options.
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://adservice.google.com https://fundingchoicesmessages.google.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; media-src 'self' data: blob:; connect-src 'self' https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://csi.gstatic.com; frame-src 'self' https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://www.google.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self' mailto:; object-src 'none'; upgrade-insecure-requests
+
+# --- Catalog: always revalidate so phones never serve a stale game list ------
+/catalog.js
+  Cache-Control: no-cache, must-revalidate
+  X-Robots-Tag: noindex, nofollow
+
+# --- Keep the admin tooling out of search results ---------------------------
+/site-admin.js
+  X-Robots-Tag: noindex, nofollow
+/admin-forms.js
+  X-Robots-Tag: noindex, nofollow
+
+# --- Game files -------------------------------------------------------------
+# WAS: Cache-Control: public, max-age=604800
+#
+# That one line is the main reason your updated games did not show up.
+# max-age=604800 tells every browser "this file is good for seven days,
+# don't even ask me about it." So after you redeployed a game, phones that
+# had already opened it kept serving their own week-old copy — and the
+# service worker's fetch() read from that same poisoned disk cache, so
+# "network first" quietly returned stale bytes too. Incognito worked
+# because a fresh incognito profile has no disk cache to serve from.
+#
+# max-age=0, must-revalidate does NOT mean "download it every time". The
+# browser still stores the file and still sends If-None-Match; Cloudflare
+# answers 304 Not Modified when nothing changed, which is a few hundred
+# bytes. You only pay the full download when the game has actually changed
+# — which is exactly what you want.
+/games/*
+  X-Robots-Tag: noindex
+  X-Frame-Options: SAMEORIGIN
+  Cache-Control: public, max-age=0, must-revalidate
+
+# WAS: Cache-Control: public, max-age=2592000, immutable
+#
+# "immutable" is the strongest promise a site can make: it tells the
+# browser not to revalidate even on a manual reload. A cover you replaced
+# would have kept showing the old art for up to 30 days with no way to
+# force it short of clearing site data. Never use immutable on a path
+# whose filenames stay the same across deploys.
+/covers/*
+  Cache-Control: public, max-age=0, must-revalidate
+
+# --- The code that decides what the site shows ------------------------------
+# Same reasoning: these must be revalidated, or a phone runs last week's
+# app.js against this week's catalog.
+/app.js
+  Cache-Control: no-cache, must-revalidate
+/library-sync.js
+  Cache-Control: no-cache, must-revalidate
+/console-ui.js
+  Cache-Control: no-cache, must-revalidate
+/ui-fx.js
+  Cache-Control: no-cache, must-revalidate
+/contact-panel.js
+  Cache-Control: no-cache, must-revalidate
+
+# --- The service worker itself ----------------------------------------------
+# A cached sw.js is the worst case of all: the browser never learns that a
+# newer service worker exists, so none of the fixes above ever activate.
+/sw.js
+  Cache-Control: no-cache, must-revalidate
+  Service-Worker-Allowed: /
+
+/catalog.source.js
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store

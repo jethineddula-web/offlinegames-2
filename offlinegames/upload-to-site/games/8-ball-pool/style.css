@@ -1,0 +1,110 @@
+/*
+ * The Players' Club visual contract: deep evergreen felt, warm walnut rails,
+ * antique brass instruments, tobacco shadow, and classic editorial type.
+ * The HTML shell stays quiet so the direct-manipulation table remains central.
+ */
+@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+:root { color-scheme: dark; font-family: Manrope, system-ui, sans-serif; background: #120c0a; }
+* { box-sizing: border-box; }
+html, body { width: 100%; height: 100%; min-height: 100%; margin: 0; overflow: hidden; }
+body { background: #120c0a url("assets/pool-lounge-backdrop.png") center / cover; color: #f6ead3; }
+button { font: inherit; }
+.game-shell { position: relative; width: 100vw; height: 100dvh; min-height: 100vh; overflow: hidden; isolation: isolate; }
+#poolCanvas { display: block; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
+
+.hud { position: absolute; z-index: 2; inset: 3.9% 3.55% auto; height: 8%; display: grid; grid-template-columns: minmax(220px, 1fr) minmax(270px, 1.25fr) minmax(220px, 1fr); gap: 3%; align-items: stretch; pointer-events: none; }
+.player-card { position: relative; display: flex; flex-direction: column; justify-content: center; gap: .18rem; padding: .6rem 1.25rem .6rem 2rem; overflow: hidden; border: 1px solid rgba(227,207,166,.25); border-radius: 10px; background: rgba(19,14,11,.76); }
+.player-card::before { position: absolute; inset: 21% auto 21% 1rem; width: 3px; background: #6f6253; content: ""; }
+.player-card.active { border-color: #c9a553; background: rgba(41,31,23,.95); }
+.player-card.active::before { background: #d0ad59; }
+.player-card-right { text-align: right; padding: .6rem 2rem .6rem 1.25rem; }
+.player-card-right::before { right: 1rem; left: auto; }
+.player-name { color: #f7ecd9; font-size: clamp(.62rem, 1vw, .83rem); font-weight: 800; }
+.player-group, .player-score, .eyebrow, .instruction, .turn-panel span { font-size: clamp(.44rem, .7vw, .63rem); font-weight: 700; letter-spacing: .14em; }
+.player-group { color: #d8bf80; }
+.player-score { color: #c9b99e; }
+.turn-panel { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .28rem; text-align: center; }
+.turn-panel span, .eyebrow { color: #e5c878; letter-spacing: .22em; }
+.turn-panel strong { color: #f4ead7; font: clamp(1rem, 2.1vw, 1.55rem) "DM Serif Display", Georgia, serif; }
+.turn-panel::after { width: 46%; height: 1px; background: rgba(207,173,96,.58); content: ""; }
+
+.control-deck { position: absolute; z-index: 5; right: 3.55%; bottom: 3.7%; left: 3.55%; display: grid; grid-template-columns: minmax(170px, 26%) 1fr auto; gap: 3%; align-items: center; min-height: 7%; padding: .65rem 1.2rem; border: 1px solid rgba(211,177,91,.38); border-radius: 12px; background: rgba(16,11,9,.78); pointer-events: auto; }
+.power-control { display: grid; gap: .38rem; font-size: clamp(.45rem, .7vw, .64rem); font-weight: 700; letter-spacing: .13em; }
+.power-track { height: 9px; overflow: hidden; border-radius: 999px; background: #392c22; }
+.power-track i { display: block; width: 0%; height: 100%; border-radius: inherit; background: linear-gradient(90deg,#c3a65d,#d86d3e); transition: width .06s linear; }
+.control-deck p { margin: 0; color: #dfd1b8; font-size: clamp(.53rem, .9vw, .8rem); font-weight: 500; }
+.utility-buttons { display: flex; gap: .45rem; pointer-events: auto; }
+#soundButton, #instructionsButton, #assistButton { padding: .48rem .76rem; border: 1px solid rgba(224,191,116,.55); border-radius: 7px; background: rgba(196,160,80,.18); color: #e4d3b3; font-size: clamp(.46rem, .7vw, .62rem); font-weight: 800; letter-spacing: .1em; cursor: pointer; transition: transform .14s cubic-bezier(.23,1,.32,1), background .14s ease; }
+#soundButton:hover, #soundButton:focus-visible, #instructionsButton:hover, #instructionsButton:focus-visible, #assistButton:hover, #assistButton:focus-visible { background: rgba(196,160,80,.34); outline: none; transform: translateY(-1px); }
+
+.ad-slot { width: min(76vw, 964px); margin: 0 auto; border-radius: 10px; overflow: hidden; }
+.ad-slot:empty { display: none; }
+
+.overlay { position: absolute; z-index: 4; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4rem 1.25rem; text-align: center; background: rgba(15,8,6,.37); }
+.overlay .emblem { width: clamp(46px, 7vw, 86px); height: auto; margin-bottom: .7rem; }
+.overlay h1, .overlay h2 { margin: .15rem 0 .4rem; color: #fff8e9; font: clamp(2rem, 4.5vw, 3.6rem) "DM Serif Display", Georgia, serif; }
+.overlay h2 { font-size: clamp(1.65rem, 3.2vw, 2.4rem); }
+.subtitle, .rotate-overlay p, .result-overlay p { margin: 0; color: #c9b69a; font-size: clamp(.7rem, 1.2vw, 1rem); font-weight: 500; }
+.mode-options { display: grid; grid-template-columns: repeat(2, minmax(220px, 420px)); gap: clamp(1rem, 8vw, 7.7rem); width: min(76vw, 964px); margin: clamp(2.7rem, 11vh, 7rem) auto clamp(1.8rem, 7vh, 4rem); }
+.mode-card { display: grid; gap: .42rem; min-height: clamp(108px, 15vh, 136px); padding: 1.25rem 1.45rem 1.15rem 2.7rem; border: 1px solid rgba(234,218,183,.4); border-radius: 11px; background: rgba(23,17,14,.88); color: #f6eddc; text-align: left; cursor: pointer; transition: transform .16s cubic-bezier(.23,1,.32,1), border-color .16s ease; }
+.mode-card:hover, .mode-card:focus-visible { transform: translateY(-3px); border-color: #cba457; outline: none; }
+.mode-card.selected { border: 2px solid #cba457; background: rgba(28,18,13,.93); }
+.mode-card:disabled, .primary-button:disabled { opacity: .5; pointer-events: none; }
+.mode-card span { position: relative; font-size: clamp(.82rem, 1.3vw, 1.1rem); font-weight: 800; }
+.mode-card span::before { position: absolute; top: -.15rem; bottom: -.15rem; left: -1.35rem; width: 4px; background: #d8b667; content: ""; }
+.mode-card small { color: #cdbda3; font-size: clamp(.58rem, .8vw, .72rem); font-weight: 500; }
+.mode-card b { margin-top: auto; color: #aa8b54; font-size: clamp(.46rem, .65vw, .61rem); letter-spacing: .12em; }
+.instruction { color: rgba(239,218,174,.72); letter-spacing: .18em; }
+.rotate-overlay, .result-overlay { background: rgba(8,5,4,.72); }
+.rotate-overlay::before, .result-overlay::before { position: absolute; z-index: -1; width: min(54rem, 78vw); height: clamp(17rem, 39vh, 23rem); border: 1.5px solid #c7a458; border-radius: 18px; background: rgba(28,18,14,.96); content: ""; }
+.loading-overlay { z-index: 7; background: rgba(8,5,4,.72); }
+.spinner { width: clamp(38px, 5vw, 54px); height: clamp(38px, 5vw, 54px); margin-bottom: 1rem; border: 3px solid rgba(224,191,116,.28); border-top-color: #d8b667; border-radius: 50%; animation: spin .85s linear infinite; }
+@media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 2.4s; } }
+.result-overlay .primary-button, .result-overlay .secondary-button { width: min(20.6rem, 60vw); margin-top: 1rem; padding: .86rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 800; letter-spacing: .15em; }
+.primary-button { border: 0; background: #bd924a; color: #1e130d; }
+.secondary-button { margin-top: .65rem !important; border: 1px solid rgba(236,216,176,.54); background: transparent; color: #d9c7a6; font-size: .65rem; }
+.instructions-overlay { padding: 1rem; background: rgba(7,4,3,.78); }
+.instructions-overlay, .result-overlay, .rotate-overlay { z-index: 6; }
+.instructions-card { position: relative; width: min(57rem, 92vw); max-height: min(45rem, 92vh); overflow: auto; padding: clamp(1.35rem, 3vw, 2.45rem); border: 1.5px solid #c7a458; border-radius: 18px; background: rgba(30,19,14,.98); box-shadow: 0 24px 70px rgba(0,0,0,.48); }
+.instructions-card .emblem { width: 58px; margin-bottom: .25rem; }
+.instructions-card h2 { font-size: clamp(1.9rem, 3.5vw, 2.8rem); }
+.close-button { position: absolute; top: .75rem; right: .9rem; width: 2rem; height: 2rem; border: 1px solid rgba(236,216,176,.5); border-radius: 50%; background: transparent; color: #eadab7; font-size: 1.45rem; line-height: 1; cursor: pointer; }
+.rule-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: .8rem; margin: 1.55rem 0 1.1rem; text-align: left; }
+.rule-grid section { position: relative; min-height: 9.2rem; padding: 1.05rem 1rem 1rem 3.1rem; border: 1px solid rgba(224,191,116,.25); border-radius: 10px; background: rgba(10,7,6,.38); }
+.rule-grid span { position: absolute; top: 1.03rem; left: 1rem; color: #d5ad61; font-size: .66rem; font-weight: 800; letter-spacing: .12em; }
+.rule-grid h3 { margin: 0 0 .4rem; color: #f2e7d2; font-size: clamp(.74rem, 1.1vw, .92rem); }
+.rule-grid p { margin: 0; color: #cdbda3; font-size: clamp(.62rem, .86vw, .75rem); line-height: 1.55; }
+.sound-note { margin: 0 auto 1rem !important; max-width: 43rem; color: #d9c7a6 !important; font-size: clamp(.62rem, .9vw, .8rem) !important; line-height: 1.55; }
+.sound-note b, .sound-note em { color: #e6c87e; font-style: normal; }
+.instructions-card .primary-button { padding: .75rem 1.1rem; border-radius: 8px; font-size: .67rem; font-weight: 800; letter-spacing: .13em; cursor: pointer; }
+[hidden] { display: none !important; }
+
+/*
+ * Auto-rotate to landscape on narrow portrait viewports (phones/phablets/portrait
+ * tablets). This is a pure CSS transform, so it works identically whether the
+ * device's OS-level rotation lock is on or off — we never depend on the Screen
+ * Orientation API (which requires fullscreen permission on several browsers and
+ * is unavailable on iOS Safari). The whole shell is rotated 90deg about its
+ * top-left corner and given the swapped viewport dimensions (100vh x 100vw), so
+ * everything inside it — including the canvas, which reads its size from
+ * getBoundingClientRect() — sees a correctly-shaped landscape box and lays out
+ * exactly as it would on a real landscape screen.
+ */
+.rotate-overlay { display: none !important; }
+.utility-buttons, #instructionsButton, #assistButton { display: none !important; }
+#actionHint { display: none !important; }
+.control-deck {
+  grid-template-columns: minmax(140px, 28%) 1fr;
+  left: 18%; right: 18%; bottom: 2%;
+  min-height: 0;
+  padding: .35rem .8rem;
+  background: rgba(16,11,9,.55);
+}
+.hud { height: 7%; inset: 1.5% 4% auto; }
+
+
+@media (max-width: 720px) and (orientation: landscape), (max-height: 720px) and (orientation: portrait) {
+  .hud { inset: 3% 4%; } .player-card { padding: .35rem .65rem .35rem 1.15rem; } .player-card::before { left: .55rem; } .player-card-right { padding: .35rem 1.15rem .35rem .65rem; } .player-card-right::before { right: .55rem; left: auto; } .control-deck { right: 4%; bottom: 2.2%; left: 4%; padding: .32rem .65rem; } .utility-buttons { gap: .22rem; } #soundButton, #instructionsButton, #assistButton { padding: .34rem .45rem; }
+}
+@media (max-width: 600px) { .rule-grid { grid-template-columns: 1fr; } .rule-grid section { min-height: auto; } }

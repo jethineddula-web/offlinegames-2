@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
+
+    <!-- ===================== SEO META TAGS ===================== -->
+    <title>Stickbow – Free Online Stick Archery Game | Offline Games</title>
+    <meta name="description" content="Play Stickbow free online — a stick-figure archery game where you nock, aim, and shoot your way through target after target. No download, no signup, play instantly in your browser." />
+    <meta name="keywords" content="stickbow, stick archery game, archery game, free online game, browser game, arcade game, offline games, offlinegames.art, no download game, aiming game" />
+    <meta name="author" content="Offline Games" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href="https://offlinegames.art/games/stickbow/" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Offline Games" />
+    <meta property="og:title" content="Stickbow – Free Online Stick Archery Game" />
+    <meta property="og:description" content="Nock, aim, and shoot your way through target after target in this free stick-figure archery game. Fast-loading, no download or signup required." />
+    <meta property="og:url" content="https://offlinegames.art/games/stickbow/" />
+    <meta property="og:image" content="https://offlinegames.art/assets/stickbow/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Stickbow – Free Online Stick Archery Game" />
+    <meta name="twitter:description" content="Nock, aim, and shoot your way through target after target in this free stick-figure archery game. Play instantly in your browser." />
+    <meta name="twitter:image" content="https://offlinegames.art/assets/stickbow/og-image.png" />
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "VideoGame",
+      "name": "Stickbow",
+      "url": "https://offlinegames.art/games/stickbow/",
+      "description": "A stick-figure archery game where you nock, aim, and shoot your way through target after target.",
+      "applicationCategory": "Game",
+      "genre": ["Arcade", "Sports", "Skill"],
+      "operatingSystem": "Any (Web Browser)",
+      "publisher": { "@type": "Organization", "name": "Offline Games", "url": "https://offlinegames.art" },
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    }
+    </script>
+    <!-- =================== END SEO META TAGS =================== -->
+
+    <meta name="theme-color" content="#2c2c2e" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="screen-orientation" content="landscape" />
+    <meta name="application-name" content="Stickbow" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
+    />
+    <link rel="stylesheet" href="./game.css" />
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4203857211510947"
+      crossorigin="anonymous"
+    ></script>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #2c2c2e;
+        overflow: hidden;
+        touch-action: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="game-root" class="game-root">
+      <div class="boot-fallback">
+        <p class="boot-kicker">Stick Archery</p>
+        <h1>Stickbow</h1>
+        <p>Nocking the first apple…</p>
+      </div>
+    </div>
+    <script src="./game.js"></script>
+    <script>
+      StickbowGame.mount(document.getElementById("game-root"));
+    </script>
+  </body>
+</html>
