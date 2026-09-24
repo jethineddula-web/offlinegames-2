@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>if(location.protocol==="http:"&&location.hostname!=="localhost"&&location.hostname!=="127.0.0.1"&&location.hostname!=="[::1]"){var h=location.hostname;if(!/^192\.168\./.test(h)&&!/^10\./.test(h)&&!/^172\.(1[6-9]|2\d|3[01])\./.test(h)&&h!==""){location.replace("https://"+location.host+location.pathname+location.search+location.hash)}}</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Page not found &mdash; OfflineGames</title>
+  <meta name="description" content="The page you requested could not be found.">
+  <meta name="robots" content="noindex, follow">
+  <meta name="theme-color" content="#090A16">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500&display=swap">
+  <style>
+    /* Self-contained on purpose: this page must render correctly even when the
+       site's stylesheets or scripts are unavailable, which is exactly the
+       condition that tends to produce a 404 in the first place. */
+    :root{
+      --bg:#090a16; --surface:#12142a; --border:#2a2d55;
+      --cyan:#4fe3d4; --magenta:#ff4fa0; --fg:#f2f3fa; --muted:#8b8db8; --ink:#070814;
+      --font-display:"Chakra Petch",ui-sans-serif,system-ui,sans-serif;
+      --font-sans:"IBM Plex Sans",ui-sans-serif,system-ui,sans-serif;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background:var(--bg); color:var(--fg);
+      font-family:var(--font-sans); line-height:1.5;
+      -webkit-font-smoothing:antialiased;
+      display:flex; align-items:center; justify-content:center;
+      padding:32px 16px;
+      background-image:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgb(79 227 212 / .10), transparent 70%),
+        radial-gradient(ellipse 70% 50% at 50% 100%, rgb(255 79 160 / .08), transparent 70%);
+      background-attachment:fixed;
+    }
+    main{width:100%; max-width:520px; text-align:center}
+
+    .brand{
+      font-family:var(--font-display); font-weight:600; letter-spacing:.12em;
+      font-size:13px; color:var(--cyan); margin:0 0 28px;
+    }
+
+    .code{
+      font-family:var(--font-display); font-weight:700; line-height:1;
+      font-size:clamp(76px,22vw,128px); letter-spacing:.02em; margin:0;
+      background:linear-gradient(180deg,var(--fg) 20%,var(--cyan) 130%);
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+    }
+    .rule{
+      width:64px; height:2px; margin:20px auto 22px; border:0; border-radius:2px;
+      background:linear-gradient(90deg,var(--cyan),var(--magenta));
+    }
+
+    h1{
+      font-family:var(--font-display); font-weight:600;
+      font-size:clamp(22px,5vw,28px); margin:0 0 12px; letter-spacing:.01em;
+    }
+    p.lede{margin:0 auto; max-width:40ch; color:var(--muted); font-size:15px}
+
+    .foot{margin-top:44px; font-size:12px; color:var(--muted); opacity:.75}
+  </style>
+</head>
+<body>
+  <main>
+    <p class="brand">OFFLINEGAMES</p>
+    <p class="code">404</p>
+    <hr class="rule">
+    <h1>Page not found</h1>
+    <p class="lede">The page you requested could not be found. It may have been moved or renamed, or the address may contain a typo.</p>
+    <p class="foot">offlinegames.art</p>
+  </main>
+</body>
+</html>

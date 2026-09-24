@@ -1,0 +1,153 @@
+/* ============================================================================
+   i18n.css — language dropdown + right-to-left support
+   Load after ui-fx.css. Pairs with i18n.js.
+   ========================================================================== */
+
+.sb-foot {
+  flex: 0 0 auto;
+  padding: 10px;
+  border-top: 1px solid var(--sb-line, rgba(255, 255, 255, .07));
+  background: var(--sb-bg, #0b0c1d);
+}
+html.sb-rail .sb-foot { padding: 10px 6px; }
+
+.lang-wrap { position: relative; }
+
+.lang-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .04);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .08);
+  color: var(--sb-text, rgba(242, 243, 250, .84));
+  font: 600 14px/1.2 var(--font-display);
+  text-align: left;
+  transition: background .16s ease, box-shadow .16s ease;
+}
+.lang-btn:hover { background: rgba(255, 255, 255, .08); color: var(--fg); }
+.lang-btn[aria-expanded="true"] { box-shadow: inset 0 0 0 1px var(--cyan); }
+.lang-name { flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lang-chev {
+  flex: 0 0 16px;
+  width: 16px; height: 16px;
+  fill: none; stroke: currentColor; stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+  color: var(--muted);
+  transition: transform .2s var(--fx-ease);
+}
+.lang-btn[aria-expanded="true"] .lang-chev { transform: rotate(180deg); }
+
+.lang-list {
+  position: absolute;
+  left: 0; right: 0;
+  top: calc(100% + 6px);
+  z-index: 60;
+  max-height: min(58vh, 420px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 6px;
+  border-radius: 14px;
+  background: #141733;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .1), 0 24px 50px -20px rgba(0, 0, 0, .95);
+  scrollbar-width: thin;
+}
+.lang-list.up { top: auto; bottom: calc(100% + 6px); }
+html.sb-mob .lang-list { max-height: min(50vh, 340px); }
+.lang-list[hidden] { display: none; }
+
+.lang-opt {
+  display: block;
+  width: 100%;
+  min-height: 40px;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--sb-text, rgba(242, 243, 250, .84));
+  font: 500 14px/1.3 var(--font-sans);
+  text-align: left;
+}
+.lang-opt:hover { background: rgba(255, 255, 255, .07); color: var(--fg); }
+.lang-opt.on { background: var(--cyan); color: var(--ink); font-weight: 600; }
+
+/* Rail mode: the globe alone, list floats out beside it. */
+html.sb-rail .lang-btn { justify-content: center; gap: 0; padding: 0; }
+html.sb-rail .lang-name, html.sb-rail .lang-chev { display: none; }
+html.sb-rail .lang-list { left: calc(100% + 8px); right: auto; width: 200px; }
+
+/* Pages with no sidebar keep a floating control. */
+.lang-float {
+  position: fixed;
+  z-index: 44;
+  right: 16px;
+  bottom: 16px;
+  width: 190px;
+}
+.lang-float .lang-btn { background: #141733; box-shadow: inset 0 0 0 1px rgba(255,255,255,.12), 0 10px 30px -12px #000; }
+
+/* ============================================================================
+   RIGHT-TO-LEFT (Arabic)
+   ========================================================================== */
+
+html.rtl body { direction: rtl; }
+
+/* The sidebar moves to the right edge. */
+html.rtl .sb { left: auto; right: 0; border-right: 0; border-left: 1px solid var(--sb-line); }
+html.rtl.sb-desk body { padding-left: 0; padding-right: var(--sb-w); }
+html.rtl.sb-desk.sb-rail body { padding-left: 0; padding-right: var(--sb-rail); }
+html.rtl.sb-ready.sb-desk body { transition: padding-right .22s var(--fx-ease); }
+
+html.rtl .sb .sb-nav a, html.rtl .sb .sb-cat, html.rtl .lang-btn, html.rtl .lang-opt { text-align: right; }
+html.rtl .sb .sb-nav a.active::after,
+html.rtl .sb .sb-cat.active::after { left: auto; right: -10px; border-radius: 3px 0 0 3px; }
+html.rtl .sb-close { margin-left: 0; margin-right: auto; }
+html.rtl.sb-rail .lang-list { left: auto; right: calc(100% + 8px); }
+html.rtl .lang-float { right: auto; left: 16px; }
+
+html.rtl.sb-mob .sb { right: 0; left: auto; transform: translateX(104%); box-shadow: -24px 0 60px rgba(0,0,0,.55); }
+html.rtl.sb-mob.sb-open .sb { transform: none; }
+html.rtl.sb-mob header.top { padding-left: 12px; padding-right: 64px; }
+html.rtl.sb-mob .sb-burger { left: auto; right: max(10px, env(safe-area-inset-right)); }
+html.rtl.sb-mob .sb-head { padding: 0 22px 0 10px; }
+
+/* Small mirrored details. */
+html.rtl .heart { right: auto; left: 12px; }
+html.rtl .new-ribbon { left: auto; right: 12px; }
+html.rtl .cart-more { margin-left: 0; margin-right: auto; }
+html.rtl .search-wrap input { padding: 0 36px 0 12px; }
+html.rtl .search-wrap .ico { left: auto; right: 12px; }
+html.rtl .fab { right: auto; left: 16px; }
+html.rtl .cart-admin-actions { left: auto; right: 8px; }
+html.rtl .play-back { left: auto; right: max(8px, env(safe-area-inset-right)); }
+html.rtl .cx-panel { left: 0; right: auto; border-left: 0; border-right: 1px solid var(--fx-line); transform: translateX(-102%); }
+html.rtl .cx-panel.open { transform: translateX(0); }
+html.rtl .cx-back { left: auto; right: 12px; }
+html.rtl .cx-close { right: auto; left: 12px; }
+html.rtl .cx-row::before { left: auto; right: 0; }
+html.rtl .cx-row:hover .cx-chev { transform: translateX(-3px) scaleX(-1); }
+html.rtl .cx-chev { transform: scaleX(-1); }
+
+/* Latin display faces have no Arabic glyphs; fall back to system Arabic. */
+html.rtl {
+  --font-display: "Chakra Petch", "Noto Kufi Arabic", "Segoe UI", Tahoma, sans-serif;
+  --font-sans: "IBM Plex Sans", "Noto Naskh Arabic", "Segoe UI", Tahoma, sans-serif;
+}
+html.rtl h1, html.rtl h2, html.rtl h3 { letter-spacing: 0; }
+html.rtl .eyebrow, html.rtl .badge, html.rtl .brand { letter-spacing: 0; }
+
+/* CJK and Indic scripts read badly in the display face at wide tracking. */
+html[lang^="zh"] .eyebrow, html[lang^="ja"] .eyebrow,
+html[lang^="ko"] .eyebrow, html[lang^="hi"] .eyebrow,
+html[lang^="ru"] .eyebrow { letter-spacing: .06em; }
+html[lang^="zh"] .badge, html[lang^="ja"] .badge,
+html[lang^="ko"] .badge, html[lang^="hi"] .badge { letter-spacing: 0; text-transform: none; }
+html[lang^="hi"] .cart-title, html[lang^="hi"] .sb-text { line-height: 1.45; }
+
+@media (prefers-reduced-motion: reduce) {
+  .lang-chev { transition: none; }
+}

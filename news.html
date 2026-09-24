@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>if(location.protocol==="http:"&&location.hostname!=="localhost"&&location.hostname!=="127.0.0.1"&&location.hostname!=="[::1]"){var h=location.hostname;if(!/^192\.168\./.test(h)&&!/^10\./.test(h)&&!/^172\.(1[6-9]|2\d|3[01])\./.test(h)&&h!==""){location.replace("https://"+location.host+location.pathname+location.search+location.hash)}}</script>
+
+  <!-- Google AdSense -->
+  <script src="privacy-controls.js"></script>
+  <script async data-ad-src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4203857211510947"
+   crossorigin="anonymous"></script>
+
+  <!-- Google Search Console verification -->
+  <meta name="google-site-verification" content="Zn2DBtYI302Pt-HaJqHp2Pw7a9AWeq_m--B8oBfizEc" />
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      var ua = navigator.userAgent || "";
+      var isWebView = /; wv\)/.test(ua) || /WebView/i.test(ua);
+      if (!isWebView) {
+        navigator.serviceWorker.register("/sw.js", { scope: "/" });
+      } else {
+        navigator.serviceWorker.getRegistrations().then(function(rs){ rs.forEach(function(r){ r.unregister(); }); });
+      }
+    }
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Offline Games News – New Free Browser Games & Vault Updates</title>
+  <meta name="description" content="Latest news from Offline Games: new free browser games added weekly, vault performance updates, offline cache tuning, and fresh guides for no-download gaming.">
+  <meta name="author" content="Jethin Productions">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="application-name" content="🎮 Offline Games">
+  <link rel="canonical" href="https://offlinegames.art/news">
+  <meta property="og:site_name" content="🎮 Offline Games">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://offlinegames.art/news">
+  <meta property="og:title" content="Offline Games News – New Free Browser Games & Vault Updates">
+  <meta property="og:description" content="Latest news from Offline Games: new free browser games added weekly, vault performance updates, offline cache tuning, and fresh guides for no-download gaming.">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Offline Games News – New Free Browser Games & Vault Updates">
+  <meta name="twitter:description" content="Latest news from Offline Games: new free browser games added weekly, vault performance updates, offline cache tuning, and fresh guides for no-download gaming.">
+  <meta name="theme-color" content="#090A16">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="OfflineGames">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="ui-fx.css">
+  <link rel="stylesheet" href="console-ui.css">
+  <link rel="stylesheet" href="i18n.css">
+  <style>
+    /* News page — de-congested + no-cut mobile fix */
+    .page{max-width:1100px;width:100%;box-sizing:border-box;overflow-x:hidden}
+    #news-list{display:grid;grid-template-columns:1fr;gap:18px;margin-top:24px}
+    .news-card{position:relative;display:flex;flex-direction:column;background:rgba(20,22,44,.78);border-radius:18px;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,255,255,.07);transition:transform .25s cubic-bezier(.34,1.4,.5,1),box-shadow .25s ease}
+    .news-card:hover{transform:translateY(-4px);box-shadow:inset 0 0 0 1px rgba(79,227,212,.35),0 20px 40px -28px rgba(0,0,0,.9)}
+    .news-card .thumb{position:relative;height:180px;background:linear-gradient(135deg,rgba(79,227,212,.12),rgba(255,79,160,.10)),var(--surface-alt);display:grid;place-items:center;font-size:42px;color:var(--cyan);overflow:hidden;flex-shrink:0}
+    .news-card .thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+    .news-card .body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:6px}
+    .news-card .body h3{font-size:17px;line-height:1.35;margin:0}
+    .news-card .body p{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;color:var(--muted);font-size:14px;line-height:1.6;margin:4px 0 0}
+    .news-card .date{font-size:11px;align-self:flex-start}
+    .news-card .cart-admin-actions{position:absolute;top:10px;right:10px;z-index:3}
+    @media(max-width:640px){
+      .page{padding:16px 12px 32px!important;max-width:100%!important}
+      #news-list{gap:14px}
+      .news-card{border-radius:16px}
+      .news-card .thumb{height:152px;font-size:36px}
+      .news-card .body{padding:13px 14px 14px}
+      .news-card .body h3{font-size:15.5px}
+      .news-card .body p{font-size:13px;line-height:1.55;-webkit-line-clamp:3}
+      .top{padding:8px 10px}
+    }
+    @media(min-width:700px){#news-list{grid-template-columns:repeat(2,1fr);gap:20px}.news-card .thumb{height:200px}}
+    @media(min-width:1100px){#news-list{grid-template-columns:repeat(3,1fr)}}
+  </style>
+<style>
+/* Fix for shape bug - force content visible */
+.fx-reveal{opacity:1!important;transform:none!important}
+.ce-in{animation:none!important;opacity:1!important;transform:none!important}
+body::before, body::after{display:none!important}
+.scanlines, .vignette{display:none!important}
+/* Prevent duplicate brand */
+/* sidebar enabled: ui-fx.css is loaded here now, so it no longer duplicates the header */
+header.top .brand{display:inline-flex!important}
+header.top .top-nav{display:flex!important}
+</style>
+  <link rel="stylesheet" href="engage.css">
+  <meta property="og:image" content="https://offlinegames.art/og/site.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="OfflineGames.art — free browser games you can play without downloading">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta name="twitter:image" content="https://offlinegames.art/og/site.jpg">
+</head>
+<noscript><style>.fx-reveal{opacity:1!important;transform:none!important}</style></noscript>
+<body>
+  <header class="top">
+    <a class="brand" href="./">OFFLINEGAMES</a>
+    <nav class="top-nav" aria-label="Main">
+      <a href="./">Vault</a>
+      <a class="active" href="news">News</a>
+      <a class="extra" href="about">About</a>
+      <a class="extra" href="guides">Guides</a>
+      <a class="extra" href="contact">Contact</a>
+    </nav>
+  </header>
+  <main class="page" style="max-width:1100px">
+    <a class="back" href="./">← Back to the vault</a>
+    <p class="eyebrow">what's new</p>
+    <h1>News &amp; Vault Updates</h1>
+    <div class="prose" style="max-width:72ch">
+      <div class="card">
+        <p><strong>OfflineGames.art</strong> is updated every week. New games arrive, existing ones are refined, and the offline experience is tested against the kind of connection people actually have rather than a perfect one. This page is the public record of those changes, newest first.</p>
+        <p>Every game is hosted here on <code>offlinegames.art</code> and plays in the browser with no download and no account. See <a href="about">About</a> for who builds the site, or <a href="guides">Guides</a> for strategy writing.</p>
+      </div>
+
+      <div class="card">
+        <h2>Recent updates</h2>
+        <ul>
+          <li><strong>13 September</strong> &mdash; Games now refresh as soon as an update is published. Some phones had been holding on to an older copy for several days; the vault checks for a newer version whenever you are online, and still plays offline once a game has loaded.</li>
+          <li><strong>12 September</strong> &mdash; New guides published, covering 8-ball positioning and spin, the tic-tac-toe never-lose tree, picks for short sessions, games for children under eight, the history of Ludo and chess, and classroom ideas for teachers.</li>
+          <li><strong>11 September</strong> &mdash; Eight games added: <a href="play/arrows-puzzle">Arrows Puzzle</a>, <a href="play/bees-escape">Bees Escape</a>, <a href="play/math-runner">Math Runner</a>, <a href="play/words-matching">Words Matching</a>, <a href="play/numberly">Numberly</a>, <a href="play/thunder-circuit">Thunder-Circuit</a>, <a href="play/save-the-dog">Save The Dog</a> and <a href="play/helicopter-simulator-3d">Helicopter Simulator 3D</a>. Each arrives with its own page, a content rating and notes on offline play.</li>
+          <li><strong>9 September</strong> &mdash; Every cover now carries a content rating: <span class="badge">Everyone</span>, <span class="badge">Everyone 10+</span> or <span class="badge">Teen</span>. Ratings are applied conservatively, so anything on a boundary goes into the higher tier. The <a href="articles/choosing-games-for-young-children">guide for parents</a> explains what each one means in practice.</li>
+          <li><strong>8 September</strong> &mdash; Accessibility fix: pinch-to-zoom is no longer disabled on the written pages, so About, Guides, Privacy and the articles can be zoomed and read comfortably.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>How a game reaches the vault</h2>
+        <p>Every title is built and hosted here rather than embedded from another portal. Before a game goes live it is played on an Android phone, an iPhone and a desktop browser, given a content rating, and checked with the connection switched off, so we know exactly how much of it survives without a signal.</p>
+        <p>Nothing is locked behind an account, and no player profile is created or sold. What little is stored &mdash; a high score, a saved position &mdash; stays in your own browser. The <a href="privacy">Privacy</a> page sets this out in full, and rights and attribution for every title are listed on <a href="credits">Credits</a>.</p>
+        <p>Found a problem, or want to suggest a game? <a href="contact">Contact us</a> &mdash; we reply within two days.</p>
+      </div>
+    </div>
+
+    <h2 style="margin:32px 0 12px;font-family:var(--font-display)">Update archive</h2>
+    <div class="news-grid" id="news-list"></div>
+
+    <div class="prose" style="max-width:72ch;margin-top:28px">
+      <div class="card">
+        <p>Browse <a href="./">the vault</a> to start playing, or read the <a href="guides">guides</a> for strategy. Suggestions for what to add next are always welcome through <a href="contact">Contact</a>.</p>
+      </div>
+    </div>
+  </main>
+  <button type="button" class="fab fab-save" id="lib-save-exit" hidden>Save & exit</button>
+  <footer class="site-foot">
+    <nav>
+      <a href="about">About</a>
+      <a href="guides">Guides</a>
+      <a href="contact">Contact</a>
+      <a href="privacy">Privacy</a>
+      <a href="credits">Credits</a>
+      <a href="terms">Terms</a>
+    </nav>
+    <p>offlinegames.art &mdash; copyright Jethin Productions</p>
+  </footer>
+  <div id="toast-container"></div>
+  <script src="catalog.js"></script>
+  <script src="notify.js"></script>
+  <script src="admin-boot.js"></script>
+  <script>
+  (function () {
+    var SA = window.SiteAdmin;
+    var games = (window.SITE_GAMES || []).slice();
+    var news = (window.SITE_NEWS || []).slice();
+    try { localStorage.removeItem("og-catalog-draft"); } catch (e) {}
+    function persist() {
+      try {
+        if (SA && SA.isAdmin && SA.isAdmin()) {
+          localStorage.setItem("og-catalog-draft", JSON.stringify({ games: games, news: news }));
+        }
+      } catch (e) {}
+    }
+    function render() {
+      var admin = SA && SA.isAdmin && SA.isAdmin();
+      var sorted = news.slice().sort(function (a, b) { return String(b.date).localeCompare(String(a.date)); });
+      var html = admin
+        ? '<button type="button" class="add-news-card" id="add-news"><span>＋</span><span>Add News Post</span></button>'
+        : "";
+      html += sorted.map(function (n) {
+        var d = new Date(n.date);
+        var ds = isNaN(d) ? n.date : d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+        var actions = admin
+          ? '<div class="cart-admin-actions">' +
+              '<button type="button" class="icon-btn" data-edit="' + n.id + '">✎</button>' +
+              '<button type="button" class="icon-btn danger" data-del="' + n.id + '">✕</button></div>'
+          : "";
+        var esc = function (x) { return String(x == null ? "" : x).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
+        var thumb = n.image
+          ? '<img src="' + n.image + '" alt="" width="400" height="220" loading="lazy" decoding="async">'
+          : (n.emoji || "✦");
+        return '<article class="news-card">' + actions +
+          '<div class="thumb">' + thumb + "</div>" +
+          '<div class="body"><span class="badge date">' + ds + "</span><h3>" + esc(n.title) + "</h3><p>" + esc(n.excerpt || "") + "</p></div></article>";
+      }).join("");
+      document.getElementById("news-list").innerHTML = html;
+      document.getElementById("lib-save-exit").hidden = !admin;
+      var add = document.getElementById("add-news");
+      if (add) add.onclick = function () {
+        window.AdminForms.openNewsForm(null, function (record) { news.push(record); persist(); render(); });
+      };
+      document.getElementById("news-list").onclick = function (e) {
+        var ed = e.target.closest("[data-edit]");
+        var dl = e.target.closest("[data-del]");
+        if (ed) {
+          var n = news.find(function (x) { return x.id === ed.getAttribute("data-edit"); });
+          window.AdminForms.openNewsForm(n, function (record) {
+            var i = news.findIndex(function (x) { return x.id === record.id; });
+            if (i >= 0) news[i] = record;
+            persist();
+            render();
+          });
+        }
+        if (dl) {
+          var n2 = news.find(function (x) { return x.id === dl.getAttribute("data-del"); });
+          window.AdminForms.confirmDelete(n2.title, function () {
+            news = news.filter(function (x) { return x.id !== n2.id; });
+            persist();
+            render();
+          });
+        }
+      };
+    }
+    document.getElementById("lib-save-exit").onclick = function () {
+      window.AdminForms.downloadCatalog(games, news);
+    };
+    if (location.hash === "#admin06") {
+      try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+      if (SA && !SA.isAdmin()) SA.promptSignIn(render);
+    }
+    render();
+  })();
+  </script>
+  <script src="contact-panel.js"></script>
+  <script src="ui-fx.js"></script>
+  <script src="i18n-content.js"></script>
+  <script src="i18n.js"></script>
+  <script src="console-ui.js"></script>
+  <script src="no-zoom.js"></script>
+  <script src="pwa.js"></script>
+</body>
+</html>

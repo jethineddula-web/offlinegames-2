@@ -1,0 +1,108 @@
+/* engage.css — notification bell, review prompt and game promotion.
+   Uses the site's own tokens from styles.css. */
+
+/* ------------------------------------------------------------------ bell */
+.og-bell{position:relative;flex:0 0 auto;width:38px;height:38px;border:0;border-radius:10px;background:var(--surface);
+  color:var(--fg);box-shadow:0 0 0 1px var(--border);display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.og-bell:hover{box-shadow:0 0 0 1px var(--cyan)}
+.og-bell svg{width:19px;height:19px}
+.og-bell.ring svg{animation:og-ring 1s ease 2}
+@keyframes og-ring{0%,100%{transform:rotate(0)}20%{transform:rotate(14deg)}40%{transform:rotate(-12deg)}60%{transform:rotate(8deg)}80%{transform:rotate(-4deg)}}
+.og-badge{position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--magenta);
+  color:#fff;font:700 11px/18px var(--font-sans);text-align:center;box-shadow:0 0 0 2px var(--bg)}
+.og-badge[hidden]{display:none}
+
+.og-panel{position:fixed;top:58px;right:12px;z-index:90;width:min(380px,calc(100vw - 24px));max-height:min(560px,calc(100vh - 80px));
+  display:flex;flex-direction:column;background:var(--surface);border-radius:14px;box-shadow:0 0 0 1px var(--border),0 24px 60px -18px rgba(0,0,0,.8);
+  opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity .18s,transform .18s}
+.og-panel.open{opacity:1;transform:none;pointer-events:auto}
+.og-panel header{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--border)}
+.og-panel header h2{flex:1;margin:0;font:600 15px var(--font-display);letter-spacing:.04em}
+.og-link{border:0;background:none;color:var(--cyan);font:500 12px var(--font-sans);cursor:pointer;padding:4px}
+.og-list{overflow:auto;padding:6px}
+.og-item{display:flex;gap:11px;padding:9px;border-radius:10px;align-items:flex-start}
+.og-item.unread{background:rgba(79,227,212,.07)}
+.og-item img{flex:0 0 auto;width:64px;height:42px;object-fit:cover;border-radius:7px;background:var(--surface-alt)}
+.og-item.ann img{width:100%;height:auto;max-height:150px}
+.og-item .t{font:600 13.5px/1.35 var(--font-sans);margin:0}
+.og-item .d{color:var(--muted);font-size:12px;line-height:1.45;margin:3px 0 0}
+.og-item .k{font:600 10px var(--font-display);letter-spacing:.12em;text-transform:uppercase;color:var(--magenta)}
+.og-item .b{flex:1;min-width:0}
+.og-item.ann{flex-direction:column}
+.og-play{margin-top:7px;border:0;border-radius:8px;padding:6px 12px;font:600 12px var(--font-display);letter-spacing:.04em;cursor:pointer;
+  background:linear-gradient(135deg,var(--cyan),#3aa7ff);color:var(--ink)}
+.og-empty{padding:26px 16px;text-align:center;color:var(--muted);font-size:13px}
+
+/* Arrival pop-up for the newest unseen game */
+.og-pop{position:fixed;right:14px;bottom:14px;z-index:88;width:min(340px,calc(100vw - 28px));display:flex;gap:12px;align-items:center;
+  padding:11px;border-radius:14px;background:var(--surface);box-shadow:0 0 0 1px var(--cyan),0 18px 40px -14px rgba(0,0,0,.85);
+  transform:translateY(140%);transition:transform .35s cubic-bezier(.2,1.3,.4,1)}
+.og-pop.show{transform:none}
+/* Clear of the floating language switcher (fixed bottom-right on pages with no sidebar) */
+.og-pop.above-lang{bottom:80px}
+@media (max-width:520px){.og-pop.above-lang{bottom:74px}}
+.og-pop img{width:74px;height:50px;object-fit:cover;border-radius:8px}
+.og-pop .b{flex:1;min-width:0}
+.og-pop .x{align-self:flex-start;border:0;background:none;color:var(--muted);font-size:16px;cursor:pointer;padding:0 2px}
+
+/* --------------------------------------------------------------- review */
+.og-modal{position:fixed;inset:0;z-index:95;display:flex;align-items:flex-end;justify-content:center;padding:14px;
+  background:rgba(4,5,12,.6);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .2s}
+.og-modal.open{opacity:1;pointer-events:auto}
+@media (min-width:640px){.og-modal{align-items:center}}
+.og-sheet{width:min(420px,100%);background:var(--surface);border-radius:18px;padding:18px;box-shadow:0 0 0 1px var(--border),0 30px 70px -20px #000;
+  transform:translateY(20px);transition:transform .25s}
+.og-modal.open .og-sheet{transform:none}
+.og-sheet .hd{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+.og-sheet .hd img{width:70px;height:46px;border-radius:8px;object-fit:cover}
+.og-sheet h2{margin:0;font:600 18px/1.25 var(--font-display)}
+.og-sheet p{margin:0;color:var(--muted);font-size:13px}
+.og-stars{display:flex;justify-content:center;gap:6px;margin:14px 0 10px}
+.og-stars button{border:0;background:none;padding:2px;cursor:pointer;font-size:34px;line-height:1;color:rgba(255,255,255,.18);transition:transform .12s,color .12s}
+.og-stars button.on{color:#ffd166;text-shadow:0 0 14px rgba(255,209,102,.55)}
+.og-stars button:hover{transform:scale(1.12)}
+.og-sheet textarea{width:100%;min-height:74px;resize:vertical;border:0;border-radius:10px;padding:10px;background:var(--surface-alt);color:var(--fg);
+  font:14px/1.5 var(--font-sans);box-shadow:0 0 0 1px var(--border)}
+.og-sheet textarea:focus{outline:none;box-shadow:0 0 0 1px var(--cyan)}
+.og-note{font-size:11.5px!important;margin-top:6px!important}
+.og-row{display:flex;gap:8px;margin-top:14px}
+.og-row button{flex:1;border:0;border-radius:10px;padding:11px;font:600 13px var(--font-display);letter-spacing:.03em;cursor:pointer;
+  background:var(--surface-alt);color:var(--fg);box-shadow:0 0 0 1px var(--border)}
+.og-row button.pri{background:linear-gradient(135deg,var(--cyan),#3aa7ff);color:var(--ink);box-shadow:none}
+.og-row button[disabled]{opacity:.45;cursor:default}
+.og-never{display:block;margin:10px auto 0;border:0;background:none;color:var(--muted);font-size:12px;cursor:pointer;text-decoration:underline}
+.og-thanks{text-align:center;padding:14px 0 4px}
+.og-thanks b{display:block;font:600 20px var(--font-display);margin-bottom:6px}
+
+/* ---------------------------------------------------------- promotion */
+.og-shelf{margin:22px 0 4px}
+.og-shelf h2{display:flex;align-items:baseline;gap:10px;margin:0 0 10px;font:600 17px var(--font-display);letter-spacing:.03em}
+.og-shelf h2 small{font:400 12px var(--font-sans);color:var(--muted);letter-spacing:0}
+.og-strip{display:flex;gap:12px;overflow-x:auto;padding:2px 2px 8px;scroll-snap-type:x mandatory;scrollbar-width:thin}
+.og-tile{flex:0 0 auto;width:168px;scroll-snap-align:start;border:0;padding:0;text-align:left;cursor:pointer;background:var(--surface);
+  border-radius:12px;overflow:hidden;color:var(--fg);box-shadow:0 0 0 1px var(--border);transition:transform .15s,box-shadow .15s}
+.og-tile:hover{transform:translateY(-3px);box-shadow:0 0 0 1px var(--cyan),0 14px 28px -16px rgba(0,0,0,.9)}
+.og-tile img{display:block;width:100%;height:100px;object-fit:cover;background:var(--surface-alt)}
+.og-tile span{display:block;padding:8px 10px 2px;font:600 13px/1.3 var(--font-sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.og-tile em{display:block;padding:0 10px 9px;font:500 11px var(--font-sans);font-style:normal;color:var(--muted)}
+.og-tile .bar{height:3px;background:rgba(255,255,255,.08)}
+.og-tile .bar i{display:block;height:100%;background:var(--cyan)}
+
+/* "Play next" card shown after closing a game */
+.og-next{position:fixed;left:50%;bottom:14px;z-index:89;width:min(560px,calc(100vw - 24px));padding:12px 12px 10px;border-radius:16px;
+  background:var(--surface);box-shadow:0 0 0 1px var(--border),0 24px 60px -18px rgba(0,0,0,.85);
+  transform:translate(-50%,150%);transition:transform .35s cubic-bezier(.2,1.2,.4,1)}
+.og-next.show{transform:translate(-50%,0)}
+.og-next .hd{display:flex;align-items:center;margin:0 2px 9px}
+.og-next .hd b{flex:1;font:600 14px var(--font-display);letter-spacing:.04em}
+.og-next .hd button{border:0;background:none;color:var(--muted);font-size:16px;cursor:pointer}
+.og-next .og-strip{padding-bottom:4px}
+.og-next .og-tile{width:calc((100% - 24px) / 3);min-width:130px}
+.og-next .og-tile img{height:78px}
+
+/* Extra card chips added to the vault grid */
+.og-chip{position:absolute;left:8px;bottom:8px;z-index:3;padding:3px 8px;border-radius:999px;font:600 10px var(--font-display);
+  letter-spacing:.08em;text-transform:uppercase;background:rgba(9,10,22,.82);color:var(--cyan);box-shadow:0 0 0 1px rgba(79,227,212,.4);pointer-events:none}
+.og-chip.try{color:#ffd166;box-shadow:0 0 0 1px rgba(255,209,102,.45)}
+
+@media (prefers-reduced-motion:reduce){.og-pop,.og-next,.og-panel,.og-sheet{transition:none}.og-bell.ring svg{animation:none}}

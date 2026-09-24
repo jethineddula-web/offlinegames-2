@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>if(location.protocol==="http:"&&location.hostname!=="localhost"&&location.hostname!=="127.0.0.1"&&location.hostname!=="[::1]"){var h=location.hostname;if(!/^192\.168\./.test(h)&&!/^10\./.test(h)&&!/^172\.(1[6-9]|2\d|3[01])\./.test(h)&&h!==""){location.replace("https://"+location.host+location.pathname+location.search+location.hash)}}</script>
+
+  <!-- Google AdSense -->
+  <script src="privacy-controls.js"></script>
+  <script async data-ad-src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4203857211510947"
+   crossorigin="anonymous"></script>
+
+  <!-- Google Search Console verification -->
+  <meta name="google-site-verification" content="Zn2DBtYI302Pt-HaJqHp2Pw7a9AWeq_m--B8oBfizEc" />
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      var ua = navigator.userAgent || "";
+      var isWebView = /; wv\)/.test(ua) || /WebView/i.test(ua);
+      if (!isWebView) {
+        navigator.serviceWorker.register("/sw.js", { scope: "/" });
+      } else {
+        navigator.serviceWorker.getRegistrations().then(function(rs){ rs.forEach(function(r){ r.unregister(); }); });
+      }
+    }
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+
+  <!-- SEO Title -->
+  <title>Offline Games – Free Browser Games, No Downloads Needed</title>
+  <meta name="description" content="Play free browser games instantly – arcade, puzzle, chess, racing & kids games. No downloads needed, no accounts. Offline games that work in airplane mode.">
+  <meta name="author" content="Jethin Productions">
+  <meta name="theme-color" content="#090A16">
+  <meta name="application-name" content="🎮 Offline Games">
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://offlinegames.art/">
+
+  <!-- Open Graph -->
+  <meta property="og:site_name" content="🎮 Offline Games">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://offlinegames.art/">
+  <meta property="og:title" content="Offline Games – Free Browser Games, No Downloads Needed">
+  <meta property="og:description" content="Play free browser games instantly – arcade, puzzle, chess, racing & kids games. No downloads needed, no accounts. Offline games that work in airplane mode.">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Offline Games – Free Browser Games, No Downloads Needed">
+  <meta name="twitter:description" content="Play free browser games instantly – arcade, puzzle, chess, racing & kids games. No downloads needed, no accounts. Offline games work in airplane mode.">
+
+  <!-- Google Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Offline Games",
+    "alternateName": "OfflineGames",
+    "url": "https://offlinegames.art/",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://offlinegames.art/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="OfflineGames">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://offlinegames.art">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="ui-fx.css">
+  <link rel="stylesheet" href="console-ui.css">
+  <link rel="stylesheet" href="i18n.css">
+<style>
+    .all-games{max-width:1100px;margin:32px auto 0;padding:0 16px}
+    .all-games h2{font-family:var(--font-display);margin:4px 0 8px}
+    .all-games p{color:var(--muted);max-width:70ch;margin:0 0 14px}
+    .all-games-list{display:flex;flex-wrap:wrap;gap:8px}
+    .all-games-list a{display:inline-block;padding:7px 12px;border-radius:999px;font-size:13px;text-decoration:none;color:var(--fg);background:var(--surface);box-shadow:inset 0 0 0 1px var(--border)}
+    .all-games-list a:hover{color:var(--cyan);box-shadow:inset 0 0 0 1px var(--cyan)}
+  </style>
+  <link rel="stylesheet" href="engage.css">
+  <meta property="og:image" content="https://offlinegames.art/og/site.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="OfflineGames.art — free browser games you can play without downloading">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta name="twitter:image" content="https://offlinegames.art/og/site.jpg">
+<script type="application/ld+json" id="og-home-ld">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://offlinegames.art/#website","url":"https://offlinegames.art/","name":"OfflineGames","description":"Free browser games that need no download and keep working offline.","publisher":{"@id":"https://offlinegames.art/#org"},"inLanguage":"en","potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://offlinegames.art/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://offlinegames.art/#org","name":"Jethin Productions","url":"https://offlinegames.art/","logo":{"@type":"ImageObject","url":"https://offlinegames.art/icon-512.png","width":512,"height":512},"email":"jethinproductions@gmail.com","contactPoint":[{"@type":"ContactPoint","contactType":"customer support","email":"jethinproductions@gmail.com","url":"https://offlinegames.art/contact"}]},{"@type":"CollectionPage","@id":"https://offlinegames.art/#webpage","url":"https://offlinegames.art/","name":"Free browser games","isPartOf":{"@id":"https://offlinegames.art/#website"},"about":{"@id":"https://offlinegames.art/#org"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://offlinegames.art/og/site.jpg"},"mainEntity":{"@type":"ItemList","name":"Games in the vault","numberOfItems":34,"itemListElement":[{"@type":"ListItem","position":1,"url":"https://offlinegames.art/play/i-am-not-a-robot","name":"I Am Not A Robot"},{"@type":"ListItem","position":2,"url":"https://offlinegames.art/play/stellar-escape","name":"Stellar Escape"},{"@type":"ListItem","position":3,"url":"https://offlinegames.art/play/thunder-circuit","name":"Thunder-Circuit"},{"@type":"ListItem","position":4,"url":"https://offlinegames.art/play/numberly","name":"Numberly"},{"@type":"ListItem","position":5,"url":"https://offlinegames.art/play/words-matching","name":"Words Matching"},{"@type":"ListItem","position":6,"url":"https://offlinegames.art/play/helicopter-simulator-3d","name":"Helicopter Simulator 3D"},{"@type":"ListItem","position":7,"url":"https://offlinegames.art/play/save-the-dog","name":"Save The Dog"},{"@type":"ListItem","position":8,"url":"https://offlinegames.art/play/math-runner","name":"Math Runner"},{"@type":"ListItem","position":9,"url":"https://offlinegames.art/play/bees-escape","name":"Bees Escape"},{"@type":"ListItem","position":10,"url":"https://offlinegames.art/play/arrows-puzzle","name":"Arrows Puzzle"},{"@type":"ListItem","position":11,"url":"https://offlinegames.art/play/sudoku","name":"Sudoku"},{"@type":"ListItem","position":12,"url":"https://offlinegames.art/play/guess-the-country","name":"Guess The Country"},{"@type":"ListItem","position":13,"url":"https://offlinegames.art/play/sky-dodge","name":"Sky Dodge"},{"@type":"ListItem","position":14,"url":"https://offlinegames.art/play/stick-bow","name":"Stick Bow"},{"@type":"ListItem","position":15,"url":"https://offlinegames.art/play/timber-blade","name":"Timber Blade"},{"@type":"ListItem","position":16,"url":"https://offlinegames.art/play/tic-tac-toe","name":"Tic-Tac-Toe"},{"@type":"ListItem","position":17,"url":"https://offlinegames.art/play/2048","name":"2048"},{"@type":"ListItem","position":18,"url":"https://offlinegames.art/play/lodo","name":"Lodo"},{"@type":"ListItem","position":19,"url":"https://offlinegames.art/play/color-clash","name":"Color Clash"},{"@type":"ListItem","position":20,"url":"https://offlinegames.art/play/crayon-kingdom","name":"Crayon Kingdom"}]}}]}</script>
+</head>
+<noscript><style>.fx-reveal{opacity:1!important;transform:none!important}</style></noscript>
+<body>
+  <div class="scanlines"></div>
+  <div class="vignette"></div>
+  <div id="cursor" class="cursor-arrow" hidden aria-hidden="true"></div>
+
+  <header class="top">
+    <a class="brand" href="./">OFFLINEGAMES</a>
+    <nav class="top-nav" aria-label="Main">
+      <a class="active" href="./">Vault</a>
+      <a href="news">News</a>
+      <a href="about">About</a>
+      <a href="guides">Guides</a>
+      <a href="contact">Contact</a>
+    </nav>
+    <div class="search-wrap">
+      <span class="ico">⌕</span>
+      <input id="search" type="search" placeholder="Search…" aria-label="Search games">
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="hero-row">
+        <div>
+          <p class="eyebrow">Free browser games – no download needed</p>
+          <h1><span class="mob-only">Play free browser games</span><span class="desk-only">Free browser games. Pick one and play.</span></h1>
+          <p class="lead">No downloads, no accounts, nothing to install. Hover a cover to preview it, tap to play, or let the vault pick something for you — and most games keep running once your connection drops.</p>
+          <div class="hero-actions">
+            <button type="button" class="btn btn-magenta" id="insert-coin">Random Game</button>
+          </div>
+        </div>
+        <button type="button" class="spotlight" id="spotlight" data-id="">
+          <img alt="">
+          <span>
+            <span class="eyebrow" style="display:block;color:var(--magenta)">Spotlight</span>
+            <strong></strong>
+            <em style="font-style:normal;font-family:var(--font-display);font-size:11px;color:var(--muted)"></em>
+          </span>
+        </button>
+      </div>
+    </section>
+
+        <button type="button" class="cat-btn" id="cat-btn" aria-expanded="false">
+      <span class="cat-squares" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      All categories
+    </button>
+    <div id="cat-grid" class="cat-grid" role="listbox" aria-label="Game categories"></div>
+    <div id="cat-heading" class="cat-heading" hidden>
+      <h2></h2>
+      <button type="button" id="show-all">✕ Show all</button>
+    </div>
+
+    <div id="empty" class="empty" hidden><h2>Nothing matches.</h2></div>
+    <div id="game-grid" class="grid"></div>
+    <p id="khints" class="khints">Arrow keys browse · Enter plays · R random · / search</p>
+
+    <!-- The "What's new" list lives on the News page and in the notification
+         bell; it used to run on under the game grid here, which made the vault
+         feel like it never ended when scrolling on a phone. -->
+
+
+
+
+    <section class="all-games" aria-labelledby="all-games-title">
+      <p class="eyebrow">Every game</p>
+      <h2 id="all-games-title">Browse all games</h2>
+      <p>The full list, for when you would rather read the names than scroll the covers. Each one opens on its own page with controls, a content rating and notes on offline play.</p>
+      <nav class="all-games-list" aria-label="All games">
+        <a href="play/2048">2048</a>
+        <a href="play/8-ball-pool">8-Ball Pool</a>
+        <a href="play/apex-drift">Apex Drift</a>
+        <a href="play/arrows-puzzle">Arrows Puzzle</a>
+        <a href="play/aurora-keys">Aurora Keys</a>
+        <a href="play/balance-ball">Balance Ball</a>
+        <a href="play/bees-escape">Bees Escape</a>
+        <a href="play/chess-3d">Chess 3D</a>
+        <a href="play/color-clash">Color Clash</a>
+        <a href="play/crayon-kingdom">Crayon Kingdom</a>
+        <a href="play/dead-streets">Dead Streets</a>
+        <a href="play/drone-pov-flight">Drone POV Flight</a>
+        <a href="play/flingwing">Flingwing</a>
+        <a href="play/fruit-trio">Fruit Trio</a>
+        <a href="play/guess-the-country">Guess The Country</a>
+        <a href="play/helicopter-simulator-3d">Helicopter Simulator 3D</a>
+        <a href="play/i-am-not-a-robot">I Am Not A Robot</a>
+        <a href="play/impossible-master">Impossible Master</a>
+        <a href="play/lodo">Lodo</a>
+        <a href="play/magic-jars">Magic Jars</a>
+        <a href="play/math-runner">Math Runner</a>
+        <a href="play/numberly">Numberly</a>
+        <a href="play/pop-a-lock">Pop-a-Lock</a>
+        <a href="play/puzzle-break">Puzzle Break</a>
+        <a href="play/save-the-dog">Save The Dog</a>
+        <a href="play/sky-dodge">Sky Dodge</a>
+        <a href="play/stellar-escape">Stellar Escape</a>
+        <a href="play/stick-bow">Stick Bow</a>
+        <a href="play/sudoku">Sudoku</a>
+        <a href="play/thunder-circuit">Thunder-Circuit</a>
+        <a href="play/tic-tac-toe">Tic-Tac-Toe</a>
+        <a href="play/timber-blade">Timber Blade</a>
+        <a href="play/umbra-fight">Umbra Fight</a>
+        <a href="play/word-magic">Word Magic</a>
+        <a href="play/words-matching">Words Matching</a>
+      </nav>
+    </section>
+    <section class="about-strip" aria-labelledby="about-strip-title">
+      <p class="eyebrow">About the vault</p>
+      <h2 id="about-strip-title">A free library of browser games</h2>
+      <p>OfflineGames.art is a curated library of browser games — pool, chess, match-three, rhythm, racing and a few unforgiving arcade runs. Every title is built and hosted here, carries a content rating, and plays straight from this page on a phone or a laptop.</p>
+      <p class="about-links">
+        <a href="guides">How we play</a>
+        <a href="about">Who we are</a>
+        <a href="credits">Credits</a>
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-foot">
+    <nav>
+      <a href="about">About</a>
+      <a href="guides">Guides</a>
+      <a href="contact">Contact</a>
+      <a href="privacy">Privacy</a>
+      <a href="credits">Credits</a>
+      <a href="terms">Terms</a>
+    </nav>
+    <p>offlinegames.art — copyright Jethin Productions</p>
+  </footer>
+
+  <div id="play" class="play" role="dialog" aria-label="Playing">
+    <button type="button" class="play-back" id="play-back" aria-label="Back to vault">←</button>
+    <iframe id="play-frame" title="Game" allow="fullscreen; gamepad; autoplay; orientation-lock" allowfullscreen sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-popups"></iframe>
+  </div>
+
+  <div id="news-open" class="picker" role="dialog" aria-label="News">
+    <div class="picker-card news-detail">
+      <img id="news-open-img" alt="">
+      <h2 id="news-open-title"></h2>
+      <p id="news-open-date" class="news-open-date"></p>
+      <p id="news-open-body" class="news-open-body"></p>
+      <div class="picker-actions">
+        <button type="button" class="btn btn-outline" id="news-open-close">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="picker" class="picker">
+    <div class="picker-card">
+      <img id="picker-img" alt="">
+      <h2 id="picker-title"></h2>
+      <p id="picker-meta"></p>
+      <div class="picker-actions">
+        <button type="button" class="btn btn-magenta" id="picker-play" style="margin-top:0">Play this one</button>
+        <button type="button" class="btn btn-outline" id="picker-close">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <button type="button" class="fab fab-add" id="btn-add-game" hidden>+ Add Game</button>
+  <button type="button" class="fab fab-save" id="btn-save-exit" hidden>Save & exit</button>
+  <div id="toast-container"></div>
+
+  <script src="catalog.js"></script>
+  <script src="admin-boot.js"></script>
+  <!-- contact-panel.js MUST load before app.js: it intercepts the
+       Contact links and has to beat app.js's page router to them. -->
+  <script src="contact-panel.js"></script>
+  <script src="app.js"></script>
+  <script src="reviews.js"></script>
+  <script src="notify.js"></script>
+  <script src="promo.js"></script>
+  <!-- ui-fx.js MUST load after app.js: it watches the rendered grid. -->
+  <script src="ui-fx.js"></script>
+  <script src="i18n-content.js"></script>
+  <script src="i18n.js"></script>
+  <script src="console-ui.js"></script>
+  <script src="no-zoom.js"></script>
+  <script src="pwa.js"></script>
+</body>
+</html>

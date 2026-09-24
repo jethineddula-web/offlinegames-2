@@ -1,0 +1,68 @@
+# Permanent redirects from the .html form of every page to its canonical
+# clean URL. Cloudflare Pages does this automatically but issues a 307
+# (temporary); search engines need a 301 to consolidate the two URLs.
+
+/index.html                                         /                                             301
+
+# top-level pages
+/about.html                                         /about                                        301
+/contact.html                                       /contact                                      301
+/credits.html                                       /credits                                      301
+/guides.html                                        /guides                                       301
+/library.html                                       /library                                      301
+/news.html                                          /news                                         301
+/privacy.html                                       /privacy                                      301
+/terms.html                                         /terms                                        301
+
+# per-game pages
+/play/2048.html                                     /play/2048                                    301
+/play/8-ball-pool.html                              /play/8-ball-pool                             301
+/play/apex-drift.html                               /play/apex-drift                              301
+/play/arrows-puzzle.html                            /play/arrows-puzzle                           301
+/play/aurora-keys.html                              /play/aurora-keys                             301
+/play/balance-ball.html                             /play/balance-ball                            301
+/play/bees-escape.html                              /play/bees-escape                             301
+/play/chess-3d.html                                 /play/chess-3d                                301
+/play/color-clash.html                              /play/color-clash                             301
+/play/crayon-kingdom.html                           /play/crayon-kingdom                          301
+/play/dead-streets.html                             /play/dead-streets                            301
+/play/drone-pov-flight.html                         /play/drone-pov-flight                        301
+/play/flingwing.html                                /play/flingwing                               301
+/play/fruit-trio.html                               /play/fruit-trio                              301
+/play/guess-the-country.html                        /play/guess-the-country                       301
+/play/helicopter-simulator-3d.html                  /play/helicopter-simulator-3d                 301
+/play/i-am-not-a-robot.html                         /play/i-am-not-a-robot                        301
+/play/impossible-master.html                        /play/impossible-master                       301
+/play/lodo.html                                     /play/lodo                                    301
+/play/magic-jars.html                               /play/magic-jars                              301
+/play/math-runner.html                              /play/math-runner                             301
+/play/numberly.html                                 /play/numberly                                301
+/play/pop-a-lock.html                               /play/pop-a-lock                              301
+/play/puzzle-break.html                             /play/puzzle-break                            301
+/play/save-the-dog.html                             /play/save-the-dog                            301
+/play/sky-dodge.html                                /play/sky-dodge                               301
+/play/stellar-escape.html                           /play/stellar-escape                          301
+/play/stick-bow.html                                /play/stick-bow                               301
+/play/sudoku.html                                   /play/sudoku                                  301
+/play/thunder-circuit.html                          /play/thunder-circuit                         301
+/play/tic-tac-toe.html                              /play/tic-tac-toe                             301
+/play/timber-blade.html                             /play/timber-blade                            301
+/play/umbra-fight.html                              /play/umbra-fight                             301
+/play/word-magic.html                               /play/word-magic                              301
+/play/words-matching.html                           /play/words-matching                          301
+
+# guides and articles
+/articles/2048-strategy.html                        /articles/2048-strategy                       301
+/articles/8-ball-pool-tips-positioning-and-spin.html /articles/8-ball-pool-tips-positioning-and-spin 301
+/articles/best-games-for-kids-under-8.html          /articles/best-games-for-kids-under-8         301
+/articles/best-games-for-short-sessions.html        /articles/best-games-for-short-sessions       301
+/articles/best-offline-browser-games.html           /articles/best-offline-browser-games          301
+/articles/browser-games-for-teachers-classroom-ideas.html /articles/browser-games-for-teachers-classroom-ideas 301
+/articles/chess-openings-for-beginners.html         /articles/chess-openings-for-beginners        301
+/articles/choosing-games-for-young-children.html    /articles/choosing-games-for-young-children   301
+/articles/history-of-ludo-and-chess-classic-board-games.html /articles/history-of-ludo-and-chess-classic-board-games 301
+/articles/how-to-win-tic-tac-toe-every-time.html    /articles/how-to-win-tic-tac-toe-every-time   301
+/articles/how-we-built-the-vault-offline-first.html /articles/how-we-built-the-vault-offline-first 301
+/articles/sudoku-strategy-for-beginners.html        /articles/sudoku-strategy-for-beginners       301
+/articles/what-offline-actually-means.html          /articles/what-offline-actually-means         301
+/articles/why-no-download-games-matter.html         /articles/why-no-download-games-matter        301
