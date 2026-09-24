@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>if(location.protocol==="http:"&&location.hostname!=="localhost"&&location.hostname!=="127.0.0.1"&&location.hostname!=="[::1]"){var h=location.hostname;if(!/^192\.168\./.test(h)&&!/^10\./.test(h)&&!/^172\.(1[6-9]|2\d|3[01])\./.test(h)&&h!==""){location.replace("https://"+location.host+location.pathname+location.search+location.hash)}}</script>
+  <script src="../privacy-controls.js"></script>
+  <script async data-ad-src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4203857211510947" crossorigin="anonymous"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to never lose at Tic-Tac-Toe: the complete strategy | OfflineGames</title>
+  <meta name="description" content="Never lose Tic-Tac-Toe: opening, fork, block guarantees a draw, plus how to force a win. Free browser games strategy that works offline every time you play.">
+  <meta name="author" content="Jethin Productions">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="canonical" href="https://offlinegames.art/articles/how-to-win-tic-tac-toe-every-time">
+  <meta property="og:site_name" content="OfflineGames">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://offlinegames.art/articles/how-to-win-tic-tac-toe-every-time">
+  <meta property="og:title" content="How to never lose at Tic-Tac-Toe">
+  <meta property="og:description" content="Never lose Tic-Tac-Toe: opening, fork, block guarantees a draw, plus how to force a win. Free browser games strategy that works offline every time you play.">
+  <meta name="twitter:title" content="How to never lose at Tic-Tac-Toe: the complete strategy | OfflineGames">
+  <meta name="theme-color" content="#090A16">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../ui-fx.css">
+  <link rel="stylesheet" href="../console-ui.css">
+  <link rel="stylesheet" href="../i18n.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to never lose at Tic-Tac-Toe","author":{"@type":"Organization","name":"Jethin Productions"},"publisher":{"@type":"Organization","name":"OfflineGames","logo":{"@type":"ImageObject","url":"https://offlinegames.art/icon-512.png"}},"datePublished":"2026-09-10","dateModified":"2026-09-13","mainEntityOfPage":"https://offlinegames.art/articles/how-to-win-tic-tac-toe-every-time","description":"The solved strategy for Tic-Tac-Toe."}</script>
+<style>.fx-reveal{opacity:1!important;transform:none!important}body::before, body::after{display:none!important}.scanlines, .vignette{display:none!important}.sb{display:none!important}header.top .brand{display:inline-flex!important}header.top .top-nav{display:flex!important}</style>
+  <meta property="og:image" content="https://offlinegames.art/og/site.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="OfflineGames.art — free browser games you can play without downloading">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta name="twitter:image" content="https://offlinegames.art/og/site.jpg">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="../">OFFLINEGAMES</a>
+    <nav class="top-nav" aria-label="Main">
+      <a href="../">Vault</a>
+      <a href="../news">News</a>
+      <a href="../about">About</a>
+      <a class="active extra" href="../guides">Guides</a>
+      <a class="extra" href="../contact">Contact</a>
+    </nav>
+  </header>
+  <main class="page">
+    <a class="back" href="../guides">← Back to guides</a>
+    <p class="eyebrow">how to play · 7 min read · 10 September 2026</p>
+    <h1>How to never lose at Tic-Tac-Toe: the complete strategy</h1>
+    <div class="prose">
+      <div class="card">
+        <p><strong>Tic-Tac-Toe is a solved game.</strong> If both players play perfectly, every game is a draw. That sounds boring, but it makes it the perfect game to teach a child strategy — because you can learn the perfect defense in ten minutes and then focus on exploiting mistakes.</p>
+        <p>This guide is for our <a href="../play/tic-tac-toe">Tic-Tac-Toe cartridge</a> (neon grid, local hot-seat and vs bot), but it works on paper, chalk, or any version.</p>
+      </div>
+      <div class="card">
+        <h2>1. The opening: always take the center if you can</h2>
+        <p>If you are X and go first, take the center. It gives you four winning lines and is part of every forced-draw strategy. If center is taken, take a corner — never an edge on first move. Edges look safe but create fewer threats and make forks harder to set up.</p>
+        <p>If you are O and opponent takes center, take a corner. If opponent takes a corner, take the center. If opponent takes an edge, take the center. The rule is simple: center > corner > edge.</p>
+        <p><strong>Why corners beat edges:</strong> A corner participates in three lines (row, column, diagonal). An edge only participates in two. More lines means more chances to create two threats at once — called a fork.</p>
+      </div>
+      <div class="card">
+        <h2>2. The fork: the only way to force a win</h2>
+        <p>A fork is a move that creates two winning threats simultaneously. Opponent can only block one, you win on the other.</p>
+        <p>Example: You have X in top-left and center. Opponent has O in top-middle. If you play bottom-right, you threaten both middle row (center + bottom-right needs bottom-middle) and diagonal (top-left + bottom-right needs center, but center is yours, so actually diagonal is blocked — bad example). Let's do a real one:</p>
+        <p>Board: X . O / . X . / . . O — If you play bottom-left, you threaten left column (X + bottom-left needs middle-left) and diagonal (X center + bottom-left needs top-right). O can only block one.</p>
+        <p>To set up forks, you need two non-blocked lines that intersect at your next move. Corners are best for this because they intersect row, column, and diagonal.</p>
+        <p><strong>Practice:</strong> In our Tic-Tac-Toe, play vs bot on hard. The bot is programmed to block forks. Try to create a position where you have two lines with two X's and an empty third cell sharing a common empty cell.</p>
+      </div>
+      <div class="card">
+        <h2>3. Defense: block, then block the fork</h2>
+        <p>Never lose means two rules:</p>
+        <ol>
+          <li>If opponent has two in a row with third empty, block it immediately.</li>
+          <li>If opponent is setting up a fork, block the fork. How? Don't play an edge that lets opponent create two threats. The classic mistake: X center, O corner, X opposite corner, O plays edge — now X can fork. Correct defense is O should play edge that doesn't create fork opportunity.</li>
+        </ol>
+        <p>The full perfect defense for O after X takes center: take a corner. If X then takes opposite corner, take any other corner — you force draw. If X takes edge, take corner that doesn't let X fork.</p>
+        <p>Memorizing this takes 5 minutes: Center, corner, block, block fork, center. That's the whole game.</p>
+      </div>
+      <div class="card">
+        <h2>4. How to beat a child (and teach them)</h2>
+        <p>If you always draw, kids get bored. So teach them to spot the fork:</p>
+        <ul>
+          <li>Let them go first and take center. You take corner.</li>
+          <li>When they don't block your fork, show them after: "See, I had two ways to win?"</li>
+          <li>Play best of 5, switch who starts. First to 3 wins, but draws don't count — this rewards attacking.</li>
+        </ul>
+        <p>In classrooms, we use Tic-Tac-Toe to teach "if-then" thinking. Ask: "If I go here, what will they have to do? Then what will be open?" That's planning two moves ahead, which is the basis of chess and 2048.</p>
+      </div>
+      <div class="card">
+        <h2>Why it's in the vault</h2>
+        <p>Tic-Tac-Toe is rated Everyone, no timer, no fail state. High score is just win streak stored locally. It works offline because it's 12KB of JavaScript. We include it because it's the purest logic game — no luck, no hidden information. If you like this, try <a href="../play/sudoku">Sudoku</a> (logic), <a href="../play/chess-3d">Chess 3D</a> (deeper perfect-information), and <a href="../play/2048">2048</a> (pattern planning).</p>
+      </div>
+      <p>More: <a href="../guides">Guides</a> · <a href="sudoku-strategy-for-beginners">Sudoku strategy</a> · <a href="2048-strategy">2048 strategy</a></p>
+    </div>
+  </main>
+  <footer class="site-foot"><nav><a href="../about">About</a><a href="../guides">Guides</a><a href="../contact">Contact</a><a href="../privacy">Privacy</a><a href="../credits">Credits</a><a href="../terms">Terms</a></nav><p>offlinegames.art — copyright Jethin Productions</p></footer>
+  <script src="../no-zoom.js"></script><script src="../pwa.js"></script>
+</body>
+</html>

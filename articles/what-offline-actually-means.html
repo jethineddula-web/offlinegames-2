@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>if(location.protocol==="http:"&&location.hostname!=="localhost"&&location.hostname!=="127.0.0.1"&&location.hostname!=="[::1]"){var h=location.hostname;if(!/^192\.168\./.test(h)&&!/^10\./.test(h)&&!/^172\.(1[6-9]|2\d|3[01])\./.test(h)&&h!==""){location.replace("https://"+location.host+location.pathname+location.search+location.hash)}}</script>
+  <script src="../privacy-controls.js"></script>
+  <script async data-ad-src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4203857211510947" crossorigin="anonymous"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What “offline” actually means on a browser games site | OfflineGames</title>
+  <meta name="description" content="What offline means for free browser games: service workers, caching, and honest limits of playing without connection – explained without fluff, works offline.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://offlinegames.art/articles/what-offline-actually-means">
+  <meta property="og:site_name" content="OfflineGames">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://offlinegames.art/articles/what-offline-actually-means">
+  <meta property="og:title" content="What “offline” actually means on a browser games site | OfflineGames">
+  <meta property="og:description" content="What offline means for free browser games: service workers, caching, and honest limits of playing without connection – explained without fluff, works offline.">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <meta name="theme-color" content="#090A16">
+<meta name="twitter:title" content="What “offline” actually means on a browser games site | OfflineGames">
+  <meta name="twitter:description" content="What offline means for free browser games: service workers, caching, and honest limits of playing without connection – explained without fluff, works offline.">
+  <meta property="og:type" content="article">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../ui-fx.css">
+  <link rel="stylesheet" href="../console-ui.css">
+  <link rel="stylesheet" href="../i18n.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"What offline actually means","author":{"@type":"Organization","name":"Jethin Productions"},"datePublished":"2026-09-05"}</script>
+<style>
+.fx-reveal{opacity:1!important;transform:none!important}
+body::before, body::after{display:none!important}
+.scanlines, .vignette{display:none!important}
+.sb{display:none!important}
+header.top .brand{display:inline-flex!important}
+header.top .top-nav{display:flex!important}
+</style>
+  <meta property="og:image" content="https://offlinegames.art/og/site.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="OfflineGames.art — free browser games you can play without downloading">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta name="twitter:image" content="https://offlinegames.art/og/site.jpg">
+</head>
+<body>
+  <header class="top"><a class="brand" href="../">OFFLINEGAMES</a><nav class="top-nav"><a href="../">Vault</a><a href="../news">News</a><a href="../about">About</a><a class="active extra" href="../guides">Guides</a><a class="extra" href="../contact">Contact</a></nav></header>
+  <main class="page">
+    <a class="back" href="../guides">← Back to guides</a>
+    <p class="eyebrow">how this site works · 7 min read · 5 September 2026</p>
+    <h1>What “offline” actually means on a browser games site</h1>
+    <div class="prose">
+      <div class="card">
+        <p>Every games site says “play offline”. Half mean “we have a downloadable .exe”, other half mean “once loaded, it keeps working”. We mean the second, and we should be honest about limits.</p>
+      </div>
+      <div class="card">
+        <h2>The two layers: page cache and game logic</h2>
+        <p><strong>Layer 1 — Page cache (service worker):</strong> When you visit offlinegames.art, a small script `sw.js` installs. It caches `index.html`, `styles.css`, `catalog.js`, and the game files you opened. Next time you visit, even with flaky internet, the browser serves cached copies first, then checks network in background. That's why vault opens fast on second visit.</p>
+        <p><strong>Layer 2 — Game logic:</strong> Each cartridge is HTML + JS + images bundled in `games/` folder. For Sudoku, puzzle generator runs in your tab, not on our server. For 2048, merge logic is local. So after initial download, no fetch needed. That's why airplane mode works after load.</p>
+      </div>
+      <div class="card">
+        <h2>What we cache and what we don't</h2>
+        <p>We cache:</p>
+        <ul>
+          <li>Shell: HTML, CSS, JS, icons, fonts (Google Fonts cached by browser)</li>
+          <li>Game builds you opened: e.g., `games/chess-3d.html`, `games/2048/` folder</li>
+          <li>Catalog: `catalog.js` (list of games)</li>
+        </ul>
+        <p>We don't cache:</p>
+        <ul>
+          <li>AdSense scripts — they always try network, fail offline, but don't block game</li>
+          <li>Google Fonts first load — after first load, browser caches them anyway</li>
+          <li>Games you never opened — to save storage, we don't pre-cache every game (would be ~30MB). We cache on demand.</li>
+        </ul>
+        <p>Storage used: typically 5-15MB depending how many games you opened. You can clear via browser → Site settings → Clear storage.</p>
+      </div>
+      <div class="card">
+        <h2>Honest limits</h2>
+        <p><strong>First visit needs internet.</strong> You cannot type offlinegames.art with no signal and expect it to work. Service worker installs only after first load.</p>
+        <p><strong>New games need internet once.</strong> If we add Color Clash today and you are offline, you won't see it until you go online and refresh. Our `catalog.js` is fetched with `cache: no-store` to avoid week-old cache, so refresh gets new list, but needs network.</p>
+        <p><strong>High scores are local.</strong> We store favorites and high scores in `localStorage` in your browser, never on server. Offline, they still work. If you clear browser data, they disappear. We don't have cloud sync, which is actually better for privacy.</p>
+        <p><strong>iOS Safari is weaker.</strong> Safari evicts service worker cache more aggressively than Chrome. On iPhone, if you don't visit for 7 days, cache may be cleared. Still, game logic itself (once loaded) keeps working in that tab even if cache cleared later.</p>
+      </div>
+      <div class="card">
+        <h2>Why we don't promise “100% offline”</h2>
+        <p>Some sites claim 100% offline but still load ads, analytics, and fonts from third parties that fail offline and break layout. We keep third-party requests to AdSense and Fonts only, and we load them async so they don't block game. If they fail offline, game still runs, just no ads.</p>
+        <p>We also don't use heavy frameworks. No React, no bundler. Less code = less to cache, faster to load, less to break offline.</p>
+      </div>
+      <div class="card">
+        <h2>How to make vault work best offline</h2>
+        <ol>
+          <li>On WiFi, open offlinegames.art, let it load.</li>
+          <li>Open each game you want for 3 seconds, then close. This caches its build.</li>
+          <li>Go offline (airplane mode), refresh vault — it should still open from cache.</li>
+          <li>Play. Scores save locally.</li>
+        </ol>
+        <p>If a game shows spinner offline, tell us via <a href="../contact">Contact</a> — means it tries to fetch mid-game and we should fix.</p>
+      </div>
+      
+      <div class="card">
+        <h2>Service worker lifecycle — simple version</h2>
+        <p>Service worker has three phases: install, activate, fetch. On first visit, browser downloads sw.js and installs. During install, it caches shell files. On activate, it deletes old caches. On fetch, it intercepts requests: if request is for a cached game file, it serves from cache first, then updates cache in background (stale-while-revalidate). That's why second visit is instant.</p>
+        <p>We use cache-first for game builds, network-first for catalog.js. Why? Game builds rarely change, so cache-first is fast. Catalog changes when we add new game, so network-first ensures you see new games quickly, but falls back to cache if offline.</p>
+        <p>It also keeps the site readable when JavaScript does not run. Every game page ships its description, controls, how-to and FAQ in the HTML itself rather than injecting them afterwards, so the text is there for a screen reader, a text browser or a slow connection that never finishes loading the scripts.</p>
+      </div>
+      <div class="card">
+        <h2>Privacy and offline</h2>
+        <p>Because high scores stay in localStorage, we never see them. No account, no tracking of which games you play offline. AdSense only sees page views when online. Offline play generates no ad impressions, which is honest — we don't fake impressions offline. When you go online again, next page view shows ads normally.</p>
+        <p>We also don't use fingerprinting. No canvas fingerprint, no third-party trackers besides Google. Our privacy page explains this, which AdSense reviewers check.</p>
+      </div>
+
+      <p><a href="../guides">All guides</a> · <a href="best-offline-browser-games">Best offline games list</a></p>
+    </div>
+  </main>
+  <footer class="site-foot"><nav><a href="../about">About</a><a href="../guides">Guides</a><a href="../contact">Contact</a><a href="../privacy">Privacy</a><a href="../credits">Credits</a><a href="../terms">Terms</a></nav><p>offlinegames.art — copyright Jethin Productions</p></footer>
+  <!-- ui-fx disabled for guides fix --><script src="../no-zoom.js"></script><script src="../pwa.js"></script>
+</body>
+</html>

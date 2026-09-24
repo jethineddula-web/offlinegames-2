@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220" width="400" height="220" role="img"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5eead4"/><stop offset="1" stop-color="#a78bfa"/></linearGradient></defs><rect width="400" height="220" fill="#0f1224"/><rect x="66"  y="48"  width="60" height="46" rx="8" fill="url(#g)" opacity=".35"/>
+    <rect x="138" y="48"  width="60" height="46" rx="8" fill="url(#g)" opacity=".55"/>
+    <rect x="210" y="48"  width="60" height="46" rx="8" fill="url(#g)" opacity=".75"/>
+    <rect x="282" y="48"  width="60" height="46" rx="8" fill="url(#g)"/>
+    <rect x="66"  y="110" width="60" height="46" rx="8" fill="url(#g)"/>
+    <rect x="138" y="110" width="60" height="46" rx="8" fill="url(#g)" opacity=".75"/>
+    <rect x="210" y="110" width="60" height="46" rx="8" fill="url(#g)" opacity=".55"/>
+    <rect x="282" y="110" width="60" height="46" rx="8" fill="url(#g)" opacity=".35"/>
+    <circle cx="312" cy="158" r="16" fill="#0f1224"/>
+    <path d="M312 148v20M302 158h20" stroke="#5eead4" stroke-width="4" stroke-linecap="round"/></svg>

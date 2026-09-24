@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>if(location.protocol==="http:"&&location.hostname!=="localhost"&&location.hostname!=="127.0.0.1"&&location.hostname!=="[::1]"){var h=location.hostname;if(!/^192\.168\./.test(h)&&!/^10\./.test(h)&&!/^172\.(1[6-9]|2\d|3[01])\./.test(h)&&h!==""){location.replace("https://"+location.host+location.pathname+location.search+location.hash)}}</script>
+  <script src="../privacy-controls.js"></script>
+  <script async data-ad-src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4203857211510947" crossorigin="anonymous"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>History of Ludo and Chess: how classic board games became browser games | OfflineGames</title>
+  <meta name="description" content="History of Ludo and Chess: from Chaturanga to minimax, Pachisi to Ludo, how public-domain board games became free browser games and why we re-code games.">
+  <meta name="author" content="Jethin Productions">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="canonical" href="https://offlinegames.art/articles/history-of-ludo-and-chess-classic-board-games">
+  <meta property="og:site_name" content="OfflineGames">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://offlinegames.art/articles/history-of-ludo-and-chess-classic-board-games">
+  <meta property="og:title" content="History of Ludo and Chess: how classic board games became browser games | OfflineGames">
+  <meta property="og:description" content="History of Ludo and Chess: from Chaturanga to minimax, Pachisi to Ludo, how public-domain board games became free browser games and why we re-code games.">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="History of Ludo and Chess: how classic board games became browser games | OfflineGames">
+  <meta name="twitter:description" content="History of Ludo and Chess: from Chaturanga to minimax, Pachisi to Ludo, how public-domain board games became free browser games and why we re-code games.">
+  <meta property="og:type" content="article">
+  <meta name="theme-color" content="#090A16">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="../styles.css"><link rel="stylesheet" href="../ui-fx.css"><link rel="stylesheet" href="../console-ui.css"><link rel="stylesheet" href="../i18n.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"History of Ludo and Chess","author":{"@type":"Organization","name":"Jethin Productions"},"datePublished":"2026-09-08","dateModified":"2026-09-13"}</script>
+<style>.fx-reveal{opacity:1!important;transform:none!important}body::before, body::after{display:none!important}.scanlines, .vignette{display:none!important}.sb{display:none!important}header.top .brand{display:inline-flex!important}header.top .top-nav{display:flex!important}</style>
+  <meta property="og:image" content="https://offlinegames.art/og/site.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="OfflineGames.art — free browser games you can play without downloading">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta name="twitter:image" content="https://offlinegames.art/og/site.jpg">
+</head>
+<body>
+<header class="top"><a class="brand" href="../">OFFLINEGAMES</a><nav class="top-nav"><a href="../">Vault</a><a href="../news">News</a><a href="../about">About</a><a class="active extra" href="../guides">Guides</a><a class="extra" href="../contact">Contact</a></nav></header>
+<main class="page">
+<a class="back" href="../guides">← Back to guides</a>
+<p class="eyebrow">history · 9 min read · 8 September 2026</p>
+<h1>History of Ludo and Chess: how classic board games became browser games</h1>
+<div class="prose">
+<div class="card">
+<p><strong>Every game in the vault is either original or public-domain rules with our own code and art.</strong> That matters, both legally and for trust. Ludo and Chess are both ancient, both public domain, but their browser versions are very different engineering problems. This is how they got from 6th-century India to a 80KB tab on offlinegames.art.</p>
+</div>
+<div class="card">
+<h2>Chess: Chaturanga → minimax in the browser</h2>
+<p>Chess comes from Chaturanga, 6th-century India, through Persia and Islamic Spain to modern Europe by 15th century. Rules standardized 19th century. Public domain. Our <a href="../play/chess-3d">Chess 3D</a> does not use an engine server — AI is local minimax with alpha-beta pruning, evaluation is material + position, depth 3 on phone, 4 on desktop. No network after load, so it works offline, which matters for flights.</p>
+<p>Why 3D? Not to hide information — board is readable on small screen, pieces move by official rules, castling, en passant, promotion all implemented. 3D makes board feel physical, not to obscure. Load it, sit down, play real game with no sign-in. For strategy, see <a href="chess-openings-for-beginners">chess openings for beginners</a> — three principles beat thirty memorised lines: control centre, develop everything before attacking, castle by move ten.</p>
+<p>We built Chess 3D hand-written WebGL2, no Unity, no dependencies, ~2.8MB total. Compare to typical Unity chess on web: 15-20MB WASM. Ours is smaller because we don't ship engine physics we don't need. It also means offline works — no extra asset fetch mid-game.</p>
+</div>
+<div class="card">
+<h2>Ludo: Pachisi → Lodo in the vault</h2>
+<p>Ludo comes from Pachisi, Mughal India, cross-shaped board, cowrie shells as dice. Patented as Ludo in England 1896 by Alfred Collier. Rules: roll 6 to leave home, safe squares, capture sends piece home, first to get all four home wins. Public domain mechanics, trademarked name in some regions — we call ours <a href="../play/lodo">Lodo</a> to avoid trademark.</p>
+<p>Our implementation: dice is local RNG, safe zones, home stretch, hot-seat multiplayer same device pass-and-play. No server, no room code, no account. Great for kids and parents offline. Board is canvas, pieces are our art, not ripped. Code is ours. See <a href="best-games-for-kids-under-8">best for kids under 8</a> — Lodo is in Everyone set.</p>
+<p>Why re-code rather than iframe? Most free Ludo sites are iframes to other portals with pop-ups and fake download buttons. If that portal injects ad or goes down, game breaks. Same-domain hosting means offline cache works, school filters allow one domain, and we control rating. Ludo is Everyone — no violence, no scary imagery, no time pressure. Suitable to hand to young child unsupervised.</p>
+</div>
+<div class="card">
+<h2>Why classic games matter for an offline vault</h2>
+<p>Classic board games are perfect-information, no luck beyond dice, no need for server. They also teach: Chess teaches planning two moves ahead, Ludo teaches counting, safe risk, and turn-taking. Both work hot-seat — same tablet, pass and play, no second device needed. For classrooms, see <a href="browser-games-for-teachers-classroom-ideas">browser games for teachers</a> — Chess for 15-minute sessions, Ludo for family race.</p>
+<p>For parents, classic games have no fail shame. If child taps wrong in Ludo, piece just moves. In Chess, you can undo by resetting board. Compare to arcade like <a href="../play/impossible-master">Impossible Master</a> which is hard on purpose and rated Everyone 10+ for frustration, not content.</p>
+<p>For preservation: public-domain rules should stay public. We host our versions on same domain so they don't disappear when external portal closes. Service worker og-v8 caches them with cache:no-cache revalidation — online phone sees server version, offline still works. See <a href="how-we-built-the-vault-offline-first">how we built vault offline-first</a> for netFetch fix that stopped serving week-old files from disk cache.</p>
+</div>
+<div class="card">
+<h2>How we built them</h2>
+<p>Both use canvas, no frameworks. Chess 3D uses WebGL2 shaders for board, pieces are low-poly models we made in Blender, exported as JSON. Move validation is 400 lines of JS — not Stockfish, just legal move generator + minimax. Ludo is 2D canvas, 600 lines, dice animation is CSS, not image sprite, so it scales on phone.</p>
+<p>Both save nothing to server. High scores and last board state in localStorage only. Clear browser data and they disappear — we don't have cloud sync, which is better for privacy. See <a href="../privacy">Privacy</a> for AdSense disclosure.</p>
+<p>For best-of by time, see <a href="best-games-for-short-sessions">best games for short sessions</a> — Chess 3D is 30-minute bucket, Lodo is 25-minute family race. For why no-download matters in 2026, see <a href="why-no-download-games-matter">why no-download games matter</a> — storage math, school laptops, shared tablets.</p>
+</div>
+<div class="card">
+<h2>Try them</h2>
+<p><a href="../play/chess-3d">Play Chess 3D</a> — full chess, local AI, Everyone rating, offline-capable.</p>
+<p><a href="../play/lodo">Play Lodo</a> — Ludo, hot-seat, Everyone, 25-minute family game.</p>
+<p>More classic: <a href="../play/tic-tac-toe">Tic-Tac-Toe</a> (solved, but teaches forks) with <a href="how-to-win-tic-tac-toe-every-time">never-lose guide</a>.</p>
+</div>
+<p><a href="../guides">← All guides</a> · <a href="../">Open the vault</a></p>
+</div>
+</main>
+<footer class="site-foot"><nav><a href="../about">About</a><a href="../guides">Guides</a><a href="../contact">Contact</a><a href="../privacy">Privacy</a><a href="../credits">Credits</a><a href="../terms">Terms</a></nav><p>offlinegames.art — copyright Jethin Productions</p></footer>
+<script src="../no-zoom.js"></script><script src="../pwa.js"></script>
+</body>
+</html>

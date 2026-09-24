@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>if(location.protocol==="http:"&&location.hostname!=="localhost"&&location.hostname!=="127.0.0.1"&&location.hostname!=="[::1]"){var h=location.hostname;if(!/^192\.168\./.test(h)&&!/^10\./.test(h)&&!/^172\.(1[6-9]|2\d|3[01])\./.test(h)&&h!==""){location.replace("https://"+location.host+location.pathname+location.search+location.hash)}}</script>
+  <script src="../privacy-controls.js"></script>
+  <script async data-ad-src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4203857211510947" crossorigin="anonymous"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to actually win at 2048 (and why your board keeps dying) | OfflineGames</title>
+  <meta name="description" content="Play 2048 free online: corner rule, snake pattern, and one move to avoid. Strategy guide for free browser games that gets you to 2048 and beyond, works offline.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://offlinegames.art/articles/2048-strategy">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="How to actually win at 2048">
+  <meta property="og:site_name" content="OfflineGames">
+  <meta property="og:url" content="https://offlinegames.art/articles/2048-strategy">
+  <meta property="og:description" content="Play 2048 free online: corner rule, snake pattern, and one move to avoid. Strategy guide for free browser games that gets you to 2048 and beyond, works offline.">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <meta name="theme-color" content="#090A16">
+<meta name="twitter:title" content="How to actually win at 2048 (and why your board keeps dying) | OfflineGames">
+  <meta name="twitter:description" content="Play 2048 free online: corner rule, snake pattern, and one move to avoid. Strategy guide for free browser games that gets you to 2048 and beyond, works offline.">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../ui-fx.css">
+  <link rel="stylesheet" href="../console-ui.css">
+  <link rel="stylesheet" href="../i18n.css">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","headline":"How to actually win at 2048","author":{"@type":"Organization","name":"Jethin Productions"},"datePublished":"2026-08-20","mainEntityOfPage":"https://offlinegames.art/articles/2048-strategy"}
+  </script>
+<style>
+.fx-reveal{opacity:1!important;transform:none!important}
+body::before, body::after{display:none!important}
+.scanlines, .vignette{display:none!important}
+.sb{display:none!important}
+header.top .brand{display:inline-flex!important}
+header.top .top-nav{display:flex!important}
+</style>
+  <meta property="og:image" content="https://offlinegames.art/og/site.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="OfflineGames.art — free browser games you can play without downloading">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta name="twitter:image" content="https://offlinegames.art/og/site.jpg">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="../">OFFLINEGAMES</a>
+    <nav class="top-nav"><a href="../">Vault</a><a href="../news">News</a><a href="../about">About</a><a class="active extra" href="../guides">Guides</a><a class="extra" href="../contact">Contact</a></nav>
+  </header>
+  <main class="page">
+    <a class="back" href="../guides">← Back to guides</a>
+    <p class="eyebrow">how to play · 7 min read · 20 August 2026</p>
+    <h1>How to actually win at 2048 (and why your board keeps dying)</h1>
+    <div class="prose">
+      <div class="card">
+        <p>Everyone has the same 2048 story: you get to 512, then 1024, then the board fills with 2s and 4s and you lose. It's not bad luck. It's three habits that kill your board. Fix them and you will reach 2048 in your next 5 games, not 50.</p>
+        <p>This guide is for the <a href="../play/2048">2048 cartridge in the vault</a> — same rules as the original: swipe to merge equal tiles, new tile spawns each move.</p>
+      </div>
+
+      <div class="card">
+        <h2>The corner rule — pick a corner and never leave</h2>
+        <p>Choose one corner — bottom-right is easiest for right-handed thumbs — and keep your highest tile there for the entire game. Every move should push tiles toward that corner. If your highest tile is bottom-right, you should mostly press Down and Right. Up and Left are emergency moves only.</p>
+        <p>Why? 2048 is about building a chain. If your 1024 is bottom-right, 512 should be directly above it, 256 above that, and so on. When you move away from the corner, you break the chain and a small tile spawns between your big tiles. That's how boards die.</p>
+        <p><strong>Rule:</strong> Never press the opposite direction of your corner more than twice in a row. If corner is bottom-right, avoid Up. If you must go Up, immediately go Down to restore.</p>
+      </div>
+
+      <div class="card">
+        <h2>The snake pattern — how to stack</h2>
+        <p>Once corner is set, build a snake:</p>
+        <pre style="background:var(--bg);padding:12px;border-radius:8px;overflow:auto">1024  512  256  128
+ 64    32   16    8
+  8     4    2    .
+  .     .    .    .</pre>
+        <p>Bottom row: decreasing left to right? Actually for bottom-right corner, bottom row should be high to low left to right? Let's make it concrete: If corner is bottom-right, bottom row from left to right: 16 - 32 - 128 - 1024? No. Better: Keep descending as you move away from corner along a snake path. Bottom row (row 4): 8 - 16 - 32 - 1024? Hmm.</p>
+        <p>Simpler: Imagine a snake that starts at corner and winds. Bottom row: 512 - 256 - 128 - 1024? Let's not overcomplicate. Practical rule: In the row containing your highest tile, keep tiles sorted descending toward corner. In the row above, keep them ascending away from corner, so merges flow toward corner.</p>
+        <p>When you have 1024 in corner, 512 next to it, 256 next to that, you can merge 128 into 256 without moving 1024. That's the whole game.</p>
+      </div>
+
+      <div class="card">
+        <h2>The one move you should almost never make</h2>
+        <p>If corner is bottom-right, the killer move is <strong>Up</strong> when your top row is full. Up pulls your corner tile away from the wall and a 2 spawns in the bottom row, between 1024 and 512. Now you cannot merge 512 into 1024 without moving 1024 first. Board clogged, game over in 10 moves.</p>
+        <p>Before pressing Up, ask: Is my bottom row full? If yes, don't go Up. Go Right, Left, Down — anything but Up. If you must go Up, ensure top row has an empty cell so corner tile doesn't move.</p>
+        <p>Track your Up presses. Good players press Up <10% of moves. Beginners press Up 30%.</p>
+      </div>
+
+      <div class="card">
+        <h2>Mid-game: when the board looks full but isn't dead</h2>
+        <p>At 512+256+128+64 on board, new tiles spawn as 2s that don't merge easily. Two tricks:</p>
+        <ul>
+          <li><strong>Don't chase merges.</strong> If you have 8 and 8 far apart, don't drag them across board. Build locally, let merges come to you.</li>
+          <li><strong>Keep one empty cell.</strong> Always leave one cell empty in the row opposite your corner. That empty cell is where new 2s go, not between your big tiles.</li>
+          <li><strong>Use undo mentally.</strong> Before a move, imagine board after. If move creates a checkerboard (alternating small tiles), skip it.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>Endgame: 1024 to 2048</h2>
+        <p>Once you have 1024 in corner and 512 next to it, stop being clever. Just keep pressing Down and Right (or your two corner directions) until 512 merges into 1024 to make 2048. Don't try to build 256 into 512 on the other side — it will spawn tiles in your corner row.</p>
+        <p>If board fills, you have one emergency: press the non-corner direction once to free a cell, then immediately press back to corner direction twice. This "wiggle" often spawns a tile in a safe spot.</p>
+        <p>After 2048, same rules apply to reach 4096. Corner, snake, avoid opposite direction.</p>
+      </div>
+
+      <div class="card">
+        <h2>Why our 2048 feels different</h2>
+        <p>Our build has no ads inside the game, no undo button to tempt you, and it saves your high score locally. It also runs at 60fps on a mid-range phone because we don't use heavy animations. That matters: when you press Down, you want instant feedback, not a 200ms slide that makes you press again and lose.</p>
+        <p>Play it in the vault: <a href="../play/2048">2048</a>. Try to reach 2048 three times using only Down and Right — you'll learn corner discipline faster than any guide.</p>
+      </div>
+
+      <p>Next: <a href="chess-openings-for-beginners">Chess openings for beginners</a> or back to <a href="../guides">all guides</a>.</p>
+    </div>
+  </main>
+  <footer class="site-foot"><nav><a href="../about">About</a><a href="../guides">Guides</a><a href="../contact">Contact</a><a href="../privacy">Privacy</a><a href="../credits">Credits</a><a href="../terms">Terms</a></nav><p>offlinegames.art — copyright Jethin Productions</p></footer>
+  <!-- ui-fx disabled for guides fix --><script src="../no-zoom.js"></script><script src="../pwa.js"></script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>if(location.protocol==="http:"&&location.hostname!=="localhost"&&location.hostname!=="127.0.0.1"&&location.hostname!=="[::1]"){var h=location.hostname;if(!/^192\.168\./.test(h)&&!/^10\./.test(h)&&!/^172\.(1[6-9]|2\d|3[01])\./.test(h)&&h!==""){location.replace("https://"+location.host+location.pathname+location.search+location.hash)}}</script>
+  <script src="../privacy-controls.js"></script>
+  <script async data-ad-src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4203857211510947" crossorigin="anonymous"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How we built the vault to work offline-first | OfflineGames</title>
+  <meta name="description" content="How we built the vault offline-first: 18KB catalog, cache:no-cache fetch, og-v10 service worker, and stale-cache bug that served week-old free browser games.">
+  <meta name="author" content="Jethin Productions">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="canonical" href="https://offlinegames.art/articles/how-we-built-the-vault-offline-first">
+  <meta property="og:site_name" content="OfflineGames">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://offlinegames.art/articles/how-we-built-the-vault-offline-first">
+  <meta property="og:title" content="How we built the vault to work offline-first | OfflineGames">
+  <meta property="og:description" content="How we built the vault offline-first: 18KB catalog, cache:no-cache fetch, og-v10 service worker, and stale-cache bug that served week-old free browser games.">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How we built the vault to work offline-first | OfflineGames">
+  <meta name="twitter:description" content="How we built the vault offline-first: 18KB catalog, cache:no-cache fetch, og-v10 service worker, and stale-cache bug that served week-old free browser games.">
+  <meta property="og:type" content="article">
+  <meta name="theme-color" content="#090A16">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="../styles.css"><link rel="stylesheet" href="../ui-fx.css"><link rel="stylesheet" href="../console-ui.css"><link rel="stylesheet" href="../i18n.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How we built the vault offline-first","author":{"@type":"Organization","name":"Jethin Productions"},"datePublished":"2026-09-10","dateModified":"2026-09-13"}</script>
+<style>.fx-reveal{opacity:1!important;transform:none!important}body::before, body::after{display:none!important}.scanlines, .vignette{display:none!important}.sb{display:none!important}header.top .brand{display:inline-flex!important}header.top .top-nav{display:flex!important}</style>
+  <meta property="og:image" content="https://offlinegames.art/og/site.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="OfflineGames.art — free browser games you can play without downloading">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta name="twitter:image" content="https://offlinegames.art/og/site.jpg">
+</head>
+<body>
+<header class="top"><a class="brand" href="../">OFFLINEGAMES</a><nav class="top-nav"><a href="../">Vault</a><a href="../news">News</a><a href="../about">About</a><a class="active extra" href="../guides">Guides</a><a class="extra" href="../contact">Contact</a></nav></header>
+<main class="page">
+<a class="back" href="../guides">← Back to guides</a>
+<p class="eyebrow">technical · 9 min read · 10 September 2026</p>
+<h1>How we built the vault to work offline-first</h1>
+<div class="prose">
+<div class="card">
+<p><strong>The vault looks simple — a grid of covers — but offline-first on the web is three caches fighting you.</strong> We learned that when phones kept showing old games after we deployed new ones. Incognito was fine. Regular Chrome was stale. This is the fix we shipped in sw.js og-v7 and og-v8, plus _headers, and why catalog.js is now 18KB not 510KB.</p>
+</div>
+<div class="card">
+<h2>Problem 1: base64 covers in catalog.js</h2>
+<p>Early vault embedded 13 covers as base64 data URIs inside SITE_GAMES array. File was 510KB, parsed as JS on every load. First load on mid-range Android: 1.8 seconds just to parse. We moved covers to real files under <code>/covers/</code> — JPEGs and SVGs, ~12KB each. Catalog is now 18KB with 21 news posts. Loads in 90ms. News images that are still SVG use data URIs intentionally small, but game covers are real files.</p>
+<p>It also made the first load noticeably faster, which matters most on an old phone. See <a href="best-games-for-short-sessions">best games for short sessions</a> for how small some of these games are — Pop-a-Lock is 40&nbsp;KB, 2048 is 80&nbsp;KB.</p>
+</div>
+<div class="card">
+<h2>Problem 2: cache-first service worker</h2>
+<p>og-v3 served everything under /games/ and /covers/ cache-first. Once file in SW cache, never re-fetched. So when we fixed a bug in <a href="../play/chess-3d">Chess 3D</a>, phones kept old bug. Fixed in og-v5 to network-first — but network-first as plain fetch(req) is a lie.</p>
+</div>
+<div class="card">
+<h2>Problem 3: browser HTTP disk cache</h2>
+<p>This took weeks. fetch() consults browser's own HTTP disk cache before network. _headers was stamping /games/* with max-age=604800 and /covers/* with immutable, max-age=2592000. So fetch() returned week-old (or month-old immutable) copy from disk, SW dutifully refreshed its cache with stale bytes. Incognito had no disk cache, so looked correct. Regular profile was poisoned.</p>
+<p>Fix in og-v7: netFetch() forces cache: "no-cache". Code:</p>
+<p><code>function netFetch(req){ try{ return fetch(new Request(req,{cache:"no-cache"})); } catch(e){ return fetch(req); } }</code></p>
+<p>That tells browser: do not serve from HTTP disk cache without asking server. Server may answer 304 Not Modified, so cheap — revalidation, not full re-download. That plus _headers fix to max-age=0, must-revalidate for /games/* and /covers/* means online phone always sees server version, offline still works because cache is fallback.</p>
+<p>og-v8 bump now invalidates old caches outright — caches.keys() delete if version not current. So phones carrying stale games start clean moment og-v10 activates.</p>
+</div>
+<div class="card">
+<h2>What offline actually means</h2>
+<p>We mean two practical things: no app store, and after first load, logic lives in page. You still need connection first time to get HTML, CSS, game files. After that, service worker serves from cache if offline. High scores in localStorage, not server. See <a href="what-offline-actually-means">what offline actually means</a> for honest limits — we don't promise miracle console.</p>
+<p>Why same-domain matters: most free game sites are iframes to other portals. If portal goes down or injects pop-up, game breaks. We host everything on offlinegames.art so offline works. Only external calls are AdSense and Google Fonts, async non-blocking. If they fail, game still runs. For trust argument, see <a href="why-no-download-games-matter">why no-download matters</a>.</p>
+</div>
+<div class="card">
+<h2>Viewport split and shape bug</h2>
+<p>Pinch-to-zoom should never be disabled on a page of text. We had a script locking the viewport site-wide, including on About, Privacy and the guides, which made them awkward for anyone who needs to enlarge type. It now applies only to the game overlay, where a two-finger swipe would otherwise zoom the page in the middle of a level. Everything you read on the site can be zoomed normally.</p>
+<p>That is why guides.html now shows 14 cards clean, no duplicate header, and news.html shows editorial intro not placeholder.</p>
+</div>
+<div class="card">
+<h2>How we test before zip</h2>
+<p>Every release follows the same route: regenerate the per-game pages and the sitemap, raise the service worker version so phones know to fetch a fresh list, then check that the written pages still zoom and the sitemap is valid before anything ships. See <a href="../news">News</a> for dated entries — September adds 8 games: Arrows Puzzle, Bees Escape, Math Runner, Save The Dog, Helicopter Simulator 3D, Words Matching, Numberly, Thunder-Circuit.</p>
+<p>For teachers, see <a href="browser-games-for-teachers-classroom-ideas">teacher guide</a> for pre-cache workflow. For parents, <a href="best-games-for-kids-under-8">best for kids under 8</a> for Everyone set under 2MB.</p>
+</div>
+<div class="card"><h2>What we ship next</h2><p>Next is preloading controls: user picks 5 favourite cartridges on vault page, we cache them proactively with Cache API, not just on open. Also better 404 for games/ — if file missing, show card with link to guides, not blank. Both keep E-E-A-T: real code, real testing, no generated filler. See <a href="../news">News</a> for dated updates.</p></div>
+<p><a href="../guides">← All guides</a> · <a href="what-offline-actually-means">What offline means</a> · <a href="../">Open vault</a></p>
+</div>
+</main>
+<footer class="site-foot"><nav><a href="../about">About</a><a href="../guides">Guides</a><a href="../contact">Contact</a><a href="../privacy">Privacy</a><a href="../credits">Credits</a><a href="../terms">Terms</a></nav><p>offlinegames.art — copyright Jethin Productions</p></footer>
+<script src="../no-zoom.js"></script><script src="../pwa.js"></script>
+</body>
+</html>
