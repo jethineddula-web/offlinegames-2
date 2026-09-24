@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <title>Snake – Free Classic Snake Game, No Download | Offline Games</title>
+  <meta name="description" content="Play classic Snake free in your browser. Eat, grow, and don't bite your tail. Works on phone and desktop, no download, no signup, plays offline." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://offlinegames.art/games/snake/" />
+  <meta name="theme-color" content="#07071a" />
+  <style>
+    :root { --bg:#07071a; --panel:#10102b; --line:#22224a; --text:#e8ecff; --dim:#8b93c7; --accent:#22e3ff; --food:#ff4d7d; --snake:#3dff9e; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    html, body { height:100%; background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; overflow:hidden; touch-action:none; user-select:none; -webkit-user-select:none; }
+    body { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:10px; padding-bottom:max(10px, env(safe-area-inset-bottom)); }
+    .hud { display:flex; gap:10px; width:100%; max-width:520px; align-items:center; }
+    .stat { flex:1; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:6px 10px; text-align:center; }
+    .stat b { display:block; font-size:20px; font-variant-numeric:tabular-nums; }
+    .stat span { font-size:11px; color:var(--dim); text-transform:uppercase; letter-spacing:.08em; }
+    .btn { background:var(--panel); color:var(--text); border:1px solid var(--line); border-radius:10px; padding:10px 14px; font:inherit; font-weight:600; cursor:pointer; }
+    .btn:hover { border-color:var(--accent); }
+    .btn.primary { background:var(--accent); color:#04121a; border-color:var(--accent); }
+    .wrap { position:relative; }
+    canvas { display:block; background:#0b0b22; border:1px solid var(--line); border-radius:12px; }
+    .overlay { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; background:rgba(7,7,26,.82); border-radius:12px; text-align:center; padding:16px; }
+    .overlay h1 { font-size:34px; color:var(--snake); letter-spacing:.04em; }
+    .overlay p { color:var(--dim); font-size:14px; max-width:280px; line-height:1.4; }
+    .hidden { display:none !important; }
+    .speeds { display:flex; gap:6px; }
+    .speeds .btn { padding:8px 10px; font-size:13px; }
+    .speeds .btn.on { border-color:var(--accent); color:var(--accent); }
+    .pad { display:grid; grid-template-columns:repeat(3,58px); grid-template-rows:repeat(2,50px); gap:6px; }
+    .pad button { font-size:22px; padding:0; }
+    .pad .up { grid-column:2; } .pad .left { grid-column:1; grid-row:2; } .pad .down { grid-column:2; grid-row:2; } .pad .right { grid-column:3; grid-row:2; }
+    @media (hover:hover) and (pointer:fine) { .pad { display:none; } }
+  </style>
+</head>
+<body>
+  <div class="hud">
+    <div class="stat"><span>Score</span><b id="score">0</b></div>
+    <div class="stat"><span>Best</span><b id="best">0</b></div>
+    <button class="btn" id="pauseBtn" aria-label="Pause">❚❚</button>
+  </div>
+  <div class="wrap">
+    <canvas id="board"></canvas>
+    <div class="overlay" id="overlay">
+      <h1 id="ovTitle">SNAKE</h1>
+      <p id="ovText">Eat the red dots to grow. Don't hit the walls or your own tail.<br>Arrow keys / WASD, swipe, or use the pad.</p>
+      <div class="speeds" id="speeds">
+        <button class="btn" data-speed="slow">Slow</button>
+        <button class="btn on" data-speed="normal">Normal</button>
+        <button class="btn" data-speed="fast">Fast</button>
+      </div>
+      <button class="btn primary" id="startBtn">Play</button>
+    </div>
+  </div>
+  <div class="pad" id="pad">
+    <button class="btn up" data-dir="up">▲</button>
+    <button class="btn left" data-dir="left">◀</button>
+    <button class="btn down" data-dir="down">▼</button>
+    <button class="btn right" data-dir="right">▶</button>
+  </div>
+<script>
+(function () {
+  "use strict";
+  var N = 20;
+  var SPEEDS = { slow: 160, normal: 115, fast: 75 };
+  var DIRS = { up:[0,-1], down:[0,1], left:[-1,0], right:[1,0] };
+  var canvas = document.getElementById("board"), ctx = canvas.getContext("2d");
+  var scoreEl = document.getElementById("score"), bestEl = document.getElementById("best");
+  var overlay = document.getElementById("overlay"), ovTitle = document.getElementById("ovTitle"), ovText = document.getElementById("ovText");
+  var startBtn = document.getElementById("startBtn"), pauseBtn = document.getElementById("pauseBtn");
+  var speedName = "normal", cell = 20;
+  var snake, dir, queue, food, score, running = false, paused = false, timer = null, dead = false;
+
+  function load(k, d) { try { var v = localStorage.getItem(k); return v === null ? d : v; } catch (e) { return d; } }
+  function save(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  var best = parseInt(load("og-snake-best", "0"), 10) || 0;
+  speedName = load("og-snake-speed", "normal");
+  if (!SPEEDS[speedName]) speedName = "normal";
+  bestEl.textContent = best;
+
+  function resize() {
+    var padH = window.matchMedia("(hover:hover) and (pointer:fine)").matches ? 0 : 120;
+    var avail = Math.min(window.innerWidth - 20, window.innerHeight - 90 - padH, 520);
+    cell = Math.max(10, Math.floor(avail / N));
+    var dpr = window.devicePixelRatio || 1;
+    canvas.style.width = canvas.style.height = (cell * N) + "px";
+    canvas.width = canvas.height = cell * N * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    draw();
+  }
+
+  function reset() {
+    var m = Math.floor(N / 2);
+    snake = [[m, m], [m - 1, m], [m - 2, m]];
+    dir = "right"; queue = []; score = 0; dead = false;
+    scoreEl.textContent = 0;
+    placeFood();
+  }
+
+  function placeFood() {
+    var free = [];
+    for (var x = 0; x < N; x++) for (var y = 0; y < N; y++) {
+      if (!snake.some(function (s) { return s[0] === x && s[1] === y; })) free.push([x, y]);
+    }
+    food = free.length ? free[Math.floor(Math.random() * free.length)] : null;
+  }
+
+  function opposite(a, b) { return DIRS[a][0] === -DIRS[b][0] && DIRS[a][1] === -DIRS[b][1]; }
+
+  function turn(d) {
+    if (!running || paused) return;
+    var last = queue.length ? queue[queue.length - 1] : dir;
+    if (d === last || opposite(d, last) || queue.length > 2) return;
+    queue.push(d);
+  }
+
+  function step() {
+    if (queue.length) dir = queue.shift();
+    var h = snake[0], v = DIRS[dir];
+    var nx = h[0] + v[0], ny = h[1] + v[1];
+    var eating = food && nx === food[0] && ny === food[1];
+    var body = eating ? snake : snake.slice(0, -1);
+    if (nx < 0 || ny < 0 || nx >= N || ny >= N || body.some(function (s) { return s[0] === nx && s[1] === ny; })) {
+      return gameOver();
+    }
+    snake.unshift([nx, ny]);
+    if (eating) {
+      score++;
+      scoreEl.textContent = score;
+      if (score > best) { best = score; bestEl.textContent = best; save("og-snake-best", best); }
+      placeFood();
+      if (!food) return gameOver(true);
+    } else {
+      snake.pop();
+    }
+    draw();
+  }
+
+  function rr(x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); ctx.fill();
+  }
+
+  function draw() {
+    var S = cell * N;
+    ctx.fillStyle = "#0b0b22"; ctx.fillRect(0, 0, S, S);
+    ctx.fillStyle = "#101030";
+    for (var x = 0; x < N; x++) for (var y = 0; y < N; y++) if ((x + y) % 2) ctx.fillRect(x * cell, y * cell, cell, cell);
+    if (!snake) return;
+    if (food) {
+      ctx.fillStyle = "#ff4d7d";
+      ctx.beginPath(); ctx.arc(food[0] * cell + cell / 2, food[1] * cell + cell / 2, cell * 0.38, 0, Math.PI * 2); ctx.fill();
+    }
+    for (var i = snake.length - 1; i >= 0; i--) {
+      var t = i / Math.max(1, snake.length - 1);
+      ctx.fillStyle = dead ? "#666a88" : "hsl(" + (150 - t * 40) + ",100%," + (62 - t * 18) + "%)";
+      rr(snake[i][0] * cell + 1, snake[i][1] * cell + 1, cell - 2, cell - 2, cell * 0.28);
+    }
+    var h = snake[0], v = DIRS[dir];
+    ctx.fillStyle = "#07071a";
+    var cx = h[0] * cell + cell / 2, cy = h[1] * cell + cell / 2, off = cell * 0.2;
+    var px = -v[1], py = v[0];
+    [1, -1].forEach(function (s) {
+      ctx.beginPath();
+      ctx.arc(cx + v[0] * off + px * off * s, cy + v[1] * off + py * off * s, cell * 0.09, 0, Math.PI * 2);
+      ctx.fill();
+    });
+  }
+
+  function start() {
+    reset();
+    running = true; paused = false;
+    overlay.classList.add("hidden");
+    clearInterval(timer);
+    timer = setInterval(step, SPEEDS[speedName]);
+    draw();
+  }
+
+  function gameOver(won) {
+    running = false; dead = true;
+    clearInterval(timer);
+    draw();
+    ovTitle.textContent = won ? "YOU WIN!" : "GAME OVER";
+    ovText.innerHTML = "Score: <b>" + score + "</b> &nbsp; Best: <b>" + best + "</b>";
+    startBtn.textContent = "Play again";
+    overlay.classList.remove("hidden");
+  }
+
+  function togglePause() {
+    if (!running) return;
+    paused = !paused;
+    if (paused) {
+      clearInterval(timer);
+      ovTitle.textContent = "PAUSED";
+      ovText.textContent = "Press Space or tap Resume.";
+      startBtn.textContent = "Resume";
+      overlay.classList.remove("hidden");
+    } else {
+      overlay.classList.add("hidden");
+      timer = setInterval(step, SPEEDS[speedName]);
+    }
+  }
+
+  startBtn.addEventListener("click", function () { if (paused) togglePause(); else start(); });
+  pauseBtn.addEventListener("click", togglePause);
+
+  var speedBtns = document.querySelectorAll("#speeds .btn");
+  function markSpeed() { speedBtns.forEach(function (b) { b.classList.toggle("on", b.dataset.speed === speedName); }); }
+  speedBtns.forEach(function (b) {
+    b.addEventListener("click", function () {
+      speedName = b.dataset.speed; save("og-snake-speed", speedName); markSpeed();
+      if (running && paused) { /* applied on resume */ }
+    });
+  });
+  markSpeed();
+
+  var KEYS = { ArrowUp:"up", KeyW:"up", ArrowDown:"down", KeyS:"down", ArrowLeft:"left", KeyA:"left", ArrowRight:"right", KeyD:"right" };
+  document.addEventListener("keydown", function (e) {
+    if (KEYS[e.code]) { e.preventDefault(); turn(KEYS[e.code]); return; }
+    if (e.code === "Space" || e.code === "KeyP") {
+      e.preventDefault();
+      if (running) togglePause(); else start();
+    } else if (e.code === "Enter" && !running) start();
+  });
+
+  document.querySelectorAll("#pad button").forEach(function (b) {
+    b.addEventListener("pointerdown", function (e) { e.preventDefault(); turn(b.dataset.dir); });
+  });
+
+  var sx = null, sy = null;
+  canvas.addEventListener("touchstart", function (e) { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive:true });
+  canvas.addEventListener("touchmove", function (e) {
+    if (sx === null) return;
+    var dx = e.touches[0].clientX - sx, dy = e.touches[0].clientY - sy;
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < 24) return;
+    turn(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "right" : "left") : (dy > 0 ? "down" : "up"));
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+  }, { passive:true });
+  canvas.addEventListener("touchend", function () { sx = sy = null; });
+
+  document.addEventListener("visibilitychange", function () { if (document.hidden && running && !paused) togglePause(); });
+  window.addEventListener("resize", resize);
+  reset();
+  resize();
+})();
+</script>
+</body>
+</html>
