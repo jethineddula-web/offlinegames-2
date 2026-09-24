@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+  <meta name="theme-color" content="#0b0d12" />
+  <meta name="description" content="Web Slinger: Manhattan — a 3D open-world superhero web-swinging game in your browser. Swing, wall-run, point-launch and fight crime across a living city." />
+  <title>Web Slinger: Manhattan</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23c8141f'/%3E%3Cpath d='M32 6v52M6 32h52M13 13l38 38M51 13L13 51' stroke='%23111' stroke-width='2.5'/%3E%3Ccircle cx='32' cy='32' r='10' fill='none' stroke='%23111' stroke-width='2.5'/%3E%3Ccircle cx='32' cy='32' r='20' fill='none' stroke='%23111' stroke-width='2.5'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Teko:wght@400;500;600&display=swap" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script type="importmap">
+    { "imports": { "three": "./lib/three.module.min.js", "three/addons/": "./lib/addons/" } }
+  </script>
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <!-- ============ LOADING ============ -->
+  <div id="loading">
+    <div class="load-logo">
+      <svg viewBox="0 0 100 100" class="spider-mark" aria-hidden="true"><use href="#spider" /></svg>
+    </div>
+    <div class="load-bar"><i id="loadFill"></i></div>
+    <div id="loadLabel" class="load-label">Loading</div>
+  </div>
+
+  <!-- ============ TITLE ============ -->
+  <div id="title">
+    <div class="title-shade"></div>
+    <div class="title-block">
+      <div class="title-kicker">AN OPEN-WORLD WEB-SWINGING ADVENTURE</div>
+      <h1 class="logo"><span>WEB</span><span class="red">SLINGER</span></h1>
+      <div class="title-sub">MANHATTAN</div>
+      <button id="playBtn" class="btn primary">PLAY <small>Enter</small></button>
+      <div class="title-row">
+        <button class="btn ghost" data-open="controlsPanel">CONTROLS</button>
+        <button class="btn ghost" data-open="settingsPanel">SETTINGS</button>
+      </div>
+      <div class="title-note">Best with a mouse &amp; keyboard · click to capture the mouse</div>
+    </div>
+    <div class="title-foot">Fan-made game · All city, characters and assets are procedurally generated</div>
+  </div>
+
+  <!-- ============ PAUSE ============ -->
+  <div id="pause">
+    <div class="pause-card">
+      <h2>PAUSED</h2>
+      <button id="resumeBtn" class="btn primary">RESUME</button>
+      <button class="btn ghost" data-open="controlsPanel">CONTROLS</button>
+      <button class="btn ghost" data-open="settingsPanel">SETTINGS</button>
+      <button id="respawnBtn" class="btn ghost">RETURN TO START</button>
+      <button id="titleBtn" class="btn ghost">MAIN MENU</button>
+    </div>
+  </div>
+
+  <!-- ============ PANELS ============ -->
+  <div id="settingsPanel" class="subpanel">
+    <div class="panel-card">
+      <h3>SETTINGS</h3>
+      <label>Graphics
+        <select data-setting="quality">
+          <option value="low">Low (fast)</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+          <option value="ultra">Ultra</option>
+        </select>
+      </label>
+      <label>Time of day
+        <select data-setting="time">
+          <option value="sunset">Golden Hour</option>
+          <option value="day">Midday</option>
+          <option value="night">Night</option>
+        </select>
+      </label>
+      <label>Mouse sensitivity <input type="range" min="0.3" max="2.5" step="0.05" data-setting="sens" /></label>
+      <label>Music volume <input type="range" min="0" max="1" step="0.05" data-setting="music" /></label>
+      <label>Effects volume <input type="range" min="0" max="1" step="0.05" data-setting="sfx" /></label>
+      <label class="check"><input type="checkbox" data-setting="invertY" /> Invert Y</label>
+      <label class="check"><input type="checkbox" data-setting="autoCam" /> Auto camera while swinging</label>
+      <label class="check"><input type="checkbox" data-setting="fps" /> Show FPS</label>
+      <button class="btn ghost" data-open="settingsPanel">CLOSE</button>
+    </div>
+  </div>
+  <div id="controlsPanel" class="subpanel">
+    <div class="panel-card wide">
+      <h3>CONTROLS</h3>
+      <div class="controls-grid">
+        <div><kbd>W A S D</kbd> Move · crawl on walls</div>
+        <div><kbd>Mouse</kbd> Camera</div>
+        <div><kbd>Shift</kbd> / <kbd>RMB</kbd> (hold) Sprint · Web-swing in the air · Wall-run</div>
+        <div><kbd>Space</kbd> Jump · Web Zip (air) · Jump off wall/web</div>
+        <div><kbd>E</kbd> Point Launch to marked ledge</div>
+        <div><kbd>C</kbd> / <kbd>Ctrl</kbd> (hold) Dive</div>
+        <div><kbd>R</kbd> Air trick</div>
+        <div><kbd>LMB</kbd> / <kbd>J</kbd> Attack combo (4th hit launches)</div>
+        <div><kbd>F</kbd> Web shooter (3 hits = webbed)</div>
+        <div><kbd>Q</kbd> Dodge — time it with spider-sense</div>
+        <div><kbd>H</kbd> Heal (1 focus bar)</div>
+        <div><kbd>V</kbd> Finisher (2 focus bars)</div>
+        <div><kbd>Esc</kbd> / <kbd>P</kbd> Pause</div>
+      </div>
+      <button class="btn ghost" data-open="controlsPanel">CLOSE</button>
+    </div>
+  </div>
+
+  <!-- ============ HUD ============ -->
+  <div id="hud" class="hidden">
+    <div class="hud-tl">
+      <div id="objective" class="objective hidden">
+        <div class="obj-tag"><i></i>CRIME IN PROGRESS</div>
+        <div class="obj-name"></div>
+        <div class="obj-dist"></div>
+      </div>
+      <div class="collect"><span class="bp-icon"></span><span id="bpCount">0/30</span></div>
+    </div>
+
+    <div class="hud-bl">
+      <div class="lvl-row"><span id="lvl">LV 1</span><div class="xpbar"><i id="xpFill"></i></div></div>
+      <div class="health"><i id="hpLag"></i><i id="hpFill"></i></div>
+      <div class="focus"><i></i><i></i><i></i></div>
+    </div>
+
+    <div class="hud-br">
+      <canvas id="minimap" width="220" height="220"></canvas>
+    </div>
+
+    <div id="combo" class="combo"><b>0</b><span>HITS</span></div>
+    <div id="notify" class="notify"><div class="n-title"></div><div class="n-sub"></div></div>
+    <div id="popups"></div>
+    <div id="tips" class="tips"></div>
+    <div id="waypoint" class="waypoint"><div class="wp-icon"></div><div class="wp-dist"></div></div>
+    <div id="launchMark" class="launch-mark"><span>E</span></div>
+    <div id="sense" class="sense"><i></i><i></i><i></i></div>
+    <div id="targetMark" class="target-mark"></div>
+    <div id="defeated" class="defeated"><div>DEFEATED</div><small>Recovering…</small></div>
+    <div id="fps" class="fps"></div>
+    <div class="reticle"></div>
+  </div>
+
+  <!-- ============ TOUCH ============ -->
+  <div id="touch">
+    <div class="stick"><div class="knob"></div></div>
+    <button class="tbtn pause" data-act="pause">II</button>
+    <div class="tcluster">
+      <button class="tbtn big swing" data-act="swing">SWING</button>
+      <button class="tbtn jump" data-act="jump">JUMP</button>
+      <button class="tbtn attack" data-act="attack">HIT</button>
+      <button class="tbtn web" data-act="web">WEB</button>
+      <button class="tbtn dodge" data-act="dodge">DODGE</button>
+      <button class="tbtn launch" data-act="launch">LAUNCH</button>
+      <button class="tbtn heal" data-act="heal">HEAL</button>
+    </div>
+  </div>
+
+  <svg width="0" height="0" style="position:absolute">
+    <symbol id="spider" viewBox="0 0 100 100">
+      <g fill="currentColor">
+        <ellipse cx="50" cy="44" rx="7" ry="10" />
+        <ellipse cx="50" cy="30" rx="4.5" ry="5" />
+        <ellipse cx="50" cy="62" rx="7.5" ry="12" />
+      </g>
+      <g stroke="currentColor" stroke-width="3.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M46 38 L30 24 L26 8" /><path d="M54 38 L70 24 L74 8" />
+        <path d="M45 43 L24 36 L10 26" /><path d="M55 43 L76 36 L90 26" />
+        <path d="M45 49 L24 56 L12 70" /><path d="M55 49 L76 56 L88 70" />
+        <path d="M46 54 L32 72 L30 92" /><path d="M54 54 L68 72 L70 92" />
+      </g>
+    </symbol>
+  </svg>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
