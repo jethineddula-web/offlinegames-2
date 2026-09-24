@@ -1,0 +1,3698 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Free classic Balance ball games." />
+
+<title>Balance Ball – Free Online Skateboard Balancing Game | Offline Games</title>
+<meta name="description" content="Play Balance Ball free online — keep the ball bouncing on your skateboard and rack up points without letting it hit the ground. No download, no signup, works on desktop and mobile.">
+<meta name="keywords" content="balance ball, balance ball game, free online game, skateboard game, arcade game, browser game, offline games, offlinegames.art, casual game, ball game, no download game">
+<meta name="author" content="Offline Games">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://offlinegames.art/games/balance-ball/">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Offline Games">
+<meta property="og:title" content="Balance Ball – Free Online Skateboard Balancing Game">
+<meta property="og:description" content="Keep the ball bouncing on your skateboard and don't let it hit the ground. A free, fast-loading browser game — no download or signup required.">
+<meta property="og:url" content="https://offlinegames.art/games/balance-ball/">
+<meta property="og:image" content="https://offlinegames.art/assets/balance-ball/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Balance Ball – Free Online Skateboard Balancing Game">
+<meta name="twitter:description" content="Keep the ball bouncing on your skateboard and don't let it hit the ground. Play free, right in your browser.">
+<meta name="twitter:image" content="https://offlinegames.art/assets/balance-ball/og-image.png">
+
+<!-- Icons / theme -->
+<link rel="icon" href="https://offlinegames.art/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="https://offlinegames.art/assets/balance-ball/apple-touch-icon.png">
+<meta name="theme-color" content="#14161c">
+<meta name="application-name" content="Balance Ball">
+
+<!-- Structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "Balance Ball",
+  "url": "https://offlinegames.art/games/balance-ball/",
+  "description": "Keep the ball bouncing on your skateboard and don't let it hit the ground. A free, browser-based skill and reflex arcade game.",
+  "applicationCategory": "Game",
+  "genre": ["Arcade", "Casual", "Skill"],
+  "operatingSystem": "Any (Web Browser)",
+  "publisher": { "@type": "Organization", "name": "Offline Games", "url": "https://offlinegames.art" },
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600;700&amp;display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#14161c;
+    --bg-2:#191c26;
+    --panel:#1d212f;
+    --panel-2:#232838;
+    --line:rgba(255,255,255,0.07);
+    --cyan:#4EE1D6;
+    --cyan-dim:#2c8f88;
+    --orange:#FF6B35;
+    --orange-dim:#b64c26;
+    --red:#FF4757;
+    --text:#F2F4F8;
+    --muted:#8B92AA;
+    --font-display:'Baloo 2',sans-serif;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'JetBrains Mono',monospace;
+  }
+
+  *{
+    box-sizing:border-box;
+  }
+
+  html,body{
+    margin:0;
+    padding:0;
+  }
+
+  body{
+    background:
+      radial-gradient(circle at 20% 15%,rgba(78,225,214,0.07),transparent 40%),
+      radial-gradient(circle at 85% 80%,rgba(255,107,53,0.08),transparent 45%),
+      var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+
+  #app{
+    width:100%;
+    max-width:840px;
+  }
+
+  .card{
+    background:linear-gradient(180deg,var(--panel),var(--panel-2));
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:32px;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 20px 60px rgba(0,0,0,0.45);
+  }
+
+  .card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background-image:radial-gradient(
+      rgba(255,255,255,0.035) 1px,
+      transparent 1px
+    );
+    background-size:14px 14px;
+    pointer-events:none;
+    opacity:0.5;
+  }
+
+  .screen{
+    display:none;
+    position:relative;
+    z-index:1;
+  }
+
+  .screen.active{
+    display:block;
+  }
+
+  .title-wrap{
+    text-align:center;
+    margin-bottom:6px;
+  }
+
+  h1.game-title{
+    font-family:var(--font-display);
+    font-weight:800;
+    font-size:clamp(2.2rem,6vw,3.2rem);
+    margin:0;
+    letter-spacing:0.5px;
+    background:linear-gradient(90deg,var(--cyan),var(--orange));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+
+  .ramp-underline{
+    display:block;
+    margin:6px auto 18px;
+    width:220px;
+  }
+
+  .tagline{
+    text-align:center;
+    color:var(--muted);
+    font-size:0.95rem;
+    margin-bottom:28px;
+  }
+
+  .btn{
+    font-family:var(--font-body);
+    font-weight:600;
+    font-size:1rem;
+    color:var(--text);
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:14px 20px;
+    cursor:pointer;
+    transition:
+      transform 0.12s ease,
+      background 0.12s ease,
+      border-color 0.12s ease;
+    width:100%;
+  }
+
+  .btn:hover{
+    transform:translateY(-2px);
+    border-color:rgba(255,255,255,0.18);
+  }
+
+  .btn:active{
+    transform:translateY(0) scale(0.98);
+  }
+
+  .btn-primary{
+    background:linear-gradient(90deg,var(--cyan),#3fc9bf);
+    color:#0c1613;
+    border:none;
+    font-weight:700;
+  }
+
+  .btn-accent{
+    background:linear-gradient(90deg,var(--orange),#e85a2a);
+    color:#1a0d05;
+    border:none;
+    font-weight:700;
+  }
+
+  .btn-ghost{
+    background:transparent;
+  }
+
+  .btn-danger{
+    background:transparent;
+    border:1px solid rgba(255,71,87,0.4);
+    color:var(--red);
+  }
+
+  .btn-row{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+
+  .btn-row .btn{
+    flex:1;
+    min-width:140px;
+  }
+
+  .menu-stack{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    max-width:340px;
+    margin:0 auto;
+  }
+
+  .instructions-list{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    margin:20px 0 26px;
+  }
+
+  .instr-item{
+    display:flex;
+    gap:14px;
+    align-items:flex-start;
+    background:rgba(255,255,255,0.03);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:12px 14px;
+  }
+
+  .instr-icon{
+    font-family:var(--font-mono);
+    font-weight:700;
+    font-size:0.85rem;
+    color:#0c1613;
+    background:var(--cyan);
+    border-radius:8px;
+    width:32px;
+    height:32px;
+    min-width:32px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .instr-text b{
+    color:var(--text);
+  }
+
+  .instr-text{
+    color:var(--muted);
+    font-size:0.92rem;
+    line-height:1.4;
+  }
+
+  .hud{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:14px;
+    font-family:var(--font-mono);
+  }
+
+  .hud-block{
+    background:rgba(255,255,255,0.04);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:8px 14px;
+  }
+
+  .hud-label{
+    font-size:0.65rem;
+    color:var(--muted);
+    letter-spacing:1px;
+    text-transform:uppercase;
+  }
+
+  .hud-value{
+    font-size:1.3rem;
+    font-weight:700;
+    color:var(--cyan);
+  }
+
+  .hud-value.best{
+    color:var(--orange);
+  }
+
+  .canvas-wrap{
+    width:100%;
+    border-radius:14px;
+    overflow:hidden;
+    border:1px solid var(--line);
+    background:#0c0e14;
+    line-height:0;
+  }
+
+  canvas{
+    width:100%;
+    height:auto;
+    display:block;
+    touch-action:none;
+  }
+
+  .touch-controls{
+    display:flex;
+    gap:12px;
+    margin-top:14px;
+  }
+
+  .touch-btn{
+    flex:1;
+    font-family:var(--font-display);
+    font-size:1.6rem;
+    font-weight:700;
+    color:var(--text);
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:16px;
+    text-align:center;
+    user-select:none;
+    -webkit-user-select:none;
+    cursor:pointer;
+  }
+
+  .touch-btn:active{
+    background:var(--cyan-dim);
+    color:#fff;
+  }
+
+  .game-actions{
+    display:flex;
+    gap:12px;
+    margin-top:14px;
+  }
+
+  .game-actions .btn{
+    flex:1;
+  }
+
+  .final-score{
+    text-align:center;
+    margin:10px 0 22px;
+  }
+
+  .final-score .label{
+    color:var(--muted);
+    font-size:0.85rem;
+    letter-spacing:1px;
+    text-transform:uppercase;
+  }
+
+  .final-score .value{
+    font-family:var(--font-mono);
+    font-size:3rem;
+    font-weight:700;
+    color:var(--orange);
+  }
+
+  .final-score .newbest{
+    display:inline-block;
+    margin-top:4px;
+    font-family:var(--font-mono);
+    font-size:0.8rem;
+    color:var(--cyan);
+    background:rgba(78,225,214,0.1);
+    border:1px solid rgba(78,225,214,0.3);
+    border-radius:20px;
+    padding:4px 12px;
+  }
+
+  .name-row{
+    display:flex;
+    gap:10px;
+    max-width:380px;
+    margin:0 auto 18px;
+  }
+
+  .name-row input{
+    flex:1;
+    font-family:var(--font-body);
+    font-size:0.95rem;
+    background:rgba(255,255,255,0.04);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:12px 14px;
+    color:var(--text);
+    outline:none;
+  }
+
+  .name-row input:focus{
+    border-color:var(--cyan);
+  }
+
+  .save-note{
+    text-align:center;
+    font-size:0.8rem;
+    color:var(--muted);
+    margin:-8px 0 18px;
+    min-height:1em;
+  }
+
+  .lb-list{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin:16px 0 24px;
+    max-height:360px;
+    overflow-y:auto;
+  }
+
+  .lb-row{
+    display:grid;
+    grid-template-columns:34px 1fr auto;
+    align-items:center;
+    gap:12px;
+    background:rgba(255,255,255,0.03);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:10px 14px;
+  }
+
+  .lb-row.rank-1{
+    border-color:rgba(255,214,10,0.4);
+    background:rgba(255,214,10,0.06);
+  }
+
+  .lb-row.rank-2{
+    border-color:rgba(200,210,225,0.35);
+    background:rgba(200,210,225,0.05);
+  }
+
+  .lb-row.rank-3{
+    border-color:rgba(255,140,66,0.35);
+    background:rgba(255,140,66,0.05);
+  }
+
+  .lb-rank{
+    font-family:var(--font-mono);
+    color:var(--muted);
+    font-weight:700;
+  }
+
+  .lb-name{
+    font-weight:600;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+
+  .lb-score{
+    font-family:var(--font-mono);
+    color:var(--cyan);
+    font-weight:700;
+  }
+
+  .lb-empty,
+  .lb-loading{
+    text-align:center;
+    color:var(--muted);
+    padding:30px 10px;
+    font-size:0.9rem;
+  }
+
+  .top-bar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:18px;
+  }
+
+  .top-bar h2{
+    font-family:var(--font-display);
+    font-size:1.5rem;
+    margin:0;
+    color:var(--text);
+  }
+
+  .icon-btn{
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--muted);
+    border-radius:10px;
+    width:38px;
+    height:38px;
+    cursor:pointer;
+    font-size:1rem;
+  }
+
+  .icon-btn:hover{
+    color:var(--text);
+    border-color:rgba(255,255,255,0.2);
+  }
+
+  .sound-toggle{
+    position:absolute;
+    top:20px;
+    right:20px;
+    z-index:2;
+    background:rgba(255,255,255,0.04);
+    border:1px solid var(--line);
+    color:var(--muted);
+    border-radius:10px;
+    width:38px;
+    height:38px;
+    cursor:pointer;
+    font-size:1.05rem;
+  }
+
+  .sound-toggle:hover{
+    color:var(--text);
+  }
+
+  .footer-note{
+    text-align:center;
+    color:var(--muted);
+    font-size:0.75rem;
+    margin-top:22px;
+  }
+
+  @media(max-width:480px){
+    .card{
+      padding:20px 16px;
+    }
+
+    .touch-controls{
+      display:flex;
+    }
+  }
+
+  /* ---------- First-time name modal ---------- */
+  .name-modal{
+    position:fixed;
+    inset:0;
+    z-index:9999;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    background:rgba(0,0,0,0.72);
+    backdrop-filter:blur(6px);
+  }
+
+  .name-modal.active{
+    display:flex;
+  }
+
+  .name-modal-card{
+    width:min(420px,100%);
+    background:linear-gradient(180deg,var(--panel),var(--panel-2));
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:26px;
+    box-shadow:0 24px 80px rgba(0,0,0,0.55);
+    text-align:center;
+  }
+
+  .name-modal-card h2{
+    font-family:var(--font-display);
+    font-size:1.8rem;
+    margin:0 0 8px;
+  }
+
+  .name-modal-card p{
+    color:var(--muted);
+    font-size:0.9rem;
+    line-height:1.45;
+    margin:0 0 18px;
+  }
+
+  .name-modal-card input{
+    width:100%;
+    font-family:var(--font-body);
+    font-size:1rem;
+    background:rgba(255,255,255,0.04);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:13px 14px;
+    color:var(--text);
+    outline:none;
+    margin-bottom:12px;
+  }
+
+  .name-modal-card input:focus{
+    border-color:var(--cyan);
+  }
+
+  .name-modal-actions{
+    display:flex;
+    gap:10px;
+  }
+
+  .name-modal-actions .btn{
+    flex:1;
+  }
+
+  .cloud-status{
+    text-align:center;
+    font-size:0.74rem;
+    color:var(--muted);
+    margin-top:8px;
+    min-height:1em;
+  }
+
+
+  .btn:disabled{
+    opacity:0.5;
+    cursor:not-allowed;
+    transform:none !important;
+  }
+
+  @media (max-width:700px){
+    html, body{
+      width:100%;
+      min-height:100%;
+      min-height:100dvh;
+      overflow-x:hidden;
+    }
+
+    body{
+      padding:0;
+      display:block;
+      overscroll-behavior:none;
+      -webkit-tap-highlight-color:transparent;
+    }
+
+    #app{
+      width:100%;
+      max-width:none;
+      min-height:100dvh;
+    }
+
+    .card{
+      width:100%;
+      min-height:100dvh;
+      border-radius:0;
+      border-left:0;
+      border-right:0;
+      padding-top:max(12px, env(safe-area-inset-top));
+      padding-right:max(10px, env(safe-area-inset-right));
+      padding-bottom:max(12px, env(safe-area-inset-bottom));
+      padding-left:max(10px, env(safe-area-inset-left));
+    }
+
+    #screen-game{
+      min-height:calc(100dvh - 12px);
+    }
+
+    #screen-game.active{
+      display:flex;
+      flex-direction:column;
+    }
+
+    #screen-game .hud{
+      flex:0 0 auto;
+      margin-bottom:8px;
+    }
+
+    .canvas-wrap{
+      flex:1 1 auto;
+      min-height:0;
+      height:58dvh;
+      max-height:70dvh;
+      border-radius:12px;
+    }
+
+    #gameCanvas{
+      width:100%;
+      height:100%;
+      display:block;
+    }
+
+    .touch-controls{
+      flex:0 0 auto;
+      margin-top:9px;
+      gap:9px;
+    }
+
+    .touch-btn{
+      min-height:76px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:1.9rem;
+      padding:12px;
+    }
+
+    .game-actions{
+      flex:0 0 auto;
+      margin-top:9px;
+      gap:9px;
+    }
+
+    .game-actions .btn{
+      min-height:58px;
+      padding:10px 6px;
+    }
+
+    .sound-toggle{
+      position:fixed;
+      top:max(8px, env(safe-area-inset-top));
+      right:max(8px, env(safe-area-inset-right));
+    }
+
+    .menu-stack{
+      max-width:none;
+    }
+
+    .btn{
+      min-height:54px;
+    }
+
+    .name-row{
+      max-width:none;
+    }
+
+    .name-row input{
+      min-width:0;
+    }
+
+    .lb-list{
+      max-height:none;
+    }
+  }
+
+  @media (max-width:430px) and (orientation:portrait){
+
+    .touch-btn{
+      min-height:82px;
+    }
+
+    .game-actions .btn{
+      min-height:62px;
+    }
+  }
+
+
+  /* ---------- Prevent mobile stretching / squeezing ---------- */
+  .canvas-wrap{
+    aspect-ratio:8 / 5;
+    height:auto !important;
+    max-height:none !important;
+    width:100%;
+  }
+
+  canvas#gameCanvas{
+    display:block;
+    width:100% !important;
+    height:auto !important;
+    aspect-ratio:8 / 5;
+    object-fit:contain;
+  }
+
+  @media (max-width:700px){
+    #screen-game{
+      width:100%;
+    }
+
+    #screen-game .canvas-wrap{
+      width:100%;
+      height:auto !important;
+      min-height:0;
+      max-height:none !important;
+      aspect-ratio:8 / 5;
+    }
+
+    #screen-game canvas#gameCanvas{
+      width:100% !important;
+      height:auto !important;
+      max-width:100%;
+      aspect-ratio:8 / 5;
+    }
+  }
+
+  @media (max-width:430px) and (orientation:portrait){
+    #screen-game .canvas-wrap{
+      width:100%;
+      height:auto !important;
+      max-height:none !important;
+      aspect-ratio:8 / 5;
+    }
+  }
+
+
+  /* ---------- FINAL MOBILE CANVAS GAP FIX ---------- */
+  @media (max-width:700px){
+    #screen-game.active{
+      min-height:0 !important;
+      height:auto !important;
+      display:flex;
+      flex-direction:column;
+    }
+
+    #screen-game .canvas-wrap{
+      flex:0 0 auto !important;
+      width:100% !important;
+      height:auto !important;
+      min-height:0 !important;
+      max-height:none !important;
+      aspect-ratio:8 / 5 !important;
+      overflow:hidden;
+    }
+
+    #screen-game #gameCanvas{
+      display:block;
+      width:100% !important;
+      height:auto !important;
+      min-height:0 !important;
+      max-height:none !important;
+      aspect-ratio:8 / 5 !important;
+    }
+
+    #screen-game .touch-controls,
+    #screen-game .game-actions{
+      flex:0 0 auto !important;
+    }
+  }
+
+</style>
+</head>
+
+<body>
+
+<!-- FIRST-TIME NAME MODAL -->
+<div class="name-modal" id="nameModal">
+  <div class="name-modal-card">
+    <h2>What's your name?</h2>
+    <p>
+      Your name is saved on this phone and won't be asked again.
+      Choose <b>Skip</b> to use <b>Anonymous</b> permanently.
+    </p>
+
+    <input type="text" id="firstNameInput" maxlength="18" placeholder="Saved player name" autocomplete="name">
+
+    <div class="name-modal-actions">
+      <button class="btn btn-primary" id="btnSaveFirstName">
+        Save Name
+      </button>
+
+      <button class="btn btn-ghost" id="btnSkipName">
+        Skip
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- WATCH-AD-TO-CONTINUE MODAL -->
+<div class="name-modal" id="continueModal">
+  <div class="name-modal-card">
+    <h2>Ball dropped!</h2>
+    <p>Watch a short ad to catch it and keep your run going.</p>
+
+    <div class="name-modal-actions">
+      <button class="btn btn-accent" id="btnWatchAdContinue">
+        ▶ Watch Ad to Continue
+      </button>
+    </div>
+
+    <button class="btn btn-ghost" id="btnEndGameNow" style="margin-top:10px;">
+      End Game
+    </button>
+  </div>
+</div>
+
+
+
+<div id="app">
+  <div class="card">
+
+    <button class="sound-toggle" id="soundToggle" title="Toggle sound">
+      🔊
+    </button>
+
+    <!-- START SCREEN -->
+    <div class="screen active" id="screen-start">
+
+      <div class="title-wrap">
+
+        <h1 class="game-title">
+          BALANCE BALL
+        </h1>
+
+        <svg class="ramp-underline" viewBox="0 0 220 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2 18 C60 18,80 2,110 2 C140 2,160 18,218 18" stroke="url(#rampGrad)" stroke-width="3" stroke-linecap="round"></path>
+
+          <defs>
+            <linearGradient id="rampGrad" x1="0" y1="0" x2="220" y2="0">
+              <stop offset="0" stop-color="#4EE1D6"></stop>
+              <stop offset="1" stop-color="#FF6B35"></stop>
+            </linearGradient>
+          </defs>
+        </svg>
+
+      </div>
+
+      <p class="tagline">
+        Keep the ball on your board. Don't let it hit the ground.
+      </p>
+
+      <div class="menu-stack">
+
+        <button class="btn btn-primary" id="btnPlay">
+          ▶ Play
+        </button>
+
+        <button class="btn btn-accent" id="btnContinue" style="display:none;">
+          ▶ Continue Game
+        </button>
+
+        <button class="btn btn-ghost" id="btnResetSavedGame" style="display:none;">
+          Clear Saved Game
+        </button>
+
+        <button class="btn btn-ghost" id="btnChangeName">
+          Change Name
+        </button>
+
+        <button class="btn btn-ghost" id="btnHowTo">
+          How to Play
+        </button>
+
+        <button class="btn btn-ghost" id="btnLeaderboard">
+          🏆 Leaderboard
+        </button>
+
+        <button class="btn btn-danger" id="btnQuit">
+          Quit
+        </button>
+
+      </div>
+
+      <p class="footer-note">
+        Best score on this device:
+        <span id="startBest">0</span>
+      </p>
+
+    </div>
+
+
+    <!-- INSTRUCTIONS SCREEN -->
+    <div class="screen" id="screen-instructions">
+
+      <div class="top-bar">
+
+        <h2>How to Play</h2>
+
+        <button class="icon-btn" id="btnInstrBack">
+          ✕
+        </button>
+
+      </div>
+
+      <div class="instructions-list">
+
+        <div class="instr-item">
+
+          <div class="instr-icon">
+            ←→
+          </div>
+
+          <div class="instr-text">
+            <b>Move the skateboard</b>
+            with the Left / Right arrow keys or A / D.
+            On touch devices, use the on-screen buttons.
+          </div>
+
+        </div>
+
+        <div class="instr-item">
+
+          <div class="instr-icon">
+            ●
+          </div>
+
+          <div class="instr-text">
+            <b>Keep the ball bouncing</b>
+            on the skateboard. Gravity pulls it down
+            after every jump.
+          </div>
+
+        </div>
+
+        <div class="instr-item">
+
+          <div class="instr-icon">
+            ✕
+          </div>
+
+          <div class="instr-text">
+            <b>Don't let the ball touch the ground.</b>
+            If it falls below your board, the game ends.
+          </div>
+
+        </div>
+
+        <div class="instr-item">
+
+          <div class="instr-icon">
+            +10
+          </div>
+
+          <div class="instr-text">
+            <b>Score points</b>
+            for every successful bounce.
+            The longer you survive, the higher your score.
+          </div>
+
+        </div>
+
+        <div class="instr-item">
+
+          <div class="instr-icon">
+            🏆
+          </div>
+
+          <div class="instr-text">
+            <b>Save your score</b>
+            when the game ends to place it on the leaderboard.
+          </div>
+
+        </div>
+
+      </div>
+
+      <button class="btn btn-primary" id="btnInstrPlay">
+        Got it — Play
+      </button>
+
+    </div>
+
+
+    <!-- GAME SCREEN -->
+    <div class="screen" id="screen-game">
+
+      <div class="hud">
+
+        <div class="hud-block">
+
+          <div class="hud-label">
+            Score
+          </div>
+
+          <div class="hud-value" id="hudScore">
+            0
+          </div>
+
+        </div>
+
+        <div class="hud-block">
+
+          <div class="hud-label">
+            Best
+          </div>
+
+          <div class="hud-value best" id="hudBest">
+            0
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="canvas-wrap">
+
+        <canvas id="gameCanvas" width="800" height="500"></canvas>
+
+      </div>
+
+      <div class="touch-controls">
+
+        <div class="touch-btn" id="touchLeft">
+          ◀
+        </div>
+
+        <div class="touch-btn" id="touchRight">
+          ▶
+        </div>
+
+      </div>
+
+      <div class="game-actions">
+
+        <button class="btn btn-ghost" id="btnPause">
+          ⏸ Pause
+        </button>
+
+        <button class="btn btn-danger" id="btnGameQuit">
+          Quit to Menu
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- GAME OVER SCREEN -->
+    <div class="screen" id="screen-over">
+
+      <div class="title-wrap">
+
+        <h1 class="game-title" style="font-size:2rem;">
+          GAME OVER
+        </h1>
+
+      </div>
+
+      <div class="final-score">
+
+        <div class="label">
+          Your Score
+        </div>
+
+        <div class="value" id="overScore">
+          0
+        </div>
+
+        <div id="newBestBadge" style="display:none;">
+          <span class="newbest">
+            🎉 New Best Score!
+          </span>
+        </div>
+
+      </div>
+
+      <div class="save-note" id="saveNote"></div>
+
+      <div class="menu-stack">
+
+        <button class="btn btn-primary" id="btnRestart">
+          🔁 Play Again
+        </button>
+
+        <button class="btn btn-ghost" id="btnOverLeaderboard">
+          🏆 View Leaderboard
+        </button>
+
+        <button class="btn btn-ghost" id="btnOverMenu">
+          Main Menu
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- LEADERBOARD SCREEN -->
+    <div class="screen" id="screen-leaderboard">
+
+      <div class="top-bar">
+
+        <h2>
+          🏆 Leaderboard
+        </h2>
+
+        <button class="icon-btn" id="btnLbBack">
+          ✕
+        </button>
+
+      </div>
+
+      <div class="cloud-status" id="cloudStatus"></div>
+
+      <div class="lb-list" id="lbList">
+
+        <div class="lb-loading">
+          Loading scores…
+        </div>
+
+      </div>
+
+      <button class="btn btn-ghost" id="btnLbMenu">
+        Back to Menu
+      </button>
+
+    </div>
+
+  </div>
+</div>
+
+
+<script>
+(function(){
+
+  "use strict";
+
+
+  /* =========================================================
+     SCREEN MANAGEMENT
+  ========================================================= */
+
+  const screens = {
+    start:document.getElementById("screen-start"),
+    instructions:document.getElementById("screen-instructions"),
+    game:document.getElementById("screen-game"),
+    over:document.getElementById("screen-over"),
+    leaderboard:document.getElementById("screen-leaderboard")
+  };
+
+  function showScreen(name){
+
+    Object.values(screens).forEach(screen=>{
+      screen.classList.remove("active");
+    });
+
+    screens[name].classList.add("active");
+
+    if(name !== "game"){
+      saveLastScreen(name);
+    }
+  }
+
+
+  /* =========================================================
+     SOUND
+  ========================================================= */
+
+  let soundOn = true;
+  let audioCtx = null;
+
+  const soundToggle =
+    document.getElementById("soundToggle");
+
+  soundToggle.addEventListener("click",()=>{
+
+    soundOn = !soundOn;
+
+    soundToggle.textContent =
+      soundOn ? "🔊" : "🔇";
+
+  });
+
+
+  function ensureAudio(){
+
+    if(!audioCtx){
+
+      try{
+
+        audioCtx =
+          new (window.AudioContext ||
+          window.webkitAudioContext)();
+
+      }catch(e){
+
+        audioCtx = null;
+
+      }
+
+    }
+
+    if(
+      audioCtx &&
+      audioCtx.state === "suspended"
+    ){
+
+      audioCtx.resume();
+
+    }
+
+  }
+
+
+  function tone(
+    frequency,
+    duration,
+    type,
+    volume,
+    delay
+  ){
+
+    if(!soundOn) return;
+
+    ensureAudio();
+
+    if(!audioCtx) return;
+
+    delay = delay || 0;
+
+    const oscillator =
+      audioCtx.createOscillator();
+
+    const gain =
+      audioCtx.createGain();
+
+    oscillator.type =
+      type || "sine";
+
+    oscillator.frequency.value =
+      frequency;
+
+    gain.gain.value =
+      volume != null ? volume : 0.18;
+
+    oscillator.connect(gain);
+
+    gain.connect(audioCtx.destination);
+
+    const time =
+      audioCtx.currentTime + delay;
+
+    oscillator.start(time);
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.001,
+      time + duration
+    );
+
+    oscillator.stop(
+      time + duration + 0.03
+    );
+
+  }
+
+
+  const sfx = {
+
+    click:()=>{
+      tone(
+        520,
+        0.06,
+        "sine",
+        0.12
+      );
+    },
+
+    bounce:(pitch)=>{
+      tone(
+        180 + (pitch || 0),
+        0.09,
+        "square",
+        0.14
+      );
+    },
+
+    wall:()=>{
+      tone(
+        140,
+        0.05,
+        "triangle",
+        0.09
+      );
+    },
+
+    over:()=>{
+
+      tone(
+        400,
+        0.12,
+        "sawtooth",
+        0.15,
+        0
+      );
+
+      tone(
+        280,
+        0.14,
+        "sawtooth",
+        0.15,
+        0.1
+      );
+
+      tone(
+        160,
+        0.22,
+        "sawtooth",
+        0.16,
+        0.2
+      );
+
+    },
+
+    save:()=>{
+
+      tone(
+        660,
+        0.1,
+        "sine",
+        0.15,
+        0
+      );
+
+      tone(
+        880,
+        0.14,
+        "sine",
+        0.16,
+        0.1
+      );
+
+    },
+
+    start:()=>{
+
+      tone(
+        440,
+        0.08,
+        "sine",
+        0.14,
+        0
+      );
+
+      tone(
+        660,
+        0.1,
+        "sine",
+        0.15,
+        0.08
+      );
+
+    }
+
+  };
+
+
+  /* =========================================================
+     ADS (rewarded "watch an ad to continue")
+     Fill in AD_CLIENT once AdSense approves the site. Until
+     then, every ad call below just runs its "no ad" fallback
+     immediately, so the game is fully playable during review
+     and for anyone with an ad blocker.
+  ========================================================= */
+
+  var AD_CLIENT = "ca-pub-4203857211510947";
+  let adsScriptState = "idle"; // idle | loading | ready | failed
+  let adPendingCbs = [];
+  const adsEnabled = () => !!AD_CLIENT;
+
+  function loadAdScript(cb){
+    if(!adsEnabled() || adsScriptState === "failed") return cb && cb(false);
+    if(adsScriptState === "ready") return cb && cb(true);
+    window.adsbygoogle = window.adsbygoogle || [];
+    window.adBreak = window.adBreak || (o => window.adsbygoogle.push(o));
+    window.adConfig = window.adConfig || (o => window.adsbygoogle.push(o));
+    if(adsScriptState === "loading"){ adPendingCbs.push(cb); return; }
+    adsScriptState = "loading";
+    adPendingCbs.push(cb);
+    const settle = ok => {
+      if(adsScriptState !== "loading") return; // already settled (e.g. by the timeout)
+      adsScriptState = ok ? "ready" : "failed";
+      if(ok){ try{ window.adConfig({ preloadAdBreaks:"on", sound:"off" }); }catch(e){} }
+      const cbs = adPendingCbs.splice(0);
+      cbs.forEach(fn => fn && fn(ok));
+    };
+    const s = document.createElement("script");
+    s.async = true;
+    s.crossOrigin = "anonymous";
+    s.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=" + AD_CLIENT;
+    s.onload = () => settle(true);
+    s.onerror = () => settle(false);
+    document.head.appendChild(s);
+    // Ad blockers, restrictive networks, and sandboxed webviews can swallow
+    // the request silently -- no load event, no error event, ever. Never
+    // let that leave the "continue" prompt stuck: if it hasn't settled
+    // quickly, treat it as failed and let the player continue without ads.
+    setTimeout(() => settle(false), 1500);
+  }
+
+  // Rewarded ad ("watch an ad to continue this run"). onReward fires only
+  // if the ad was actually watched; onSkipped fires if the player declined,
+  // the ad failed, ads aren't live yet, or the call stalls.
+  function showRewardedAd(name, onReward, onSkipped){
+    let done = false;
+    const reward = () => { if(done) return; done = true; clearTimeout(timer); onReward && onReward(); };
+    const skip = () => { if(done) return; done = true; clearTimeout(timer); onSkipped && onSkipped(); };
+    const timer = setTimeout(skip, 30000); // rewarded videos legitimately run up to ~30s -- don't cut a real one off mid-play
+    if(!adsEnabled()) return skip();
+    loadAdScript(ok => {
+      if(!ok || typeof window.adBreak !== "function") return skip();
+      window.adBreak({
+        type: "reward",
+        name: name || "continue-run",
+        beforeReward: showAdFn => showAdFn(),
+        adViewed: reward,
+        adDismissed: skip,
+        adBreakDone: info => { if(info && info.breakStatus && info.breakStatus !== "viewed") skip(); },
+      });
+    });
+  }
+
+
+  /* =========================================================
+     LOCAL SAVE / NAME / GAME CONTINUATION
+  ========================================================= */
+
+  const LB_KEY = "balance-ball-leaderboard-v2";
+  const NAME_KEY = "balance-ball-player-name-v2";
+  const NAME_LOCK_KEY = "balance-ball-player-name-set-v3";
+  const GAME_SAVE_KEY = "balance-ball-active-game-v2";
+  const SCREEN_SAVE_KEY = "balance-ball-last-screen-v2";
+
+  let localBest = 0;
+  let scoreSavedThisGame = false;
+
+  function safeRead(key, fallback = null){
+    try{
+      const value = localStorage.getItem(key);
+      return value === null ? fallback : value;
+    }catch(e){
+      return fallback;
+    }
+  }
+
+  function safeWrite(key, value){
+    try{
+      localStorage.setItem(key, value);
+      return true;
+    }catch(e){
+      return false;
+    }
+  }
+
+  function safeRemove(key){
+    try{
+      localStorage.removeItem(key);
+    }catch(e){}
+  }
+
+  function loadLocalBest(){
+    const raw = safeRead("balance-ball-best-v2", "0");
+    const parsed = parseInt(raw, 10);
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+
+  function saveLocalBest(value){
+    safeWrite("balance-ball-best-v2", String(value));
+  }
+
+  function loadPlayerName(){
+    return safeRead(NAME_KEY, "");
+  }
+
+  function hasLockedPlayerName(){
+    return safeRead(NAME_LOCK_KEY, "") === "1";
+  }
+
+  function savePlayerName(name){
+    safeWrite(NAME_KEY, name);
+    safeWrite(NAME_LOCK_KEY, "1");
+  }
+
+  function hasSavedGame(){
+    return !!safeRead(GAME_SAVE_KEY, "");
+  }
+
+  function loadSavedGame(){
+    const raw = safeRead(GAME_SAVE_KEY, null);
+    if(!raw) return null;
+
+    try{
+      return JSON.parse(raw);
+    }catch(e){
+      safeRemove(GAME_SAVE_KEY);
+      return null;
+    }
+  }
+
+  function saveGameState(){
+    if(!running || !ball || !board) return;
+
+    const state = {
+      version: 2,
+      screen: "game",
+      ball: {
+        x: ball.x,
+        y: ball.y,
+        r: ball.r,
+        vx: ball.vx,
+        vy: ball.vy
+      },
+      board: {
+        x: board.x,
+        y: board.y,
+        w: board.w,
+        h: board.h,
+        speed: board.speed,
+        tilt: board.tilt
+      },
+      score: score,
+      savedAt: Date.now(),
+      ballFrozen: ballFrozen,
+      scoreSaved: scoreSavedThisGame
+    };
+
+    safeWrite(GAME_SAVE_KEY, JSON.stringify(state));
+    safeWrite(SCREEN_SAVE_KEY, "game");
+  }
+
+  function clearSavedGame(){
+    safeRemove(GAME_SAVE_KEY);
+  }
+
+  function saveLastScreen(name){
+    safeWrite(SCREEN_SAVE_KEY, name);
+  }
+
+  function loadLastScreen(){
+    return safeRead(SCREEN_SAVE_KEY, "start");
+  }
+
+
+  /*
+    OPTIONAL CLOUDFLARE WORKER SYNC
+
+    Put your deployed Worker URL here, for example:
+    https://balance-ball-leaderboard.YOUR-SUBDOMAIN.workers.dev
+
+    Leave it empty to use local browser storage only.
+  */
+const CLOUD_SYNC_URL = "https://balance-ball-leaderboard.jethineddula.workers.dev";
+  async function cloudLoadLeaderboard(){
+    if(!CLOUD_SYNC_URL) return null;
+
+    try{
+      const response = await fetch(
+        CLOUD_SYNC_URL.replace(/\/$/, "") + "/leaderboard",
+        { method:"GET", cache:"no-store" }
+      );
+
+      if(!response.ok) return null;
+
+      const data = await response.json();
+      return Array.isArray(data) ? data : null;
+    }catch(e){
+      return null;
+    }
+  }
+
+  async function cloudSaveLeaderboard(data){
+    if(!CLOUD_SYNC_URL) return false;
+
+    try{
+      const response = await fetch(
+        CLOUD_SYNC_URL.replace(/\/$/, "") + "/leaderboard",
+        {
+          method:"PUT",
+          headers:{
+            "Content-Type":"application/json"
+          },
+          body:JSON.stringify(data)
+        }
+      );
+
+      return response.ok;
+    }catch(e){
+      return false;
+    }
+  }
+
+  async function loadLeaderboard(){
+    const cloudData = await cloudLoadLeaderboard();
+
+    if(Array.isArray(cloudData)){
+      safeWrite(LB_KEY, JSON.stringify(cloudData));
+      return cloudData;
+    }
+
+    try{
+      const raw = safeRead(LB_KEY, "[]");
+      const data = JSON.parse(raw || "[]");
+      return Array.isArray(data) ? data : [];
+    }catch(e){
+      return [];
+    }
+  }
+
+  async function saveLeaderboard(data){
+    safeWrite(LB_KEY, JSON.stringify(data));
+    await cloudSaveLeaderboard(data);
+  }
+
+  function updateResumeButtons(){
+    const continueBtn = document.getElementById("btnContinue");
+    const clearBtn = document.getElementById("btnResetSavedGame");
+    const saved = hasSavedGame();
+
+    continueBtn.style.display = saved ? "block" : "none";
+    clearBtn.style.display = saved ? "block" : "none";
+  }
+
+  function openNameModal(after){
+    const modal = document.getElementById("nameModal");
+    const input = document.getElementById("firstNameInput");
+
+    modal.classList.add("active");
+    input.value = loadPlayerName() || "";
+    setTimeout(() => {
+      input.focus();
+      input.select();
+    }, 50);
+
+    window.__afterNameReady = typeof after === "function" ? after : null;
+  }
+
+  function closeNameModal(){
+    document.getElementById("nameModal").classList.remove("active");
+  }
+
+  function ensurePlayerName(after){
+    const existing = loadPlayerName();
+
+    if(existing && hasLockedPlayerName()){
+      after();
+      return;
+    }
+
+    openNameModal(after);
+  }
+
+  function completeName(name){
+    const clean = (name || "").trim().slice(0, 18) || "Anonymous";
+    savePlayerName(clean);
+    closeNameModal();
+
+    const after = window.__afterNameReady;
+    window.__afterNameReady = null;
+
+    if(typeof after === "function"){
+      after();
+    }
+  }
+
+  localBest = loadLocalBest();
+
+  document.getElementById("startBest").textContent = localBest;
+  document.getElementById("hudBest").textContent = localBest;
+
+  const existingSavedName = loadPlayerName();
+
+  /* =========================================================
+     CANVAS / GAME VARIABLES
+  ========================================================= */
+
+  const canvas =
+    document.getElementById(
+      "gameCanvas"
+    );
+
+  const ctx =
+    canvas.getContext("2d");
+
+  const W =
+    canvas.width;
+
+  const H =
+    canvas.height;
+
+  const GROUND_Y =
+    H - 26;
+
+
+  let ball;
+  let board;
+
+  let score = 0;
+
+  let running = false;
+
+  let gameOverHandled = false;
+
+  let rafId = null;
+
+  let startTime = 0;
+
+  let moveLeft = false;
+
+  let moveRight = false;
+
+  let lastFrameTime = null;
+
+
+  /*
+     IMPORTANT PHYSICS SETTINGS
+
+     Lower gravity = slower fall.
+
+     Bounce velocity = how high
+     the ball goes.
+
+     These values make the ball
+     noticeably slower and more
+     controlled.
+
+     All values are expressed as
+     "per 60fps frame" units. The
+     game loop multiplies every
+     motion by a delta-time factor
+     (dt) so the ball moves at the
+     same real-world speed no matter
+     how fast a device's screen
+     refreshes -- 60Hz phone, 120Hz
+     tablet, 144Hz gaming laptop, or
+     a throttled/slow computer.
+  */
+
+  // Slower, floatier physics.
+  // The ball rises high enough to reach the top wall,
+  // then falls slowly back toward the skateboard.
+  let gravity = 0.10;
+
+  // High enough to reach the top wall, while gravity
+  // makes the return trip noticeably faster.
+  const BOUNCE_POWER = 9.0;
+
+  const MAX_HORIZONTAL_SPEED = 3.4;
+
+
+  let ballFrozen = true;
+
+  let continueUsed = false;   // one "watch ad to continue" chance per run
+  let continueBusy = false;   // waiting on the rewarded-ad call
+
+
+  /* =========================================================
+     RESET GAME
+  ========================================================= */
+
+  function resetGame(){
+
+    ball = {
+
+      x:W / 2,
+
+      y:H / 2 - 60,
+
+      r:15,
+
+      /*
+        SLOW initial horizontal speed
+      */
+      // Slow horizontal motion so the ball moves across
+      // the arena without becoming uncontrollable.
+      vx:
+        (Math.random() < 0.5 ? -1 : 1)
+        *
+        (2.7 + Math.random() * 0.6),
+
+      vy:0
+
+    };
+
+
+    board = {
+
+      w:120,
+
+      h:16,
+
+      x:W / 2 - 60,
+
+      y:H - 90,
+
+      speed:4.5,
+
+      tilt:0
+
+    };
+
+
+    score = 0;
+
+    gravity = 0.10;
+
+    gameOverHandled = false;
+
+    scoreSavedThisGame = false;
+
+    continueUsed = false;
+
+    continueBusy = false;
+
+    ballFrozen = true;
+
+    startTime =
+      performance.now();
+
+    lastFrameTime = null;
+
+    updateHud();
+
+  }
+
+
+  /* =========================================================
+     HUD
+  ========================================================= */
+
+  function updateHud(){
+
+    document.getElementById(
+      "hudScore"
+    ).textContent =
+      Math.floor(score);
+
+    document.getElementById(
+      "hudBest"
+    ).textContent =
+      Math.max(
+        localBest,
+        Math.floor(score)
+      );
+
+  }
+
+
+  /* =========================================================
+     BACKGROUND
+  ========================================================= */
+
+  function drawBackground(){
+
+    const gradient =
+      ctx.createLinearGradient(
+        0,
+        0,
+        0,
+        H
+      );
+
+    gradient.addColorStop(
+      0,
+      "#181c28"
+    );
+
+    gradient.addColorStop(
+      1,
+      "#0e1017"
+    );
+
+    ctx.fillStyle =
+      gradient;
+
+    ctx.fillRect(
+      0,
+      0,
+      W,
+      H
+    );
+
+
+    /* grid */
+
+    ctx.strokeStyle =
+      "rgba(255,255,255,0.035)";
+
+    ctx.lineWidth = 1;
+
+
+    for(
+      let x = 0;
+      x < W;
+      x += 40
+    ){
+
+      ctx.beginPath();
+
+      ctx.moveTo(
+        x,
+        0
+      );
+
+      ctx.lineTo(
+        x,
+        H
+      );
+
+      ctx.stroke();
+
+    }
+
+
+    for(
+      let y = 0;
+      y < H;
+      y += 40
+    ){
+
+      ctx.beginPath();
+
+      ctx.moveTo(
+        0,
+        y
+      );
+
+      ctx.lineTo(
+        W,
+        y
+      );
+
+      ctx.stroke();
+
+    }
+
+
+    /* danger zone */
+
+    const groundGradient =
+      ctx.createLinearGradient(
+        0,
+        GROUND_Y - 40,
+        0,
+        GROUND_Y + 10
+      );
+
+    groundGradient.addColorStop(
+      0,
+      "rgba(255,71,87,0)"
+    );
+
+    groundGradient.addColorStop(
+      1,
+      "rgba(255,71,87,0.25)"
+    );
+
+    ctx.fillStyle =
+      groundGradient;
+
+    ctx.fillRect(
+      0,
+      GROUND_Y - 40,
+      W,
+      50
+    );
+
+
+    ctx.strokeStyle =
+      "rgba(255,71,87,0.6)";
+
+    ctx.setLineDash([
+      8,
+      6
+    ]);
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+      0,
+      GROUND_Y
+    );
+
+    ctx.lineTo(
+      W,
+      GROUND_Y
+    );
+
+    ctx.stroke();
+
+    ctx.setLineDash([]);
+
+  }
+
+
+  /* =========================================================
+     BOARD
+  ========================================================= */
+
+  function drawBoard(){
+
+    ctx.save();
+
+    ctx.translate(
+      board.x + board.w / 2,
+      board.y + board.h / 2
+    );
+
+    ctx.rotate(
+      board.tilt
+    );
+
+
+    /* skateboard */
+
+    ctx.fillStyle =
+      "#FF6B35";
+
+    roundRect(
+      ctx,
+      -board.w / 2,
+      -board.h / 2,
+      board.w,
+      board.h,
+      8
+    );
+
+    ctx.fill();
+
+
+    /* grip dots */
+
+    ctx.fillStyle =
+      "rgba(0,0,0,0.25)";
+
+
+    for(
+      let i = 0;
+      i < 9;
+      i++
+    ){
+
+      const dx =
+        -board.w / 2 +
+        10 +
+        i *
+        ((board.w - 20) / 8);
+
+      ctx.beginPath();
+
+      ctx.arc(
+        dx,
+        -2,
+        1.6,
+        0,
+        Math.PI * 2
+      );
+
+      ctx.fill();
+
+    }
+
+
+    /* wheels */
+
+    ctx.fillStyle =
+      "#1c1f2a";
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+      -board.w / 2 + 16,
+      board.h / 2 + 4,
+      6,
+      0,
+      Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+      board.w / 2 - 16,
+      board.h / 2 + 4,
+      6,
+      0,
+      Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    ctx.restore();
+
+  }
+
+
+  function roundRect(
+    c,
+    x,
+    y,
+    w,
+    h,
+    r
+  ){
+
+    c.beginPath();
+
+    c.moveTo(
+      x + r,
+      y
+    );
+
+    c.arcTo(
+      x + w,
+      y,
+      x + w,
+      y + h,
+      r
+    );
+
+    c.arcTo(
+      x + w,
+      y + h,
+      x,
+      y + h,
+      r
+    );
+
+    c.arcTo(
+      x,
+      y + h,
+      x,
+      y,
+      r
+    );
+
+    c.arcTo(
+      x,
+      y,
+      x + w,
+      y,
+      r
+    );
+
+    c.closePath();
+
+  }
+
+
+  /* =========================================================
+     BALL
+  ========================================================= */
+
+  function drawBall(){
+
+    const gradient =
+      ctx.createRadialGradient(
+        ball.x - 5,
+        ball.y - 5,
+        2,
+        ball.x,
+        ball.y,
+        ball.r
+      );
+
+    gradient.addColorStop(
+      0,
+      "#c9fffa"
+    );
+
+    gradient.addColorStop(
+      1,
+      "#4EE1D6"
+    );
+
+    ctx.fillStyle =
+      gradient;
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+      ball.x,
+      ball.y,
+      ball.r,
+      0,
+      Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    /*
+       Small highlight
+    */
+
+    ctx.fillStyle =
+      "rgba(255,255,255,0.45)";
+
+    ctx.beginPath();
+
+    ctx.arc(
+      ball.x - 5,
+      ball.y - 5,
+      3,
+      0,
+      Math.PI * 2
+    );
+
+    ctx.fill();
+
+  }
+
+
+  /* =========================================================
+     MAIN PHYSICS LOOP
+     (delta-time based so speed is identical on every device,
+     regardless of screen refresh rate: phones, tablets,
+     laptops, and desktop monitors all move the ball at the
+     same real-world speed)
+  ========================================================= */
+
+  function step(timestamp){
+
+    if(!running)
+      return;
+
+    if(lastFrameTime === null){
+      lastFrameTime = timestamp;
+    }
+
+    // dt = 1 for a perfect 60fps frame, ~2 for 30fps,
+    // ~0.5 for 120fps, etc. Clamped so a tab switch or
+    // a brief freeze can't cause a huge physics jump.
+    let dt = (timestamp - lastFrameTime) / (1000 / 60);
+    lastFrameTime = timestamp;
+    dt = Math.max(0, Math.min(dt, 3));
+
+
+    /* -------------------------------------------------------
+       MOVE BOARD
+    ------------------------------------------------------- */
+
+    if(moveLeft){
+
+      board.x -=
+        board.speed * dt;
+
+    }
+
+    if(moveRight){
+
+      board.x +=
+        board.speed * dt;
+
+    }
+
+
+    board.x =
+      Math.max(
+        0,
+        Math.min(
+          W - board.w,
+          board.x
+        )
+      );
+
+
+    if(moveLeft){
+
+      board.tilt =
+        -0.08;
+
+    }
+    else if(moveRight){
+
+      board.tilt =
+        0.08;
+
+    }
+    else{
+
+      board.tilt *=
+        0.85;
+
+    }
+
+
+    /* -------------------------------------------------------
+       WAIT FOR PLAYER MOVEMENT
+    ------------------------------------------------------- */
+
+    if(ballFrozen){
+
+      if(
+        moveLeft ||
+        moveRight
+      ){
+
+        ballFrozen =
+          false;
+
+        /*
+          Give the first jump a little
+          upward force so the game
+          begins smoothly.
+        */
+        ball.vy =
+          -5.0;
+
+      }
+
+
+      drawBackground();
+
+      drawBoard();
+
+      drawBall();
+
+      saveGameState();
+
+      rafId =
+        requestAnimationFrame(step);
+
+      return;
+
+    }
+
+
+    /* -------------------------------------------------------
+       GRAVITY
+    ------------------------------------------------------- */
+
+    ball.vy +=
+      gravity * dt;
+
+
+    /* -------------------------------------------------------
+       POSITION
+    ------------------------------------------------------- */
+
+    ball.x +=
+      ball.vx * dt;
+
+    ball.y +=
+      ball.vy * dt;
+
+
+    /* -------------------------------------------------------
+       LEFT WALL
+    ------------------------------------------------------- */
+
+    if(
+      ball.x - ball.r < 0
+    ){
+
+      ball.x =
+        ball.r;
+
+      ball.vx *=
+        -1;
+
+      sfx.wall();
+
+    }
+
+
+    /* -------------------------------------------------------
+       RIGHT WALL
+    ------------------------------------------------------- */
+
+    if(
+      ball.x + ball.r > W
+    ){
+
+      ball.x =
+        W - ball.r;
+
+      ball.vx *=
+        -1;
+
+      sfx.wall();
+
+    }
+
+
+    /* -------------------------------------------------------
+       TOP WALL
+    ------------------------------------------------------- */
+
+    if(
+      ball.y - ball.r < 0
+    ){
+
+      ball.y =
+        ball.r;
+
+      /*
+        IMPORTANT:
+        At the top wall we do NOT send
+        the ball back down at a large
+        speed.
+
+        We gently stop its upward
+        movement. Gravity then takes
+        over and makes the ball start
+        falling very slowly.
+
+        Result:
+        bottom -> top -> top wall ->
+        slow fall -> side walls -> board
+      */
+
+      if(ball.vy < 0){
+
+        // Do not freeze at the ceiling.
+        // Start a controlled downward trip.
+        ball.vy = 1.8;
+
+      }
+
+      sfx.wall();
+
+    }
+
+
+    /* -------------------------------------------------------
+       BOARD COLLISION
+    ------------------------------------------------------- */
+
+    if(
+
+      ball.vy > 0 &&
+
+      ball.y + ball.r >=
+        board.y &&
+
+      ball.y + ball.r <=
+        board.y +
+        board.h +
+        14 &&
+
+      ball.x + ball.r >
+        board.x &&
+
+      ball.x - ball.r <
+        board.x +
+        board.w
+
+    ){
+
+      /*
+        Where did the ball hit
+        the skateboard?
+
+        -1 = far left
+         0 = center
+        +1 = far right
+      */
+
+      const hitPos =
+        (
+          ball.x -
+          (board.x + board.w / 2)
+        ) /
+        (board.w / 2);
+
+
+      /*
+        Place ball exactly above
+        skateboard.
+      */
+
+      ball.y =
+        board.y -
+        ball.r;
+
+
+      /*
+        =====================================================
+        IMPORTANT NEW BOUNCE
+
+        Every successful board hit
+        gets a strong, controlled
+        upward bounce.
+
+        This creates:
+
+        BOARD
+           ↓
+        HIGH UP
+           ↓
+        TOP AREA
+           ↓
+        FALL DOWN
+           ↓
+        BOARD
+      */
+
+      ball.vy =
+        -BOUNCE_POWER;
+
+
+      /*
+        Small horizontal influence
+        based on where the ball
+        hit the board.
+      */
+
+      ball.vx +=
+        hitPos * 0.25;
+
+
+      /*
+        Keep the ball horizontally
+        slow.
+      */
+
+      ball.vx =
+        Math.max(
+          -MAX_HORIZONTAL_SPEED,
+          Math.min(
+            MAX_HORIZONTAL_SPEED,
+            ball.vx
+          )
+        );
+
+
+      score +=
+        10;
+
+
+      sfx.bounce(
+        Math.abs(hitPos) * 50
+      );
+
+
+      updateHud();
+
+    }
+
+
+    /* -------------------------------------------------------
+       GAME OVER
+    ------------------------------------------------------- */
+
+    if(
+      ball.y - ball.r > H
+    ){
+
+      maybeOfferContinue();
+
+      return;
+
+    }
+
+
+    /* -------------------------------------------------------
+       SURVIVAL SCORE
+    ------------------------------------------------------- */
+
+    score +=
+      0.025 * dt;
+
+
+    updateHud();
+
+
+    /* -------------------------------------------------------
+       DRAW
+    ------------------------------------------------------- */
+
+    drawBackground();
+
+    drawBoard();
+
+    drawBall();
+
+    /*
+      Save the active game frequently so closing
+      the tab/browser can resume from nearly the
+      same position.
+    */
+    if(
+      !window.__lastGameSave ||
+      performance.now() - window.__lastGameSave > 500
+    ){
+      saveGameState();
+      window.__lastGameSave = performance.now();
+    }
+
+    rafId =
+      requestAnimationFrame(step);
+
+  }
+
+
+  /* =========================================================
+     START GAME
+  ========================================================= */
+
+  function startGame(){
+
+    resetGame();
+
+    running = true;
+
+    showScreen("game");
+
+    sfx.start();
+
+    cancelAnimationFrame(rafId);
+
+    lastFrameTime = null;
+
+    rafId = requestAnimationFrame(step);
+  }
+
+  function continueSavedGame(){
+
+    const saved = loadSavedGame();
+
+    if(!saved){
+      startGame();
+      return;
+    }
+
+    try{
+      ball = {
+        x: Number(saved.ball.x),
+        y: Number(saved.ball.y),
+        r: Number(saved.ball.r || 15),
+        vx: Number(saved.ball.vx),
+        vy: Number(saved.ball.vy)
+      };
+
+      board = {
+        x: Number(saved.board.x),
+        y: Number(saved.board.y),
+        w: Number(saved.board.w || 120),
+        h: Number(saved.board.h || 16),
+        speed: Number(saved.board.speed || 4.5),
+        tilt: Number(saved.board.tilt || 0)
+      };
+
+      score = Number(saved.score || 0);
+      ballFrozen = !!saved.ballFrozen;
+      scoreSavedThisGame = !!saved.scoreSaved;
+
+      gameOverHandled = false;
+      running = true;
+
+      showScreen("game");
+      cancelAnimationFrame(rafId);
+      lastFrameTime = null;
+      rafId = requestAnimationFrame(step);
+
+    }catch(e){
+      clearSavedGame();
+      startGame();
+    }
+  }
+
+
+  /* =========================================================
+     PAUSE
+  ========================================================= */
+
+  function pauseGame(){
+
+    running =
+      !running;
+
+
+    document.getElementById(
+      "btnPause"
+    ).textContent =
+      running
+        ? "⏸ Pause"
+        : "▶ Resume";
+
+
+    if(running){
+
+      lastFrameTime = null;
+
+      rafId =
+        requestAnimationFrame(step);
+
+    }
+    else{
+
+      cancelAnimationFrame(
+        rafId
+      );
+
+    }
+
+
+    sfx.click();
+
+  }
+
+
+  /* =========================================================
+     CONTINUE WITH AD
+     Offer one "watch ad to continue" chance when the ball
+     drops, before the run actually ends. Only one continue
+     per run, and only when ads are configured at all -- no
+     point showing a "watch an ad" button that can never do
+     anything.
+  ========================================================= */
+
+  function maybeOfferContinue(){
+
+    if(continueUsed || !adsEnabled()){
+      endGame();
+      return;
+    }
+
+    running = false;
+
+    cancelAnimationFrame(rafId);
+
+    setContinueLoading(false);
+
+    document.getElementById("continueModal").classList.add("active");
+
+  }
+
+  function setContinueLoading(on){
+
+    const watchBtn = document.getElementById("btnWatchAdContinue");
+    const endBtn = document.getElementById("btnEndGameNow");
+
+    watchBtn.disabled = on;
+    watchBtn.textContent = on ? "Loading…" : "▶ Watch Ad to Continue";
+    endBtn.disabled = on;
+
+  }
+
+  function requestContinueAd(){
+
+    if(continueBusy) return;
+
+    continueBusy = true;
+
+    setContinueLoading(true);
+
+    showRewardedAd("balance-ball-continue", ()=>{
+
+      // Reward: catch the ball above the board and keep playing.
+      // The run's score is preserved -- only the ball resets.
+      continueBusy = false;
+      continueUsed = true;
+
+      document.getElementById("continueModal").classList.remove("active");
+
+      reviveBall();
+
+    }, ()=>{
+
+      // Declined, failed, or ads aren't live yet -- the run ends for real.
+      continueBusy = false;
+
+      setContinueLoading(false);
+
+      document.getElementById("continueModal").classList.remove("active");
+
+      endGame();
+
+    });
+
+  }
+
+  function declineContinue(){
+
+    if(continueBusy) return;
+
+    document.getElementById("continueModal").classList.remove("active");
+
+    endGame();
+
+  }
+
+  function reviveBall(){
+
+    ball.x = board.x + board.w / 2;
+
+    ball.y = board.y - 80;
+
+    ball.vx =
+      (Math.random() < 0.5 ? -1 : 1)
+      *
+      (2.0 + Math.random() * 0.5);
+
+    ball.vy = 0;
+
+    ballFrozen = false;
+
+    gameOverHandled = false;
+
+    running = true;
+
+    lastFrameTime = null;
+
+    rafId = requestAnimationFrame(step);
+
+  }
+
+
+  /* =========================================================
+     GAME OVER
+  ========================================================= */
+
+  async function endGame(){
+
+    if(gameOverHandled)
+      return;
+
+
+    gameOverHandled =
+      true;
+
+    running = false;
+
+
+    cancelAnimationFrame(
+      rafId
+    );
+
+
+    sfx.over();
+
+
+    const finalScore =
+      Math.floor(score);
+
+
+    document.getElementById(
+      "overScore"
+    ).textContent =
+      finalScore;
+
+
+    const isNewBest =
+      finalScore >
+      localBest;
+
+
+    document.getElementById(
+      "newBestBadge"
+    ).style.display =
+      isNewBest
+        ? "block"
+        : "none";
+
+
+    if(isNewBest){
+
+      localBest =
+        finalScore;
+
+      await saveLocalBest(
+        localBest
+      );
+
+    }
+
+
+    document.getElementById(
+      "startBest"
+    ).textContent =
+      localBest;
+
+
+    clearSavedGame();
+    updateResumeButtons();
+
+    showScreen("over");
+
+    autoSaveScore(finalScore);
+
+  }
+
+
+  /* =========================================================
+     AUTO-SAVE SCORE
+     (runs automatically as soon as the game ends -- no
+     button or player action required)
+  ========================================================= */
+
+  async function autoSaveScore(finalScore){
+
+    if(scoreSavedThisGame) return;
+
+    scoreSavedThisGame = true;
+
+    const note =
+      document.getElementById("saveNote");
+
+    note.textContent = "Saving score…";
+
+    const name =
+      loadPlayerName() || "Anonymous";
+
+    try{
+
+      const data =
+        await loadLeaderboard();
+
+      data.push({
+        name:name,
+        score:finalScore,
+        date:new Date().toISOString()
+      });
+
+      data.sort(
+        (a,b)=>b.score - a.score
+      );
+
+      await saveLeaderboard(
+        data.slice(0, 50)
+      );
+
+      sfx.save();
+
+      note.textContent =
+        "Score saved to the leaderboard as " + name + ".";
+
+    }catch(error){
+
+      // Allow the game-over screen to retry silently
+      // next time endGame() is reached, since the save
+      // did not actually succeed.
+      scoreSavedThisGame = false;
+
+      note.textContent =
+        "Could not save the score.";
+
+    }
+
+  }
+
+
+  /* =========================================================
+     LEADERBOARD
+  ========================================================= */
+
+  async function renderLeaderboard(){
+
+    const list =
+      document.getElementById(
+        "lbList"
+      );
+
+    const cloudStatus =
+      document.getElementById("cloudStatus");
+
+    if(CLOUD_SYNC_URL){
+      cloudStatus.textContent = "☁ Cloud leaderboard enabled";
+    }else{
+      cloudStatus.textContent = "This leaderboard is saved on this computer";
+    }
+
+
+    list.innerHTML =
+      '<div class="lb-loading">Loading scores…</div>';
+
+
+    const data =
+      await loadLeaderboard();
+
+
+    if(!data.length){
+
+      list.innerHTML =
+        '<div class="lb-empty">No scores yet. Be the first to play!</div>';
+
+      return;
+
+    }
+
+
+    const sorted =
+      data
+        .slice()
+        .sort(
+          (a,b)=>
+            b.score - a.score
+        )
+        .slice(
+          0,
+          20
+        );
+
+
+    list.innerHTML = "";
+
+
+    sorted.forEach(
+      (entry,index)=>{
+
+        const row =
+          document.createElement(
+            "div"
+          );
+
+
+        row.className =
+          "lb-row" +
+          (
+            index === 0
+              ? " rank-1"
+              : index === 1
+              ? " rank-2"
+              : index === 2
+              ? " rank-3"
+              : ""
+          );
+
+
+        const rankDisplay =
+          index === 0
+            ? "🥇"
+            : index === 1
+            ? "🥈"
+            : index === 2
+            ? "🥉"
+            : "#" + (index + 1);
+
+        row.innerHTML =
+
+          '<div class="lb-rank">' +
+          rankDisplay +
+          '</div>' +
+
+          '<div class="lb-name"></div>' +
+
+          '<div class="lb-score"></div>';
+
+
+        row.querySelector(
+          ".lb-name"
+        ).textContent =
+          entry.name ||
+          "Anonymous";
+
+
+        row.querySelector(
+          ".lb-score"
+        ).textContent =
+          entry.score;
+
+
+        list.appendChild(
+          row
+        );
+
+      }
+    );
+
+  }
+
+
+
+  /* =========================================================
+     FIRST-TIME NAME
+  ========================================================= */
+
+  document.getElementById("btnSaveFirstName").addEventListener(
+    "click",
+    ()=>{
+      completeName(
+        document.getElementById("firstNameInput").value
+      );
+    }
+  );
+
+  document.getElementById("btnSkipName").addEventListener(
+    "click",
+    ()=>{
+      completeName("Anonymous");
+    }
+  );
+
+  document.getElementById("firstNameInput").addEventListener(
+    "keydown",
+    event=>{
+      if(event.key === "Enter"){
+        event.preventDefault();
+        document.getElementById("btnSaveFirstName").click();
+      }
+    }
+  );
+
+  document.getElementById("btnContinue").addEventListener(
+    "click",
+    ()=>{
+      sfx.click();
+      ensurePlayerName(()=>continueSavedGame());
+    }
+  );
+
+  document.getElementById("btnResetSavedGame").addEventListener(
+    "click",
+    ()=>{
+      sfx.click();
+      clearSavedGame();
+      updateResumeButtons();
+    }
+  );
+
+
+  /* =========================================================
+     CONTINUE-WITH-AD MODAL BUTTONS
+  ========================================================= */
+
+  document.getElementById("btnWatchAdContinue").addEventListener(
+    "click",
+    ()=>{
+      sfx.click();
+      requestContinueAd();
+    }
+  );
+
+  document.getElementById("btnEndGameNow").addEventListener(
+    "click",
+    ()=>{
+      sfx.click();
+      declineContinue();
+    }
+  );
+
+
+  /* =========================================================
+     BUTTONS
+  ========================================================= */
+
+  document.getElementById("btnChangeName").addEventListener(
+    "click",
+    ()=>{
+      sfx.click();
+      openNameModal(()=>{
+        document.getElementById("playerName").value =
+          loadPlayerName() || "Anonymous";
+      });
+    }
+  );
+
+  document.getElementById(
+    "btnPlay"
+  ).addEventListener(
+    "click",
+    ()=>{
+      sfx.click();
+      ensurePlayerName(()=>startGame());
+    }
+  );
+
+
+  document.getElementById(
+    "btnHowTo"
+  ).addEventListener(
+    "click",
+    ()=>{
+      sfx.click();
+      showScreen("instructions");
+    }
+  );
+
+
+  document.getElementById(
+    "btnInstrPlay"
+  ).addEventListener(
+    "click",
+    ()=>{
+      sfx.click();
+      ensurePlayerName(()=>startGame());
+    }
+  );
+
+
+  document.getElementById(
+    "btnInstrBack"
+  ).addEventListener(
+    "click",
+    ()=>{
+      sfx.click();
+      showScreen("start");
+    }
+  );
+
+
+  document.getElementById(
+    "btnLeaderboard"
+  ).addEventListener(
+    "click",
+    ()=>{
+      sfx.click();
+      showScreen("leaderboard");
+      renderLeaderboard();
+    }
+  );
+
+
+  document.getElementById(
+    "btnLbBack"
+  ).addEventListener(
+    "click",
+    ()=>{
+      sfx.click();
+      showScreen("start");
+    }
+  );
+
+
+  document.getElementById(
+    "btnLbMenu"
+  ).addEventListener(
+    "click",
+    ()=>{
+      sfx.click();
+      showScreen("start");
+    }
+  );
+
+
+  document.getElementById(
+    "btnOverLeaderboard"
+  ).addEventListener(
+    "click",
+    ()=>{
+      sfx.click();
+      showScreen("leaderboard");
+      renderLeaderboard();
+    }
+  );
+
+
+  document.getElementById(
+    "btnOverMenu"
+  ).addEventListener(
+    "click",
+    ()=>{
+      sfx.click();
+      showScreen("start");
+    }
+  );
+
+
+  document.getElementById(
+    "btnRestart"
+  ).addEventListener(
+    "click",
+    ()=>{
+      sfx.click();
+      startGame();
+    }
+  );
+
+
+  document.getElementById(
+    "btnPause"
+  ).addEventListener(
+    "click",
+    pauseGame
+  );
+
+
+  document.getElementById(
+    "btnGameQuit"
+  ).addEventListener(
+    "click",
+    ()=>{
+
+      sfx.click();
+
+      running = false;
+
+      cancelAnimationFrame(
+        rafId
+      );
+
+      clearSavedGame();
+      updateResumeButtons();
+
+      showScreen("start");
+
+    }
+  );
+
+
+  /* =========================================================
+     QUIT
+  ========================================================= */
+
+  document.getElementById(
+    "btnQuit"
+  ).addEventListener(
+    "click",
+    ()=>{
+
+      sfx.click();
+
+
+      document.getElementById(
+        "app"
+      ).innerHTML =
+
+        '<div class="card" style="text-align:center;">' +
+
+        '<h2 style="font-family:var(--font-display);margin-top:0;">' +
+
+        'Thanks for playing 🛹' +
+
+        '</h2>' +
+
+        '<p style="color:var(--muted);">' +
+
+        'You can close this tab, or reopen the game any time.' +
+
+        '</p>' +
+
+        '<button class="btn btn-primary" id="btnReopen" style="max-width:220px;margin:16px auto 0;">' +
+
+        'Reopen Game' +
+
+        '</button>' +
+
+        '</div>';
+
+
+      document.getElementById(
+        "btnReopen"
+      ).addEventListener(
+        "click",
+        ()=>{
+          location.reload();
+        }
+      );
+
+    }
+  );
+
+
+  /* =========================================================
+     KEYBOARD CONTROLS
+  ========================================================= */
+
+  window.addEventListener(
+    "keydown",
+    event=>{
+
+      if(
+        event.code === "ArrowLeft" ||
+        event.code === "KeyA"
+      ){
+
+        moveLeft = true;
+
+        event.preventDefault();
+
+      }
+
+
+      if(
+        event.code === "ArrowRight" ||
+        event.code === "KeyD"
+      ){
+
+        moveRight = true;
+
+        event.preventDefault();
+
+      }
+
+
+      if(
+        event.code === "Enter"
+      ){
+
+        if(
+          screens.start.classList.contains(
+            "active"
+          )
+        ){
+
+          event.preventDefault();
+
+          sfx.click();
+
+          ensurePlayerName(()=>startGame());
+
+        }
+
+        else if(
+          screens.instructions.classList.contains(
+            "active"
+          )
+        ){
+
+          event.preventDefault();
+
+          sfx.click();
+
+          ensurePlayerName(()=>startGame());
+
+        }
+
+        else if(
+          screens.over.classList.contains(
+            "active"
+          )
+        ){
+
+          event.preventDefault();
+
+          sfx.click();
+
+          startGame();
+
+        }
+
+        else if(
+          screens.leaderboard.classList.contains(
+            "active"
+          )
+        ){
+
+          event.preventDefault();
+
+          sfx.click();
+
+          showScreen("start");
+
+        }
+
+      }
+
+    }
+  );
+
+
+  window.addEventListener(
+    "keyup",
+    event=>{
+
+      if(
+        event.code === "ArrowLeft" ||
+        event.code === "KeyA"
+      ){
+
+        moveLeft = false;
+
+      }
+
+
+      if(
+        event.code === "ArrowRight" ||
+        event.code === "KeyD"
+      ){
+
+        moveRight = false;
+
+      }
+
+    }
+  );
+
+
+
+  /* =========================================================
+     SAVE ON CLOSE / TAB HIDE
+  ========================================================= */
+
+  window.addEventListener("beforeunload", ()=>{
+    saveGameState();
+  });
+
+  window.addEventListener("pagehide", ()=>{
+    saveGameState();
+  });
+
+  document.addEventListener("visibilitychange", ()=>{
+    if(document.visibilityState === "hidden"){
+      saveGameState();
+    }
+  });
+
+
+  /* =========================================================
+     TOUCH / MOUSE CONTROLS
+  ========================================================= */
+
+  function bindHold(
+    element,
+    onDown,
+    onUp
+  ){
+
+    element.addEventListener(
+      "mousedown",
+      onDown
+    );
+
+
+    element.addEventListener(
+      "touchstart",
+      event=>{
+
+        event.preventDefault();
+
+        onDown();
+
+      },
+      {
+        passive:false
+      }
+    );
+
+
+    [
+      "mouseup",
+      "mouseleave",
+      "touchend",
+      "touchcancel"
+    ].forEach(
+      eventName=>{
+
+        element.addEventListener(
+          eventName,
+          onUp
+        );
+
+      }
+    );
+
+  }
+
+
+  bindHold(
+    document.getElementById(
+      "touchLeft"
+    ),
+    ()=>{
+      moveLeft = true;
+    },
+    ()=>{
+      moveLeft = false;
+    }
+  );
+
+
+  bindHold(
+    document.getElementById(
+      "touchRight"
+    ),
+    ()=>{
+      moveRight = true;
+    },
+    ()=>{
+      moveRight = false;
+    }
+  );
+
+
+  /* =========================================================
+     INITIAL CANVAS
+     (draw one static preview frame only -- the loop does not
+     start and the game screen is never shown until Play)
+  ========================================================= */
+
+  resetGame();
+
+  drawBackground();
+
+  drawBoard();
+
+  drawBall();
+
+  updateResumeButtons();
+
+  /*
+    Always reopen at the menu, but expose a
+    Continue button when an in-progress game
+    was saved. This prevents a crash/close
+    from silently losing the run.
+  */
+  showScreen("start");
+  saveLastScreen("start");
+
+  // Lightweight test/demo hook -- harmless in production, lets an outside
+  // harness exercise the continue-on-drop flow without simulating real
+  // physics frames.
+  window.__bb = {
+    get state(){
+      return {
+        running,
+        score: Math.floor(score),
+        continueUsed,
+        continueBusy,
+        continueShown: document.getElementById("continueModal").classList.contains("active"),
+        overScreenActive: screens.over.classList.contains("active"),
+      };
+    },
+    start: startGame,
+    forceDrop: () => maybeOfferContinue(),
+    watchAd: requestContinueAd,
+    declineContinue: declineContinue,
+  };
+
+})();
+</script>
+
+
+</body></html>

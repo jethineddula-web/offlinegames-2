@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, orientation=landscape" />
+    <meta name="theme-color" content="#07090c" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Drone POV Flight" />
+
+    <!-- ============ SEO ============ -->
+    <title>Drone POV Flight – Free Online FPV Drone Racing Game | offlinegames.art</title>
+    <meta name="description" content="Fly a high-speed FPV drone in first-person view over real-world locations: city skylines, canyons, forests, harbours, snow peaks and night streets. Race air gates, shoot targets, collect crystals, upgrade your drone and play free online on mobile and PC." />
+    <meta name="keywords" content="drone game, drone pov, fpv drone simulator, free online drone racing, first person drone, html5 drone game, mobile drone game, real world drone flying" />
+    <meta name="author" content="offlinegames.art" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta property="og:title" content="Drone POV Flight – Real-World FPV Drone Racing" />
+    <meta property="og:description" content="Intense first-person FPV drone racing across 12 real-world locations. Collect crystals, upgrade your rig and dominate the skies — free in your browser." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://offlinegames.art/play/drone-pov-flight" />
+    <meta property="og:site_name" content="offlinegames.art" />
+    <meta property="og:image" content="https://offlinegames.art/og/drone-pov-flight.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Drone POV Flight — first person FPV drone racing through a gate over a sunset city" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Drone POV Flight – Free Online Game" />
+    <meta name="twitter:description" content="Intense first-person drone racing across 12 real-world maps. Collect crystals, upgrade, and dominate the skies." />
+    <meta name="twitter:image" content="https://offlinegames.art/og/drone-pov-flight.jpg" />
+    <!-- The play page is what the sitemap lists and what Google should rank for
+         this game; this page is the game itself. Pointing the canonical there
+         keeps the two from competing for the same search result. -->
+    <link rel="canonical" href="https://offlinegames.art/play/drone-pov-flight" />
+
+    <!-- ============ Icons / PWA ============ -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23070c18'/%3E%3Cg stroke='%23ffc266' stroke-width='4' fill='none' stroke-linecap='round'%3E%3Ccircle cx='18' cy='18' r='8'/%3E%3Ccircle cx='46' cy='18' r='8'/%3E%3Ccircle cx='18' cy='46' r='8'/%3E%3Ccircle cx='46' cy='46' r='8'/%3E%3Cpath d='M24 24l16 16M40 24L24 40'/%3E%3C/g%3E%3Crect x='26' y='26' width='12' height='12' rx='3' fill='%23e2503c'/%3E%3C/svg%3E" />
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='38' fill='%23070c18'/%3E%3Cg stroke='%23ffc266' stroke-width='11' fill='none' stroke-linecap='round'%3E%3Ccircle cx='51' cy='51' r='23'/%3E%3Ccircle cx='129' cy='51' r='23'/%3E%3Ccircle cx='51' cy='129' r='23'/%3E%3Ccircle cx='129' cy='129' r='23'/%3E%3Cpath d='M68 68l44 44M112 68L68 112'/%3E%3C/g%3E%3Crect x='73' y='73' width='34' height='34' rx='9' fill='%23e2503c'/%3E%3C/svg%3E" />
+    <!-- No manifest link either: the site has one at the root. A second one
+         here would offer to install "Drone POV Flight" as its own app instead
+         of OfflineGames. -->
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "Drone POV Flight",
+        "url": "https://offlinegames.art/play/drone-pov-flight",
+        "description": "Photoreal first-person FPV drone racing across 12 real-world locations with crystal collection, target shooting, combat and a full upgrade shop. Free to play in the browser on mobile and PC.",
+        "genre": ["Racing", "Action", "Simulation"],
+        "gamePlatform": ["Web browser", "Android", "iOS", "PC"],
+        "applicationCategory": "Game",
+        "operatingSystem": "Any",
+        "author": { "@type": "Organization", "name": "offlinegames.art" },
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      }
+    </script>
+
+    <!-- ============ AdSense ============
+         data-ad-src, not src. privacy-controls.js turns the loader on only
+         where AdSense is allowed to run — never inside the Android app's
+         WebView, where Google requires AdMob instead. Loading it directly
+         here would put the whole account at risk. -->
+    <script async data-ad-src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4203857211510947" crossorigin="anonymous" data-ad-frequency-hint="45s" data-ad-client="ca-pub-4203857211510947"></script>
+    <script src="../../privacy-controls.js" defer></script>
+
+    <!-- ============ Three.js — served from this site, not a CDN ============
+         It used to load from jsdelivr. That meant the game could not start on
+         a first visit without a connection, which is the one thing this site
+         promises, and a cross-origin script the service worker cannot cache
+         dependably. js/vendor holds three 0.186.0 and only the four
+         post-processing addons this game imports. -->
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "./js/vendor/three.module.js",
+          "three/addons/": "./js/vendor/jsm/"
+        }
+      }
+    </script>
+
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="gl"></canvas>
+      <div id="input-layer" class="off"></div>
+      <div id="hud"></div>
+      <div id="ui"></div>
+    </div>
+
+    <!-- Hard landscape gate for small screens held in portrait -->
+    <div id="rotate-gate">
+      <div class="grid-bg" style="opacity:.4"></div>
+      <div class="phone rel">📱</div>
+      <h2 class="rel">ROTATE YOUR DEVICE</h2>
+      <p class="rel">Drone POV Flight runs in landscape only. Turn your phone sideways — tap anywhere to force fullscreen landscape.</p>
+      <div class="rel tag" style="padding:8px 20px;border:1px solid rgba(255,194,102,.4);border-radius:99px;font-size:11px">TAP TO LOCK LANDSCAPE</div>
+    </div>
+
+    <!-- First-paint splash (removed by main.js) -->
+    <div id="boot" style="position:fixed;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 60%,#22262c 0%,#06080b 70%);color:#ffc266;font-family:system-ui,sans-serif;letter-spacing:.35em;font-size:12px">INITIALISING FLIGHT CORE…</div>
+
+    <!-- No service worker is registered here on purpose. The site already runs
+         one at the root, network-first, and the vault saves this game's files
+         from games-manifest.json. A second worker scoped to this folder would
+         serve its own cached copy first and the game would keep showing an old
+         build after an update — the exact bug sw.js at the root documents. -->
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>

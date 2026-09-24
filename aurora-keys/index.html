@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+    <meta name="theme-color" content="#07060f" />
+    <meta name="description" content="Play Aurora Keys free online — a classic Magic Tiles style rhythm game. Tap the falling tiles, hold the long ones, and see how long you can last." />
+
+    <title>Aurora Keys – Free Online Rhythm Tile Game | Offline Games</title>
+
+    <!-- SEO -->
+    <meta name="keywords" content="Aurora Keys, magic tiles game, rhythm game online, piano tiles game, free rhythm game, tile tap game, music game online" />
+    <meta name="author" content="Offline Games" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://offlinegames.art/aurora-keys/" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Offline Games" />
+    <meta property="og:title" content="Aurora Keys – Free Online Rhythm Tile Game" />
+    <meta property="og:description" content="Tap the falling tiles, hold the long ones, and chase combos in this free endless rhythm game." />
+    <meta property="og:url" content="https://offlinegames.art/aurora-keys/" />
+    <meta property="og:image" content="https://offlinegames.art/aurora-keys/social-share.png" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Aurora Keys – Free Online Rhythm Tile Game" />
+    <meta name="twitter:description" content="Free endless rhythm game — tap and hold falling tiles across three lanes, chase your high score." />
+    <meta name="twitter:image" content="https://offlinegames.art/aurora-keys/social-share.png" />
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "VideoGame",
+      "name": "Aurora Keys",
+      "url": "https://offlinegames.art/aurora-keys/",
+      "description": "Free online Magic Tiles style rhythm game. Tap falling tiles and hold long ones across three lanes for as long as you can.",
+      "genre": "Rhythm, Music",
+      "gamePlatform": "Web Browser",
+      "applicationCategory": "Game",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Offline Games"
+      }
+    }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <section id="screen-menu" class="screen aurora-shell">
+        <header class="hero">
+          <p class="eyebrow">Original rhythm</p>
+          <h1>Aurora Keys</h1>
+          <p class="lede">Tiles drop from the top of three lanes — A S D, or ← ↓ →. Tap the small ones. Hold the long ones.</p>
+        </header>
+        <div id="track-list" class="track-grid"></div>
+        <div id="ad-slot-menu" class="ad-slot"></div>
+        <footer class="menu-foot">
+          <button type="button" id="btn-help" class="btn ghost">How to play</button>
+          <button type="button" id="btn-settings" class="btn ghost">Settings</button>
+        </footer>
+      </section>
+
+      <section id="screen-help" class="screen aurora-shell hidden">
+        <div class="sheet">
+          <div class="sheet-head">
+            <h1>How to play</h1>
+            <button type="button" class="icon-btn" data-back="menu" aria-label="Close">✕</button>
+          </div>
+          <ol class="help-list">
+            <li>
+              <strong>Tap the small tiles</strong>
+              <p>Black tiles fall down three lanes. Tap a tile as soon as you can — you do not have to wait until it is halfway.</p>
+            </li>
+            <li>
+              <strong>Empty lanes hurt</strong>
+              <p>Tapping a lane with no crystal costs a life. You have three.</p>
+            </li>
+            <li>
+              <strong>Hold the long ones</strong>
+              <p>Press and hold long sliding tiles from the moment they appear until they pass the line.</p>
+            </li>
+            <li>
+              <strong>It never ends</strong>
+              <p>A run lasts until you lose your lives. The longer you last, the faster tiles fall.</p>
+            </li>
+            <li>
+              <strong>Prism Burst</strong>
+              <p>Fill the meter with combos, then tap Burst (or Space) to clear the field.</p>
+            </li>
+            <li>
+              <strong>Keyboard</strong>
+              <p>Lanes are <span class="accent">A S D</span> or <span class="accent">← ↓ →</span>. Esc pauses.</p>
+            </li>
+          </ol>
+          <div class="key-demo">
+            <div class="key-col"><div class="mini-tile dim"></div><b>A</b><span>←</span></div>
+            <div class="key-col"><div class="mini-tile"></div><b>S</b><span>↓</span></div>
+            <div class="key-col"><div class="mini-tile dim"></div><b>D</b><span>→</span></div>
+          </div>
+          <button type="button" class="btn primary" data-back="menu">Got it</button>
+        </div>
+      </section>
+
+      <section id="screen-settings" class="screen aurora-shell hidden">
+        <div class="sheet">
+          <div class="sheet-head">
+            <h1>Settings</h1>
+            <button type="button" class="icon-btn" data-back="menu" aria-label="Close">✕</button>
+          </div>
+          <label class="slider-row">Master <span id="v-master">85</span><input id="s-master" type="range" min="0" max="1" step="0.01" /></label>
+          <label class="slider-row">Music <span id="v-music">55</span><input id="s-music" type="range" min="0" max="1" step="0.01" /></label>
+          <label class="slider-row">Hits <span id="v-sfx">85</span><input id="s-sfx" type="range" min="0" max="1" step="0.01" /></label>
+          <button type="button" class="toggle" id="t-shake"><span><b>Screen shake</b><small>A short kick on misses</small></span><i></i></button>
+          <button type="button" class="toggle" id="t-haptics"><span><b>Haptics</b><small>Vibrate on hits when the device allows it</small></span><i></i></button>
+          <button type="button" class="btn primary" data-back="menu">Done</button>
+        </div>
+      </section>
+
+      <section id="screen-play" class="screen hidden">
+        <canvas id="game" aria-label="Aurora Keys playfield"></canvas>
+        <div class="hud top">
+          <div class="chip lives" id="hud-lives"></div>
+          <div class="score-wrap">
+            <div id="hud-score">0</div>
+            <div id="hud-combo">&nbsp;</div>
+          </div>
+          <button type="button" class="chip pause" id="btn-pause" aria-label="Pause">❚❚</button>
+        </div>
+        <div class="progress"><i id="hud-progress"></i></div>
+        <button type="button" id="btn-burst" class="burst" disabled>0%</button>
+        <div id="countdown" class="countdown hidden"></div>
+        <div id="pause" class="overlay hidden">
+          <div class="panel">
+            <h2>Paused</h2>
+            <p>The aurora holds still.</p>
+            <button type="button" class="btn primary" id="btn-resume">Resume</button>
+            <button type="button" class="btn ghost" id="btn-retry">Restart</button>
+            <button type="button" class="btn text" id="btn-quit">Quit to tracks</button>
+          </div>
+        </div>
+        <div id="continue" class="overlay hidden">
+          <div class="panel">
+            <h2>Lights out</h2>
+            <p>Watch a short ad to get one more life and keep your run alive.</p>
+            <button type="button" class="btn primary" id="btn-continue-watch">Watch ad to continue</button>
+            <button type="button" class="btn text" id="btn-continue-skip">End run</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="screen-result" class="screen aurora-shell hidden">
+        <div class="sheet">
+          <p class="eyebrow" id="result-reason">Sky cleared</p>
+          <h1 id="result-title">Track</h1>
+          <div id="result-stars" class="stars"></div>
+          <p class="big" id="result-score">0</p>
+          <p class="muted">Score</p>
+          <dl class="stats">
+            <div><dt>Accuracy</dt><dd id="r-acc">0%</dd></div>
+            <div><dt>Max combo</dt><dd id="r-combo">0</dd></div>
+            <div><dt>Perfect</dt><dd id="r-perf">0</dd></div>
+            <div><dt>Miss</dt><dd id="r-miss">0</dd></div>
+          </dl>
+          <button type="button" class="btn primary" id="btn-again">Play again</button>
+          <button type="button" class="btn ghost" data-back="menu">Tracks</button>
+        </div>
+      </section>
+    </div>
+    <script src="game.js"></script>
+  </body>
+</html>

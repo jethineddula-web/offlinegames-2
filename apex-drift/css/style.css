@@ -1,0 +1,1103 @@
+html, body, #app {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: #0a0a0b;
+  color: #f4f4f5;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
+
+
+:root {
+  --bg: #0a0a0b;
+  --bg-elevated: #121214;
+  --bg-subtle: #1a1a1e;
+  --fg: #f4f4f5;
+  --fg-muted: #a1a1aa;
+  --fg-subtle: #71717a;
+  --border: color-mix(in oklab, var(--fg) 12%, transparent);
+  --border-strong: color-mix(in oklab, var(--fg) 22%, transparent);
+  --accent: #c8ccd4;
+  --accent-fg: #0a0a0b;
+  --danger: #c45c4a;
+  --ok: #7d9a78;
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --font-display: "Barlow Condensed", "Barlow", system-ui, sans-serif;
+  --font-body: "Barlow", system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --motion-quick: 150ms;
+  --motion-fast: 250ms;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.apex-root {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.apex-boot {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--bg);
+}
+
+.apex-boot-kicker {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+}
+
+.apex-boot-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2.4rem, 8vw, 4.4rem);
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+}
+
+.apex-boot-sub {
+  margin: 0;
+  color: var(--fg-muted);
+  font-size: 0.95rem;
+}
+
+.apex-stage {
+  position: fixed;
+  overflow: hidden;
+  background: var(--bg);
+  touch-action: none;
+}
+
+.apex-stage canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+.apex-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.apex-overlay > * {
+  pointer-events: auto;
+}
+
+.apex-screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(
+    180deg,
+    rgba(10, 10, 11, 0.78) 0%,
+    rgba(10, 10, 11, 0.42) 55%,
+    rgba(10, 10, 11, 0.62) 100%
+  );
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+    max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+}
+
+.apex-screen.hidden,
+.apex-hud.hidden,
+.apex-touch.hidden,
+.apex-modal.hidden {
+  display: none;
+}
+
+.apex-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.apex-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.apex-kicker {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+}
+
+.apex-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2rem, 6vw, 3.6rem);
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+}
+
+.apex-coins {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  min-height: 44px;
+}
+
+.apex-hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 18px;
+  max-width: 520px;
+  padding-bottom: 8px;
+}
+
+.apex-lede {
+  margin: 0;
+  color: var(--fg-muted);
+  font-size: 1.05rem;
+  line-height: 1.5;
+  max-width: 42ch;
+}
+
+.apex-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.apex-btn {
+  appearance: none;
+  border: 1px solid color-mix(in oklab, var(--fg) 38%, transparent);
+  background: color-mix(in oklab, var(--fg) 14%, var(--bg-elevated));
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.95rem;
+  min-height: 46px;
+  padding: 0 18px;
+  border-radius: var(--radius-md);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--fg) 6%, transparent) inset;
+  transition:
+    opacity var(--motion-quick) var(--ease-out),
+    transform var(--motion-quick) var(--ease-out),
+    background var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out);
+}
+
+.apex-btn:hover {
+  border-color: color-mix(in oklab, var(--fg) 60%, transparent);
+  background: color-mix(in oklab, var(--fg) 22%, var(--bg-elevated));
+}
+
+.apex-btn:active {
+  transform: scale(0.98);
+}
+
+.apex-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.apex-btn-primary {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-color: transparent;
+  box-shadow: 0 0 0 1px transparent, 0 0 22px color-mix(in oklab, var(--accent) 55%, transparent);
+  animation: apex-btn-pulse 2.6s ease-in-out infinite;
+}
+
+.apex-btn-primary:hover {
+  background: var(--accent);
+  filter: brightness(1.08);
+}
+
+@keyframes apex-btn-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--accent) 45%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 8px color-mix(in oklab, var(--accent) 0%, transparent);
+  }
+}
+
+.apex-btn-ghost {
+  background: color-mix(in oklab, var(--fg) 6%, transparent);
+  border-color: color-mix(in oklab, var(--fg) 30%, transparent);
+}
+
+.apex-btn-danger {
+  border-color: color-mix(in oklab, var(--danger) 50%, var(--border));
+  color: #f0d2cc;
+}
+
+.apex-card.unaffordable {
+  border-color: color-mix(in oklab, var(--danger) 42%, var(--border-strong));
+}
+
+.apex-card.unaffordable .apex-price {
+  color: #e2897a;
+}
+
+.apex-btn.unaffordable {
+  border-color: color-mix(in oklab, var(--danger) 45%, var(--border-strong));
+  color: #f0d2cc;
+}
+
+.apex-card.insufficient,
+.apex-btn.insufficient {
+  animation: apex-shake 0.4s ease;
+}
+
+@keyframes apex-shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(5px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(3px);
+  }
+}
+
+.apex-toast {
+  position: absolute;
+  left: 50%;
+  bottom: 88px;
+  transform: translate(-50%, 10px);
+  max-width: min(86vw, 380px);
+  text-align: center;
+  background: color-mix(in oklab, var(--bg) 90%, transparent);
+  border: 1px solid color-mix(in oklab, var(--danger) 55%, var(--border-strong));
+  color: #f0d2cc;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  opacity: 0;
+  z-index: 6;
+  pointer-events: none;
+  transition: opacity 220ms var(--ease-out), transform 220ms var(--ease-out);
+}
+
+.apex-toast.hidden {
+  display: none;
+}
+
+.apex-toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.apex-nav {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.apex-ad-slot {
+  margin-top: auto;
+  width: 100%;
+  min-height: 70px;
+  max-height: 100px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.apex-ad-slot ins {
+  display: block;
+  width: 100%;
+  min-height: 60px;
+}
+
+.apex-head-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.apex-head-row h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.apex-scroll {
+  flex: 1;
+  overflow: auto;
+  touch-action: pan-y;
+  margin: 12px 0;
+  padding-right: 4px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.apex-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.apex-card {
+  text-align: left;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 16px;
+  color: var(--fg);
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.apex-card-swatch {
+  display: block;
+  height: 8px;
+  border-radius: 99px;
+  margin-bottom: 4px;
+}
+
+.apex-locale {
+  margin: 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+}
+
+.apex-card.locked {
+  opacity: 0.55;
+}
+
+.apex-card.active {
+  border-color: var(--border-strong);
+  box-shadow: inset 0 0 0 1px var(--border-strong);
+}
+
+.apex-card h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.apex-card p,
+.apex-meta {
+  margin: 0;
+  color: var(--fg-muted);
+  font-size: 0.85rem;
+}
+
+.apex-stars {
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  font-size: 0.75rem;
+}
+
+.apex-stat-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: var(--fg-muted);
+}
+
+.apex-bar {
+  flex: 1;
+  height: 4px;
+  background: var(--bg-subtle);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.apex-bar > span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+.apex-upgrade-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.apex-hud {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.apex-hud-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  pointer-events: auto;
+  padding: 12px;
+}
+
+.apex-chip {
+  background: color-mix(in oklab, var(--bg) 72%, transparent);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  min-height: 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.apex-chip b {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.apex-chip span {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+.apex-drift-pop {
+  position: absolute;
+  left: 50%;
+  top: 18%;
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none;
+}
+
+.apex-drift-pop b {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  letter-spacing: 0.04em;
+}
+
+.apex-drift-pop span {
+  color: var(--fg-muted);
+  font-size: 0.85rem;
+}
+
+.apex-clash-pop {
+  position: absolute;
+  left: 50%;
+  top: 30%;
+  transform: translateX(-50%);
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: #ff6a22;
+  text-shadow: 0 0 18px rgba(255, 80, 20, 0.85);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.apex-lights {
+  position: absolute;
+  top: 16%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+  z-index: 6;
+}
+
+.apex-lights.hidden {
+  display: none;
+}
+
+.apex-lights-tree {
+  display: flex;
+  gap: 14px;
+  padding: 12px 18px 10px;
+  background: #141416;
+  border: 2px solid #2c2c32;
+  border-radius: 14px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+}
+
+.apex-light {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #2a1212;
+  box-shadow: inset 0 0 8px #000;
+  border: 1px solid #3a2020;
+}
+
+.apex-light.red {
+  background: #ff2a22;
+  border-color: #ff8a80;
+  box-shadow:
+    0 0 14px #ff2a22,
+    0 0 28px rgba(255, 42, 34, 0.55),
+    inset 0 0 8px #ffc4c0;
+}
+
+.apex-light.green {
+  background: #3cff2a;
+  border-color: #b8ff9a;
+  box-shadow:
+    0 0 16px #3cff2a,
+    0 0 36px rgba(60, 255, 42, 0.55),
+    inset 0 0 8px #e8ffd8;
+}
+
+.apex-lights-count {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 9vw, 5.2rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 0.9;
+  color: #ff2a22;
+  text-shadow: 0 0 22px rgba(255, 42, 34, 0.65);
+}
+
+.apex-lights-count.go {
+  color: #3cff2a;
+  text-shadow: 0 0 28px rgba(60, 255, 42, 0.8);
+  letter-spacing: 0.16em;
+}
+
+.apex-speed b {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 7vw, 3.4rem);
+  line-height: 0.9;
+}
+
+.apex-speed span {
+  display: block;
+  color: var(--fg-muted);
+  letter-spacing: 0.16em;
+  font-size: 11px;
+}
+
+.apex-nitro {
+  position: absolute;
+  left: 16px;
+  bottom: 20px;
+  width: 120px;
+  pointer-events: none;
+}
+
+.apex-nitro label {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  transition: color var(--motion-fast) var(--ease-out);
+}
+
+.apex-nitro.active label {
+  color: #6ad4ff;
+}
+
+.apex-nitro.active .apex-bar > span {
+  background: #6ad4ff;
+  box-shadow: 0 0 8px #6ad4ff;
+}
+
+.apex-nitro.boosting {
+  animation: apex-nitro-flash 0.4s ease-in-out infinite;
+}
+
+.apex-nitro.boosting label::after {
+  content: " · BOOST";
+  color: #6ad4ff;
+}
+
+@keyframes apex-nitro-flash {
+  0%, 100% {
+    filter: drop-shadow(0 0 0 transparent);
+  }
+  50% {
+    filter: drop-shadow(0 0 6px #6ad4ff);
+  }
+}
+
+.apex-minimap {
+  position: absolute;
+  right: 12px;
+  top: 56px;
+  width: 112px;
+  height: 80px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: color-mix(in oklab, var(--bg) 70%, transparent);
+  pointer-events: none;
+}
+
+.apex-touch {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.apex-steer-pad {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.apex-tri-btn {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-strong);
+  background: color-mix(in oklab, var(--bg) 55%, transparent);
+  color: var(--fg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.apex-tri-btn.held {
+  outline: 2px solid var(--accent);
+  background: color-mix(in oklab, var(--accent) 32%, var(--bg));
+}
+
+.apex-pedals {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  display: flex;
+  gap: 8px;
+  pointer-events: auto;
+  align-items: flex-end;
+}
+
+.apex-pedal {
+  min-width: 64px;
+  min-height: 64px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-strong);
+  background: color-mix(in oklab, var(--bg) 60%, transparent);
+  color: var(--fg);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.apex-pedal.gas {
+  min-width: 84px;
+  min-height: 88px;
+  background: color-mix(in oklab, var(--accent) 80%, var(--bg));
+  color: var(--accent-fg);
+}
+
+.apex-pedal.held {
+  outline: 1px solid var(--accent);
+}
+
+.apex-pause-btn {
+  pointer-events: auto;
+}
+
+.apex-modal {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in oklab, var(--bg) 55%, transparent);
+  padding: 16px;
+}
+
+.apex-panel {
+  width: min(440px, 100%);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.apex-panel h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  letter-spacing: -0.02em;
+}
+
+.apex-panel p {
+  margin: 0;
+  color: var(--fg-muted);
+  line-height: 1.5;
+}
+
+.apex-ad-watch {
+  min-height: 120px;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.apex-countdown {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.apex-settings label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--fg-muted);
+}
+
+.apex-settings input[type="range"] {
+  width: 140px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .apex-touch:not(.hidden) {
+    display: none;
+  }
+}
+
+@media (pointer: coarse), (hover: none) {
+  .apex-speed {
+    right: auto;
+    left: 16px;
+    bottom: 168px;
+    text-align: left;
+  }
+  .apex-nitro {
+    bottom: 148px;
+  }
+}
+
+@media (max-height: 480px) {
+  .apex-lede {
+    display: none;
+  }
+  .apex-title {
+    font-size: 2rem;
+  }
+  .apex-ad-slot {
+    min-height: 48px;
+    max-height: 56px;
+  }
+  .apex-hero {
+    gap: 10px;
+    padding-bottom: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .apex-btn {
+    transition: none;
+  }
+  .apex-btn-primary {
+    animation: none;
+  }
+}
+
+.apex-hud-left {
+  position: absolute;
+  top: max(12px, env(safe-area-inset-top));
+  left: max(52px, env(safe-area-inset-left));
+  display: flex;
+  gap: 8px;
+  pointer-events: auto;
+  z-index: 3;
+}
+.apex-icon-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid var(--border-strong);
+  background: color-mix(in oklab, var(--bg) 72%, transparent);
+  color: var(--fg);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.apex-icon-btn.apex-pause-btn {
+  background: #5b2ad1;
+  border-color: transparent;
+  color: #f4f4f5;
+}
+.apex-hud-right {
+  position: absolute;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  pointer-events: none;
+}
+.apex-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-variant-numeric: tabular-nums;
+  background: color-mix(in oklab, var(--bg) 55%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 10px;
+  min-width: 108px;
+  justify-content: space-between;
+}
+.apex-stat span {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  font-weight: 700;
+  color: var(--fg);
+}
+.apex-stat b {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+.apex-stat-pos b {
+  color: #e8c44a;
+}
+.apex-stat-pos b[data-place="1"] {
+  color: #7d9a78;
+}
+.apex-stat-pos b[data-place="5"] {
+  color: #e24a4a;
+}
+.apex-stat-gear b[data-gear="R"] {
+  color: #e24a4a;
+}
+.apex-stat-gear b[data-gear="N"] {
+  color: var(--fg-muted);
+}
+.apex-stat-gear b[data-gear="6"] {
+  color: #e8c44a;
+}
+.apex-speedo {
+  position: absolute;
+  left: max(8px, env(safe-area-inset-left));
+  top: max(8px, env(safe-area-inset-top));
+  right: auto;
+  bottom: auto;
+  width: 150px;
+  text-align: center;
+  pointer-events: none;
+}
+.apex-speedo-arc {
+  width: 150px;
+  height: 92px;
+  display: block;
+}
+.apex-speedo b {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 28px;
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.apex-speedo span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 14px;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--fg-muted);
+}
+.apex-speedo em {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2px;
+  font-style: normal;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+}
+.apex-nitro {
+  left: max(16px, env(safe-area-inset-left));
+  top: 96px;
+  bottom: auto;
+  right: auto;
+}
+
+/* ---------------------------------------------------------------------
+   Forced-landscape (phone held upright, page CSS-rotated 90deg) layout.
+   `apex-rotated` is toggled on <html> from orientation.js whenever the
+   stage is rotated to fake landscape on a portrait screen. Inside that
+   rotated box, an element's local `left` ends up controlling its
+   physical position from the top of the real screen, and its local
+   `bottom` ends up controlling its physical position from the real
+   left edge (the rotation swaps the axes). These rules re-target a few
+   HUD pieces so they land in sensible on-screen spots instead of
+   stacking on top of each other.
+   --------------------------------------------------------------------- */
+.apex-rotated .apex-hud-left {
+  left: 72px;
+}
+.apex-rotated .apex-speedo {
+  left: 8px;
+  bottom: 12px;
+  top: auto;
+  right: auto;
+}
+.apex-rotated .apex-nitro {
+  left: 168px;
+  bottom: 12px;
+  top: auto;
+  right: auto;
+}
+.apex-rotate-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: var(--space-5);
+  text-align: center;
+  background: var(--bg);
+  color: var(--fg);
+}
+.apex-rotate-overlay.apex-visible {
+  display: flex;
+}
+.apex-rotate-icon {
+  color: var(--fg-muted);
+  animation: apex-rotate-hint 1.6s ease-in-out infinite;
+}
+@keyframes apex-rotate-hint {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-90deg);
+  }
+}
+.apex-rotate-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.4rem;
+  letter-spacing: -0.01em;
+}
+.apex-rotate-sub {
+  margin: 0;
+  max-width: 320px;
+  color: var(--fg-muted);
+  font-size: 0.95rem;
+}
+
+.apex-rotated .apex-steer-pad {
+  /* The pad keeps its normal (unrotated) row layout - left button on the
+     left with a left-pointing triangle, right button on the right with a
+     right-pointing triangle - exactly like true landscape. We counter the
+     stage's 90deg rotation with an equal, opposite rotation on just this
+     control so its content renders upright on the real screen instead of
+     inheriting the stage's rotation and turning into an up/down pair.
+     orientation.js measures the real, on-screen position of the pedal
+     cluster every layout pass and sets left/top/transform inline (which
+     always wins over these rules) so the pad lands just above the pedals
+     on any device size. This transform is just a same-frame fallback for
+     the instant before that JS runs. */
+  transform: rotate(-90deg);
+}
+
+.apex-cam-btn { min-width: 52px; font-size: 11px; font-weight: 800; letter-spacing: .12em; }
+.apex-rotate-overlay { display: none !important; }
