@@ -2,6 +2,7 @@
 // animated by slerping joint rotations toward target poses.
 import * as THREE from 'three';
 import * as TX from './textures.js';
+import { buildBodyGeometry } from './body.js';
 
 export const JOINTS = ['hips', 'spine', 'chest', 'neck', 'head', 'shL', 'elL', 'wrL', 'shR', 'elR', 'wrR', 'hipL', 'knL', 'anL', 'hipR', 'knR', 'anR'];
 
@@ -11,7 +12,6 @@ const geo = (key, make) => {
   if (!g) GEO.set(key, (g = make()));
   return g;
 };
-const cap = (r, l) => geo(`c${r}_${l}`, () => new THREE.CapsuleGeometry(r, l, 8, 16));
 const sph = (r) => geo(`s${r}`, () => new THREE.SphereGeometry(r, 28, 18));
 
 let heroMats = null;
@@ -65,99 +65,120 @@ export function thugMaterials(kind, rng = Math.random) {
   return {
     pelvis: pants, abdomen: jacket, chest: jacket, shoulder: jacket, neck: skin, head: skin,
     upperArm: jacket, forearm: jacket, hand: skin, thigh: pants, shin: pants, foot: shoes,
-    hat: accent, jacket, skin,
+    hat: accent, jacket, skin, top: jacket, pants, shoes,
   };
 }
 
-// Builds the joint hierarchy. Model faces +Z, left side is +X.
+// Material regions of the skinned body (rest-pose coordinates).
+function heroRegion(part, x, y, z) {
+  if (part === 'torso') {
+    if (y < 1.03) return 'blue';
+    const th = Math.atan2(Math.abs(x), z); // 0 = front, PI = back
+    if (y < 1.37 && th > 1.1 && th < 2.05) return 'blue'; // side panels
+    return 'red';
+  }
+  if (part === 'leg') return y > 0.34 ? 'blue' : 'red'; // red boots
+  return 'red';
+}
+function thugRegion(part, x, y, z) {
+  if (part === 'head') return y > 1.575 ? 'skin' : 'top';
+  if (part === 'hand') return 'skin';
+  if (part === 'foot') return 'shoes';
+  if (part === 'arm') return y < 0.84 ? 'skin' : 'top';
+  if (part === 'torso') return y < 1.02 ? 'pants' : 'top';
+  return y < 0.11 ? 'shoes' : 'pants';
+}
+
+// Builds the skeleton + one continuous skinned body. Model faces +Z, left side is +X.
 export function buildHumanoid(mats, { hero = false, bulk = 1, scale = 1 } = {}) {
+  const B = bulk;
   const root = new THREE.Group();
-  const J = {};
-  const meshes = [];
-  const joint = (name, parent, x, y, z) => {
-    const g = new THREE.Group();
-    g.position.set(x, y, z);
-    parent.add(g);
-    J[name] = g;
-    return g;
+  const layout = {
+    hips: [null, 0, 0.96, 0],
+    spine: ['hips', 0, 0.08, 0],
+    chest: ['spine', 0, 0.2, 0],
+    neck: ['chest', 0, 0.26, 0],
+    head: ['neck', 0, 0.09, 0.01],
+    shL: ['chest', 0.2 * B + 0.01, 0.15, 0],
+    elL: ['shL', 0, -0.3, 0],
+    wrL: ['elL', 0, -0.27, 0],
+    shR: ['chest', -0.2 * B - 0.01, 0.15, 0],
+    elR: ['shR', 0, -0.3, 0],
+    wrR: ['elR', 0, -0.27, 0],
+    hipL: ['hips', 0.095 * B, -0.04, 0],
+    knL: ['hipL', 0, -0.44, 0],
+    anL: ['knL', 0, -0.43, 0],
+    hipR: ['hips', -0.095 * B, -0.04, 0],
+    knR: ['hipR', 0, -0.44, 0],
+    anR: ['knR', 0, -0.43, 0],
   };
-  const mesh = (parent, g, mat, x = 0, y = 0, z = 0, sx = 1, sy = 1, sz = 1) => {
+  const J = {};
+  const bones = [];
+  const boneIndex = {};
+  for (const name of JOINTS) {
+    const [parent, x, y, z] = layout[name];
+    const b = new THREE.Bone();
+    b.name = name;
+    b.position.set(x, y, z);
+    (parent ? J[parent] : root).add(b);
+    J[name] = b;
+    boneIndex[name] = bones.length;
+    bones.push(b);
+  }
+  root.updateMatrixWorld(true);
+  const wp = (n) => J[n].getWorldPosition(new THREE.Vector3()).toArray();
+  const joints = { shL: wp('shL'), shR: wp('shR'), hipL: wp('hipL'), hipR: wp('hipR') };
+  const keys = hero ? ['red', 'blue'] : ['top', 'pants', 'skin', 'shoes'];
+  const geom = geo(`body_${hero}_${B}`, () => buildBodyGeometry(boneIndex, joints, B, hero ? heroRegion : thugRegion, keys));
+  const body = new THREE.SkinnedMesh(geom, keys.map((k) => mats[k]));
+  body.castShadow = true;
+  body.frustumCulled = false;
+  root.add(body);
+  root.updateMatrixWorld(true);
+  body.bind(new THREE.Skeleton(bones));
+  const meshes = [body];
+
+  for (const n of ['L', 'R']) {
+    const hand = new THREE.Object3D();
+    hand.position.set(0, -0.08, 0.02);
+    J['wr' + n].add(hand);
+    J['hand' + n] = hand;
+  }
+  const attach = (bone, g, mat, x, y, z, sx, sy, sz) => {
     const m = new THREE.Mesh(g, mat);
     m.position.set(x, y, z);
     m.scale.set(sx, sy, sz);
-    m.castShadow = true;
-    parent.add(m);
+    J[bone].add(m);
     meshes.push(m);
     return m;
   };
-  const B = bulk;
-  const hips = joint('hips', root, 0, 0.96, 0);
-  mesh(hips, sph(0.15), mats.pelvis, 0, 0, 0, 1.12 * B, 0.78, 0.85);
-  const spine = joint('spine', hips, 0, 0.08, 0);
-  mesh(spine, cap(0.125, 0.14), mats.abdomen, 0, 0.1, 0, 1.02 * B, 1, 0.78);
-  const chest = joint('chest', spine, 0, 0.2, 0);
-  mesh(chest, sph(0.2), mats.chest, 0, 0.08, 0, 1.0 * B, 0.95, 0.66);
-  mesh(chest, sph(0.09), mats.shoulder, 0.19 * B, 0.17, 0, 1.05, 0.9, 1);
-  mesh(chest, sph(0.09), mats.shoulder, -0.19 * B, 0.17, 0, 1.05, 0.9, 1);
-  const neck = joint('neck', chest, 0, 0.26, 0);
-  mesh(neck, cap(0.055, 0.06), mats.neck, 0, 0.03, 0);
-  const head = joint('head', neck, 0, 0.09, 0.01);
-  mesh(head, sph(0.115), mats.head, 0, 0.1, 0, 0.9, 1.12, 1.0);
-
-  for (const side of [1, -1]) {
-    const n = side > 0 ? 'L' : 'R';
-    const sh = joint('sh' + n, chest, 0.215 * side * B, 0.15, 0);
-    mesh(sh, cap(0.058 * Math.sqrt(B), 0.2), mats.upperArm, 0, -0.15, 0);
-    const el = joint('el' + n, sh, 0, -0.3, 0);
-    mesh(el, cap(0.048 * Math.sqrt(B), 0.19), mats.forearm, 0, -0.13, 0);
-    const wr = joint('wr' + n, el, 0, -0.27, 0);
-    mesh(wr, sph(0.05), mats.hand, 0, -0.05, 0.005, 0.85, 1.25, 0.62);
-    const hand = new THREE.Object3D();
-    hand.position.set(0, -0.08, 0.02);
-    wr.add(hand);
-    J['hand' + n] = hand;
-
-    const hp = joint('hip' + n, hips, 0.095 * side * B, -0.04, 0);
-    mesh(hp, cap(0.078 * Math.sqrt(B), 0.28), mats.thigh, 0, -0.21, 0);
-    const kn = joint('kn' + n, hp, 0, -0.44, 0);
-    mesh(kn, cap(0.058 * Math.sqrt(B), 0.3), mats.shin, 0, -0.2, 0);
-    const an = joint('an' + n, kn, 0, -0.43, 0);
-    mesh(an, sph(0.06), mats.foot, 0, -0.035, 0.05, 0.85, 0.6, 1.9);
-  }
-
   if (hero) {
-    // side panels
-    mesh(spine, cap(0.05, 0.2), mats.side, 0.105, 0.12, 0, 0.8, 1, 1.2);
-    mesh(spine, cap(0.05, 0.2), mats.side, -0.105, 0.12, 0, 0.8, 1, 1.2);
     // goggle lenses with black rims, bulging out of the mask
     for (const side of [1, -1]) {
-      const rim = mesh(head, sph(0.035), mats.black, 0.046 * side, 0.118, 0.094, 1.5, 1.02, 0.42);
+      const rim = attach('head', sph(0.035), mats.black, 0.045 * side, 0.148, 0.088, 1.5, 1.02, 0.42);
       rim.rotation.set(-0.12, 0.5 * side, 0.5 * side);
-      rim.castShadow = false;
-      const lens = mesh(head, sph(0.035), mats.eye, 0.047 * side, 0.118, 0.099, 1.22, 0.78, 0.38);
+      const lens = attach('head', sph(0.035), mats.eye, 0.046 * side, 0.148, 0.093, 1.22, 0.78, 0.38);
       lens.rotation.set(-0.12, 0.5 * side, 0.5 * side);
-      lens.castShadow = false;
     }
-    const emblem = new THREE.Mesh(spiderEmblem(), mats.emblem);
-    emblem.position.set(0, 0.1, 0.133);
-    emblem.rotation.x = -0.12;
-    chest.add(emblem);
-    const back = new THREE.Mesh(spiderEmblem(1.5), mats.emblem);
-    back.position.set(0, 0.08, -0.134);
+    const emblem = new THREE.Mesh(spiderEmblem(0.9, 2.4), mats.emblem);
+    emblem.position.set(0, 0.1, 0.135);
+    emblem.rotation.x = -0.1;
+    J.chest.add(emblem);
+    const back = new THREE.Mesh(spiderEmblem(1.35, 1.6), mats.emblem);
+    back.position.set(0, 0.09, -0.114);
     back.rotation.y = Math.PI;
-    chest.add(back);
+    J.chest.add(back);
   } else {
-    // beanie
-    const hat = mesh(head, sph(0.12), mats.hat, 0, 0.15, -0.005, 0.95, 0.72, 1.02);
-    hat.castShadow = false;
+    const hat = attach('head', sph(0.1), mats.hat, 0, 0.2, -0.004, 0.96, 0.74, 1.06);
+    hat.castShadow = true;
   }
 
   root.scale.setScalar(scale);
   return { root, J, meshes, hipsY: 0.96 };
 }
 
-function spiderEmblem(s = 1) {
-  return geo('emblem' + s, () => {
+function spiderEmblem(s = 1, bend = 0) {
+  return geo('emblem' + s + '_' + bend, () => {
     const shapes = [];
     const body = new THREE.Shape();
     body.absellipse(0, 0.012, 0.012, 0.02, 0, Math.PI * 2);
@@ -184,6 +205,10 @@ function spiderEmblem(s = 1) {
     }
     const g = new THREE.ShapeGeometry(shapes);
     g.scale(s, s, s);
+    // wrap around the chest curvature
+    const pa = g.attributes.position;
+    for (let i = 0; i < pa.count; i++) pa.setZ(i, -bend * pa.getX(i) ** 2);
+    g.computeVertexNormals();
     return g;
   });
 }

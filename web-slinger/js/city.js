@@ -299,6 +299,11 @@ export class City {
     b.box(x0 - 0.3, h0, z1 - t, x1 + 0.3, h1, z1 + 0.3, 4, 4);
     b.box(x0 - 0.3, h0, z0 + t, x0 + t, h1, z1 - t, 4, 4);
     b.box(x1 - t, h0, z0 + t, x1 + 0.3, h1, z1 - t, 4, 4);
+    // solid parapets: you can perch on them but not walk through them
+    this.addCollider(x0 - 0.3, h0, z0 - 0.3, x1 + 0.3, h1, z0 + t, 'parapet');
+    this.addCollider(x0 - 0.3, h0, z1 - t, x1 + 0.3, h1, z1 + 0.3, 'parapet');
+    this.addCollider(x0 - 0.3, h0, z0 + t, x0 + t, h1, z1 - t, 'parapet');
+    this.addCollider(x1 - t, h0, z0 + t, x1 + 0.3, h1, z1 - t, 'parapet');
   }
 
   roofProps(chunk, box, h) {
@@ -336,6 +341,7 @@ export class City {
     for (let i = 0; i < nAc; i++) {
       const [px, pz] = place(2.4, 1.8);
       B('metal').box(px, y, pz, px + 2.4, y + 1.3, pz + 1.8, 2, 2);
+      this.addCollider(px, y, pz, px + 2.4, y + 1.3, pz + 1.8, 'prop');
     }
     // antenna with blinking beacon on tall towers
     if (h > 110 && rng() < 0.8) {
@@ -744,46 +750,66 @@ export class City {
   }
 
   // Ray vs building boxes (+ ground plane). dir must be normalised.
+  // Walks the collision grid cell by cell (DDA) so no building is skipped.
   raycast(o, dir, maxT, withGround = true) {
     const q = ++this.stamp;
     let best = maxT;
     let hit = null;
-    const step = CELL * 0.5;
-    const inv = [1 / dir.x, 1 / dir.y, 1 / dir.z];
-    for (let t = 0; t <= Math.min(maxT, best) + step; t += step) {
-      const x = o.x + dir.x * t;
-      const z = o.z + dir.z * t;
-      const arr = this.cellBoxes(x, z);
-      if (!arr) continue;
-      for (const b of arr) {
-        if (b._r === q) continue;
-        b._r = q;
-        let tmin = -Infinity;
-        let tmax = Infinity;
-        let axis = -1;
-        const lo = [b.x0, b.y0, b.z0];
-        const hi = [b.x1, b.y1, b.z1];
-        const oo = [o.x, o.y, o.z];
-        let ok = true;
-        for (let a = 0; a < 3; a++) {
-          let t1 = (lo[a] - oo[a]) * inv[a];
-          let t2 = (hi[a] - oo[a]) * inv[a];
-          if (t1 > t2) [t1, t2] = [t2, t1];
-          if (t1 > tmin) {
-            tmin = t1;
-            axis = a;
-          }
-          if (t2 < tmax) tmax = t2;
-          if (tmin > tmax) {
-            ok = false;
-            break;
-          }
+    const dx = Math.abs(dir.x) < 1e-9 ? 1e-9 : dir.x;
+    const dy = Math.abs(dir.y) < 1e-9 ? 1e-9 : dir.y;
+    const dz = Math.abs(dir.z) < 1e-9 ? 1e-9 : dir.z;
+    const ix = 1 / dx;
+    const iy = 1 / dy;
+    const iz = 1 / dz;
+    const test = (b) => {
+      let t1 = (b.x0 - o.x) * ix;
+      let t2 = (b.x1 - o.x) * ix;
+      let tmin = Math.min(t1, t2);
+      let tmax = Math.max(t1, t2);
+      let axis = 0;
+      t1 = (b.y0 - o.y) * iy;
+      t2 = (b.y1 - o.y) * iy;
+      if (Math.min(t1, t2) > tmin) {
+        tmin = Math.min(t1, t2);
+        axis = 1;
+      }
+      tmax = Math.min(tmax, Math.max(t1, t2));
+      t1 = (b.z0 - o.z) * iz;
+      t2 = (b.z1 - o.z) * iz;
+      if (Math.min(t1, t2) > tmin) {
+        tmin = Math.min(t1, t2);
+        axis = 2;
+      }
+      tmax = Math.min(tmax, Math.max(t1, t2));
+      if (tmin > tmax || tmax < 0 || tmin < 0 || tmin >= best) return;
+      best = tmin;
+      hit = { t: tmin, box: b, nx: axis === 0 ? -Math.sign(dx) : 0, ny: axis === 1 ? -Math.sign(dy) : 0, nz: axis === 2 ? -Math.sign(dz) : 0 };
+    };
+    let gx = Math.floor((o.x + GOFF) / CELL);
+    let gz = Math.floor((o.z + GOFF) / CELL);
+    const sx = dx > 0 ? 1 : -1;
+    const sz = dz > 0 ? 1 : -1;
+    const tdx = Math.abs(CELL * ix);
+    const tdz = Math.abs(CELL * iz);
+    let tmx = ((gx + (sx > 0 ? 1 : 0)) * CELL - GOFF - o.x) * ix;
+    let tmz = ((gz + (sz > 0 ? 1 : 0)) * CELL - GOFF - o.z) * iz;
+    for (let it = 0; it < 400; it++) {
+      const arr = this.grid.get(gx * 4096 + gz);
+      if (arr) {
+        for (const b of arr) {
+          if (b._r === q) continue;
+          b._r = q;
+          test(b);
         }
-        if (!ok || tmax < 0 || tmin < 0 || tmin >= best) continue;
-        best = tmin;
-        const n = [0, 0, 0];
-        n[axis] = -Math.sign([dir.x, dir.y, dir.z][axis]);
-        hit = { t: tmin, box: b, nx: n[0], ny: n[1], nz: n[2] };
+      }
+      const exit = Math.min(tmx, tmz);
+      if (best <= exit || exit > maxT) break;
+      if (tmx < tmz) {
+        gx += sx;
+        tmx += tdx;
+      } else {
+        gz += sz;
+        tmz += tdz;
       }
     }
     if (withGround && dir.y < 0) {

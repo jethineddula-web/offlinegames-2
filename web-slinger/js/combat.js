@@ -116,6 +116,18 @@ class Enemy {
       this.vel.z *= k;
     }
     city.resolve(this.pos, 0.45, 1.8, true, this.contact);
+    const car = this.alive && this.state !== 'air' && this.pos.y < 1.2 && G.traffic ? G.traffic.carAt(this.pos.x, this.pos.z, 0.45) : null;
+    if (car) {
+      const sp = Math.hypot(car.vx, car.vz) || 1;
+      this.hp -= 2;
+      this.state = 'air';
+      this.juggle = 0;
+      this.flash = 0.15;
+      this.releaseToken();
+      this.vel.set((car.vx / sp) * sp * 1.1, 8 + sp * 0.15, (car.vz / sp) * sp * 1.1);
+      G.audio.carHit();
+      G.fx.impactDust(this.pos, 8, 2);
+    }
     if (this.pos.y < -1.5) {
       // fell into the river
       this.hp = 0;

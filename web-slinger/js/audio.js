@@ -179,6 +179,14 @@ export class AudioEngine {
     [0, 0.12, 0.24].forEach((w, i) => this.tone({ type: 'triangle', f0: [523, 659, 784][i], peak: 0.2, d: 0.6, when: w }));
     this.tone({ type: 'triangle', f0: 1046, peak: 0.18, d: 1.0, when: 0.36 });
   }
+  carHit() {
+    this.tone({ type: 'sine', f0: 120, f1: 40, peak: 0.9, d: 0.3 });
+    this.noiseBurst({ type: 'lowpass', f0: 2500, f1: 300, a: 0.002, peak: 0.7, d: 0.25 });
+    this.noiseBurst({ type: 'highpass', f0: 4000, f1: 2500, peak: 0.25, d: 0.12, when: 0.02 });
+    // angry horn
+    this.tone({ type: 'square', f0: 392, peak: 0.07, d: 0.55, when: 0.12 });
+    this.tone({ type: 'square', f0: 330, peak: 0.07, d: 0.55, when: 0.12 });
+  }
   heal() {
     this.tone({ type: 'sine', f0: 440, f1: 880, a: 0.05, peak: 0.2, d: 0.5 });
   }

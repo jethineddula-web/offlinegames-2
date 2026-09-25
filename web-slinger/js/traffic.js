@@ -4,6 +4,9 @@ import { N, HALF, EDGE, BLOCK, PARK, lineCoord, blockCenter, isPark, CURB } from
 import { mulberry32 } from './utils.js';
 
 const UPV = new THREE.Vector3(0, 1, 0);
+export const CAR_TOP = 1.5;
+const CAR_HALF_W = 1.0;
+const CAR_HALF_L = 2.35;
 const COLORS = [0xf2c300, 0xf2c300, 0xf2c300, 0x14181f, 0xe8e8e8, 0x8a1212, 0x1c3f7a, 0x5a5f66, 0x2d4a2d, 0xb0b4ba, 0x6b2a5a, 0xd46a1a];
 
 function carGeometries() {
@@ -148,6 +151,17 @@ export class Traffic {
     }
   }
 
+  // The car whose footprint (grown by pad) contains x,z, if any.
+  carAt(x, z, pad = 0) {
+    for (let i = 0; i < this.n; i++) {
+      const c = this.cars[i];
+      const hx = (c.lane.axis === 'z' ? CAR_HALF_W : CAR_HALF_L) + pad;
+      const hz = (c.lane.axis === 'z' ? CAR_HALF_L : CAR_HALF_W) + pad;
+      if (Math.abs(x - c.x) < hx && Math.abs(z - c.z) < hz) return c;
+    }
+    return null;
+  }
+
   setNight(k) {
     this.headMat.emissiveIntensity = 1 + k * 3;
     this.tailMat.emissiveIntensity = 1 + k * 2.5;
@@ -174,6 +188,10 @@ export class Traffic {
         z = c.lane.c;
         yaw = c.lane.dir > 0 ? Math.PI / 2 : -Math.PI / 2;
       }
+      c.x = x;
+      c.z = z;
+      c.vx = c.lane.axis === 'x' ? c.lane.dir * c.lane.speed : 0;
+      c.vz = c.lane.axis === 'z' ? c.lane.dir * c.lane.speed : 0;
       Q.setFromAxisAngle(UPV, yaw);
       M.compose(V.set(x, 0, z), Q, S);
       this.body.setMatrixAt(i, M);

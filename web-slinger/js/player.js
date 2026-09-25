@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { buildHumanoid, heroMaterials, Animator, Pose, newPose } from './hero.js';
 import { clamp, dampAngle, angleDiff } from './utils.js';
 import { EDGE } from './city.js';
+import { CAR_TOP } from './traffic.js';
 
 const UP = new THREE.Vector3(0, 1, 0);
 const DOWN = new THREE.Vector3(0, -1, 0);
@@ -132,6 +133,10 @@ export class Player {
 
     // ---------------------------------------------------------- discrete inputs
     if (input.jump) this.onJump(input, cam);
+    const knocked = this.state === 'knocked';
+    if (knocked) {
+      // no fighting while tumbling
+    } else {
     if (input.launch && this.launchTarget && this.state !== 'zip') this.startZip(this.launchTarget);
     if (input.trick && (this.state === 'air') && !this.trick) this.doTrick();
     if (input.attack) this.attack(cam);
@@ -139,6 +144,7 @@ export class Player {
     if (input.dodge) this.dodge(cam);
     if (input.heal) this.useHeal();
     if (input.finisher) this.useFinisher(cam);
+    }
 
     // hold-to-swing
     if (this.state === 'air' && input.swing && this.swingCD <= 0 && !this.action) {
@@ -158,8 +164,10 @@ export class Player {
         case 'swing': this.stepSwing(h, input); break;
         case 'wall': this.stepWall(h, input, cam); break;
         case 'zip': this.stepZip(h, input); break;
+        case 'knocked': this.stepKnocked(h); break;
       }
     }
+    this.checkTraffic();
     if (this.state !== 'ground') this.airTime += dt;
     else this.airTime = 0;
 
@@ -171,7 +179,7 @@ export class Player {
       this.spawn(this.lastSafe, this.yaw);
       this.perchT = 0;
     }
-    if (this.state === 'ground' && Math.abs(this.pos.x) < EDGE - 2 && Math.abs(this.pos.z) < EDGE - 2) {
+    if (this.state === 'ground' && !this.onCar && Math.abs(this.pos.x) < EDGE - 2 && Math.abs(this.pos.z) < EDGE - 2) {
       this.safeTimer += dt;
       if (this.safeTimer > 0.6) this.lastSafe.copy(this.pos);
     } else this.safeTimer = 0;
@@ -231,6 +239,17 @@ export class Player {
       }
       case 'zip':
         this.zip.launch = true;
+        break;
+      case 'knocked':
+        if (!this.knock.down && this.knock.t > 0.2) {
+          // air recovery, like flipping out of a hit
+          this.state = 'air';
+          this.vel.y = Math.max(this.vel.y, 7);
+          this.knock = null;
+          this.pivot.rotation.set(0, 0, 0);
+          this.doTrick('backflip', 0.5);
+          this.game.audio.whoosh(0.8);
+        } else if (this.knock.down) this.knock.downT = Math.max(this.knock.downT, 0.75);
         break;
     }
   }
@@ -293,7 +312,12 @@ export class Player {
         return;
       }
     }
-    const g = this.city.groundHeight(this.pos.x, this.pos.z, this.pos.y + 0.1);
+    const g = this.groundAt(this.pos.x, this.pos.z, this.pos.y + 0.1);
+    if (this.onCar) {
+      // ride along on the roof of a moving car
+      this.pos.x += this.onCar.vx * h;
+      this.pos.z += this.onCar.vz * h;
+    }
     if (this.pos.y - g > 0.4) {
       this.state = 'air';
       return;
@@ -358,7 +382,7 @@ export class Player {
         this.vel.z -= vn * c.nz;
       }
     }
-    const g = this.city.groundHeight(this.pos.x, this.pos.z, prevY);
+    const g = this.groundAt(this.pos.x, this.pos.z, prevY);
     if (this.pos.y <= g && this.vel.y <= 0) this.land(g);
     if (this.hSpeed > 1 && !this.action) this.yaw = dampAngle(this.yaw, Math.atan2(this.vel.x, this.vel.z), 5, h);
   }
@@ -533,7 +557,7 @@ export class Player {
       this.enterWall(c, Math.max(0, vn));
       return;
     }
-    const g = this.city.groundHeight(this.pos.x, this.pos.z, prevY);
+    const g = this.groundAt(this.pos.x, this.pos.z, prevY);
     if (this.pos.y <= g) {
       this.releaseSwing(false);
       this.land(g);
@@ -628,10 +652,11 @@ export class Player {
     if (this.pos.y + 1.1 >= top) {
       if (my > 0.2 || run || !c.hit) {
         // vault over the ledge
-        this.pos.y = top + 0.02;
-        this.pos.x -= nx * 1.1;
-        this.pos.z -= nz * 1.1;
-        this.vel.set(-nx * 5, 6.5, -nz * 5);
+        // clear the parapet: pop up above it and land on the roof behind
+        this.pos.y = this.city.groundHeight(this.pos.x - nx * 1.2, this.pos.z - nz * 1.2, top + 0.7) + 0.05;
+        this.pos.x -= nx * 1.2;
+        this.pos.z -= nz * 1.2;
+        this.vel.set(-nx * 5.5, 6.5, -nz * 5.5);
         this.state = 'air';
         this.yaw = Math.atan2(-nx, -nz);
         this.doTrick('flip', 0.45);
@@ -647,6 +672,100 @@ export class Player {
       this.state = 'ground';
       this.pos.x += nx * 0.1;
       this.pos.z += nz * 0.1;
+    }
+  }
+
+  // ======================================================================
+  // Traffic: stand on car roofs, get run over if you stand in the road.
+  groundAt(x, z, y) {
+    let h = this.city.groundHeight(x, z, y);
+    this.onCar = null;
+    const tr = this.game.traffic;
+    if (tr && h < CAR_TOP && CAR_TOP <= y + 0.6) {
+      const car = tr.carAt(x, z, 0);
+      if (car) {
+        h = CAR_TOP;
+        this.onCar = car;
+      }
+    }
+    return h;
+  }
+
+  checkTraffic() {
+    const tr = this.game.traffic;
+    if (!tr || this.dead || this.invuln > 0) return;
+    if (this.state !== 'ground' && this.state !== 'air') return;
+    if (this.pos.y > CAR_TOP - 0.3 || this.pos.y < -1) return;
+    const car = tr.carAt(this.pos.x, this.pos.z, R);
+    if (car) this.hitByCar(car);
+  }
+
+  hitByCar(car) {
+    const G = this.game;
+    const sp = Math.hypot(car.vx, car.vz);
+    const fx = car.vx / sp;
+    const fz = car.vz / sp;
+    // thrown forward and off to the side the hero was standing on
+    const side = Math.sign((this.pos.x - car.x) * -fz + (this.pos.z - car.z) * fx) || 1;
+    this.vel.set(fx * sp * 1.15 - fz * side * 4, 8.5 + sp * 0.15, fz * sp * 1.15 + fx * side * 4);
+    this.pos.y += 0.2;
+    if (this.rope) this.releaseSwing(false);
+    this.action = null;
+    this.trick = null;
+    this.state = 'knocked';
+    this.knock = { t: 0, down: false, downT: 0, bounces: 0, spin: 9 + Math.random() * 4 };
+    this.yaw = Math.atan2(-fx, -fz);
+    this.health -= 15;
+    this.lastHurt = this.t;
+    this.invuln = 1.4;
+    this.combo = 0;
+    G.audio.carHit();
+    G.camRig.shake(0.7);
+    G.hud.hurt();
+    G.fx.impactDust(this.pos, 12, 3);
+    if (this.health <= 0) this.die();
+  }
+
+  stepKnocked(h) {
+    const k = this.knock;
+    k.t += h;
+    if (!k.down) {
+      const prevY = this.pos.y;
+      this.vel.y -= GRAV * h;
+      this.pos.addScaledVector(this.vel, h);
+      const c = this.city.resolve(this.pos, R, H, false, this.contact);
+      if (c.hit) {
+        const vn = this.vel.x * c.nx + this.vel.z * c.nz;
+        if (vn < 0) {
+          this.vel.x -= vn * c.nx * 1.4;
+          this.vel.z -= vn * c.nz * 1.4;
+        }
+      }
+      const g = this.groundAt(this.pos.x, this.pos.z, prevY);
+      if (this.pos.y <= g && this.vel.y <= 0) {
+        this.pos.y = g;
+        if (-this.vel.y > 5 && k.bounces < 2) {
+          this.vel.y = -this.vel.y * 0.3;
+          this.vel.x *= 0.55;
+          this.vel.z *= 0.55;
+          k.bounces++;
+          this.game.fx.impactDust(this.pos, 8, 2);
+          this.game.audio.land(false);
+        } else {
+          k.down = true;
+          this.vel.set(0, 0, 0);
+          this.game.audio.land(true);
+        }
+      }
+    } else {
+      k.downT += h;
+      this.pos.y = this.groundAt(this.pos.x, this.pos.z, this.pos.y + 0.1);
+      if (k.downT > 1.1) {
+        this.state = 'ground';
+        this.knock = null;
+        this.landT = 0.4;
+        this.pivot.rotation.x = -0.6; // roll up from the back into a crouch
+      }
     }
   }
 
@@ -727,6 +846,16 @@ export class Player {
     const sp = Math.min(48, 22 + z.t * 90);
     this.vel.copy(d).multiplyScalar(sp / dist);
     this.pos.addScaledVector(this.vel, h);
+    if (dist > 7) {
+      const c = this.city.resolve(this.pos, R, H, false, this.contact);
+      if (c.hit) {
+        // something is in the way: grab the wall instead of passing through it
+        for (const w of z.webs) this.game.fx.webs.release(w);
+        this.zip = null;
+        this.enterWall(c, 6);
+        return;
+      }
+    }
     this.yaw = Math.atan2(d.x, d.z);
   }
 
@@ -934,6 +1063,10 @@ export class Player {
       Pose.hurt(p, t);
       p.hy = -0.6;
       k = 6;
+    } else if (this.state === 'knocked') {
+      if (this.knock.down) Pose.down(p);
+      else Pose.hurt(p, t);
+      k = 14;
     } else if (a && a.type === 'attack') {
       Pose.punch(p, a.step, a.t / a.dur);
       k = 28;
@@ -1032,7 +1165,18 @@ export class Player {
     this.model.quaternion.slerp(tq, 1 - Math.exp(-rk * dt));
 
     // tricks / dodge roll spin the pivot
-    if (this.trick) {
+    if (this.state === 'knocked') {
+      const kk = this.knock;
+      if (!kk.down) this.pivot.rotation.x -= kk.spin * dt;
+      else {
+        // settle flat on the back
+        const r = this.pivot.rotation.x;
+        const target = -Math.PI / 2 + Math.round((r + Math.PI / 2) / (Math.PI * 2)) * Math.PI * 2;
+        this.pivot.rotation.x += (target - r) * Math.min(1, dt * 10);
+      }
+      this.pivot.rotation.y = 0;
+      this.pivot.rotation.z = 0;
+    } else if (this.trick) {
       this.trick.t += dt;
       const f = clamp(this.trick.t / this.trick.dur, 0, 1);
       const e = f < 1 ? 1 - Math.pow(1 - f, 2) : 1;
@@ -1065,6 +1209,7 @@ export class Player {
       this.model.position.z -= this.wall.nz * 0.12;
     }
     if (this.dead) this.pivot.position.y = 0.4;
+    else if (this.state === 'knocked' && this.knock.down) this.pivot.position.y += (0.22 - this.pivot.position.y) * Math.min(1, dt * 10);
     else this.pivot.position.y += (0.95 - this.pivot.position.y) * Math.min(1, dt * 6);
 
     // ---- IK: web-slinging arm(s) reach for the anchor

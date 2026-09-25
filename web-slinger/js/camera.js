@@ -87,7 +87,9 @@ export class CameraRig {
     toCam.divideScalar(len);
     const hit = this.city.raycast(this.target, toCam, len + 0.4, true);
     if (hit) desired.copy(this.target).addScaledVector(toCam, Math.max(0.6, hit.t - 0.4));
-    const floor = this.city.baseHeight(desired.x, desired.z) + 0.3;
+    // never let the lens sit inside a wall, parapet or roof
+    this.city.resolve(desired, 0.32, 0.3, false, this.pushOut || (this.pushOut = { hit: false }));
+    const floor = this.city.groundHeight(desired.x, desired.z, desired.y) + 0.3;
     if (desired.y < floor) desired.y = floor;
     cam.position.copy(desired);
 
